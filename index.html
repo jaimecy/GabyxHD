@@ -472,6 +472,59 @@
             height: auto !important;
         }
 
+        /* Forzar que no haya espacios en blanco */
+        #analysis-container .table-container,
+        #analysis-container .table-container table,
+        #analysis-container .table-container tbody,
+        #analysis-container .table-container tr {
+            height: auto !important;
+            min-height: auto !important;
+            max-height: none !important;
+            padding-bottom: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Eliminar cualquier padding o margin que pueda crear espacio */
+        #analysis-container .table-container:after,
+        #analysis-container .table-container:before {
+            content: none !important;
+            display: none !important;
+        }
+
+        /* SOLUCIÓN AGRESIVA - Forzar altura mínima en todas las tablas del análisis */
+        #analysis-container .table-container {
+            height: fit-content !important;
+            min-height: fit-content !important;
+            max-height: fit-content !important;
+            overflow: visible !important;
+        }
+
+        #analysis-container .table-container table {
+            height: fit-content !important;
+            min-height: fit-content !important;
+            max-height: fit-content !important;
+            table-layout: auto !important;
+        }
+
+        #analysis-container .table-container tbody {
+            height: fit-content !important;
+            min-height: fit-content !important;
+            max-height: fit-content !important;
+        }
+
+        #analysis-container .table-container tr {
+            height: fit-content !important;
+            min-height: fit-content !important;
+            max-height: fit-content !important;
+        }
+
+        /* Eliminar cualquier espacio residual */
+        #analysis-container .table-container * {
+            height: auto !important;
+            min-height: auto !important;
+            max-height: none !important;
+        }
+
         /* Scrollbar siempre visible para las tablas del análisis */
         .table-container::-webkit-scrollbar {
             height: 8px !important;
@@ -766,16 +819,16 @@
                     .sort(([,a], [,b]) => b - a);
 
                 let tableHTML = `
-                    <div class="table-container" style="overflow-x: scroll; overflow-y: visible; width: 100%; -webkit-overflow-scrolling: touch;">
-                        <table style="width: 100%; min-width: 400px; border-collapse: collapse; color: black; font-size: 0.9rem;">
+                    <div class="table-container" style="overflow-x: scroll; overflow-y: visible; width: 100%; -webkit-overflow-scrolling: touch; height: fit-content; min-height: fit-content; max-height: fit-content;">
+                        <table style="width: 100%; min-width: 400px; border-collapse: collapse; color: black; font-size: 0.9rem; height: fit-content; min-height: fit-content; table-layout: auto;">
                             <thead>
-                                <tr style="background: rgba(255,255,255,0.15);">
+                                <tr style="background: rgba(255,255,255,0.15); height: fit-content;">
                                     <th style="padding: 8px 8px; text-align: center; border-bottom: 2px solid black; border-right: 1px solid black; font-weight: 600; font-size: 0.9rem; color: black; width: 250px;">${title}</th>
                                     <th style="padding: 8px 8px; text-align: center; border-bottom: 2px solid black; border-right: 1px solid black; font-weight: 600; font-size: 0.9rem; color: black; width: 80px;">N° veces</th>
                                     <th style="padding: 8px 8px; text-align: center; border-bottom: 2px solid black; font-weight: 600; font-size: 0.9rem; color: black; width: 60px;">%</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody style="height: fit-content; min-height: fit-content;">
                 `;
 
                 const total = Object.values(data).reduce((sum, count) => sum + count, 0);
@@ -786,7 +839,7 @@
                     const rowStyle = isEven ? 'background: rgba(255,255,255,0.3);' : 'background: rgba(255,255,255,0.1);';
                     
                     tableHTML += `
-                        <tr style="${rowStyle}">
+                        <tr style="${rowStyle} height: fit-content; min-height: fit-content;">
                             <td style="padding: 6px 8px; border-bottom: 1px solid black; border-right: 1px solid black; font-weight: bold; font-size: 0.9rem; color: black; text-align: left; width: 250px;">${name}</td>
                             <td style="padding: 6px 8px; text-align: center; border-bottom: 1px solid black; border-right: 1px solid black; font-weight: bold; font-size: 0.9rem; color: black; width: 80px;">${count}</td>
                             <td style="padding: 6px 8px; text-align: center; border-bottom: 1px solid black; font-weight: bold; font-size: 0.9rem; color: black; width: 60px;">${percentage}%</td>
