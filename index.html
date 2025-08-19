@@ -456,6 +456,22 @@
             border-radius: 4px;
         }
 
+        /* Eliminar espacio en blanco en las tablas del análisis */
+        #analysis-container .table-container {
+            height: auto !important;
+            min-height: auto !important;
+            max-height: none !important;
+        }
+
+        #analysis-container table {
+            height: auto !important;
+            min-height: auto !important;
+        }
+
+        #analysis-container tbody {
+            height: auto !important;
+        }
+
         /* Scrollbar siempre visible para las tablas del análisis */
         .table-container::-webkit-scrollbar {
             height: 8px !important;
@@ -748,7 +764,6 @@
             generateAnalysisTable(data, title, type) {
                 const sortedData = Object.entries(data)
                     .sort(([,a], [,b]) => b - a);
-                // Mostrar TODOS los componentes, no solo top 10
 
                 let tableHTML = `
                     <div class="table-container" style="overflow-x: scroll; overflow-y: visible; width: 100%; -webkit-overflow-scrolling: touch;">
