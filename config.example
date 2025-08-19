@@ -1,0 +1,19 @@
+# Configuración del Backend
+NODE_ENV=development
+
+# Puerto del servidor (Railway lo configurará automáticamente)
+PORT=3000
+
+# Google Sheets API
+GOOGLE_API_KEY=tu_clave_api_de_google_aqui
+SPREADSHEET_ID=1OCMcUJ0VerXZLEgyjapb_lNvRZQL05lIcGf882AaTfU
+
+# Configuración de CORS (para producción)
+# ALLOWED_ORIGINS=https://tu-dominio.railway.app,https://tu-dominio.com
+
+# Configuración de logging
+LOG_LEVEL=info
+
+# Configuración de rate limiting
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
