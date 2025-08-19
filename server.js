@@ -8,11 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-    origin: [
-        'https://jaimecy.github.io',
-        'https://gabyxhd-production.up.railway.app',
-        'http://localhost:3000' // Para desarrollo local
-    ],
+    origin: true, // Permitir todos los orígenes temporalmente
     credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
