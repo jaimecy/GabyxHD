@@ -69,7 +69,8 @@ body {
     text-align: center;
 }
 
-.data-table {
+/* Solo la tabla principal de datos tiene fondo blanco */
+#data-container .data-table {
     background: white;
     border-radius: 15px;
     padding: 0;
@@ -150,9 +151,13 @@ body {
 #analysis-container table {
     width: 100%;
     min-width: 450px;
-    border-collapse: collapse;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
     color: black;
     table-layout: fixed;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
 }
 
 /* Reset básico para las tablas de análisis */
@@ -197,38 +202,60 @@ body {
     text-align: center !important;
 }
 
-/* Estilos para todas las filas de las tablas de análisis */
-#analysis-container table tr {
-    border: 1px solid black !important;
+/* Estilos simples para las tablas de análisis */
+#analysis-container table {
+    border-collapse: collapse !important;
 }
 
 #analysis-container table th {
-    border: 1px solid black !important;
     background-color: #667eea !important;
     color: white !important;
     font-weight: bold !important;
     padding: 8px !important;
+    border: 0.1px solid black !important;
+    border-width: 0.1px !important;
 }
 
 #analysis-container table td {
-    border: 1px solid black !important;
     padding: 8px !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 0.1px solid black !important;
+    border-width: 0.1px !important;
 }
 
-/* Filas alternadas para mejor legibilidad */
-#analysis-container table tr:nth-child(even) td {
-    background-color: rgba(255, 255, 255, 0.2) !important;
+/* Scrollbars inteligentes en Firefox para las tablas de análisis */
+@-moz-document url-prefix() {
+    #analysis-container .table-container {
+        scrollbar-width: thin !important;
+        -ms-overflow-style: auto !important;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+    }
+    
+    #analysis-container .table-container::-webkit-scrollbar {
+        display: block !important;
+        height: 4px !important;
+        background: transparent !important;
+    }
+    
+    #analysis-container .table-container::-webkit-scrollbar-thumb {
+        background: #667eea !important;
+        border-radius: 2px !important;
+    }
+    
+    #analysis-container .table-container::-webkit-scrollbar-track {
+        background: transparent !important;
+    }
 }
 
-#analysis-container table tr:nth-child(odd) td {
-    background-color: rgba(255, 255, 255, 0.1) !important;
+/* Scroll horizontal para las tablas de análisis */
+#analysis-container .table-container {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
 }
 
-/* Hover en las filas */
-#analysis-container table tr:hover td {
-    background-color: rgba(255, 255, 255, 0.3) !important;
-}
+/* Eliminar regla Firefox específica - box-shadow funciona en todos los navegadores */
+
+/* Sin filas alternadas - enfoque minimalista */
 
 /* Estilos duplicados eliminados */
 
@@ -370,7 +397,7 @@ th:last-child, td:last-child {
 
 .stats-grid {
     display: grid !important;
-    grid-template-columns: repeat(4, 200px) !important;
+    grid-template-columns: repeat(4, 150px) !important;
     gap: 20px !important;
     margin-top: 20px !important;
     justify-content: center !important;
@@ -381,8 +408,20 @@ th:last-child, td:last-child {
     border-radius: 10px;
     padding: 10px;
     text-align: center;
-    max-width: 200px !important;
-    width: 200px !important;
+    max-width: 150px !important;
+    width: 150px !important;
+}
+
+/* A baja resolución, hacer las tarjetas más estrechas */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 120px) !important;
+        justify-content: center !important;
+    }
+    .stat-card {
+        width: 120px !important;
+        max-width: 120px !important;
+    }
 }
 
 /* Fondo más oscuro solo para "Total de Montajes" */
@@ -493,6 +532,19 @@ th:last-child, td:last-child {
     .table-container::-webkit-scrollbar-track {
         background: #f0f0f0 !important;
         border-radius: 2px !important;
+    }
+}
+
+/* Media query para pantallas muy pequeñas */
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .stat-card {
+        width: 100% !important;
+        max-width: none !important;
     }
 }
 
@@ -619,15 +671,15 @@ th:last-child, td:last-child {
 /* Eliminar estilos conflictivos */
 
 .analysis-header-row {
-    background: rgba(255,255,255,0.15);
+    background: transparent;
     height: fit-content;
 }
 
 .analysis-header {
     padding: 8px 8px;
     text-align: center;
-    border-bottom: 2px solid black;
-    border-right: 1px solid black;
+    border-bottom: 0.1px solid black;
+    border-right: 0.1px solid black;
     font-weight: 600;
     font-size: 0.9rem;
     color: black;
@@ -651,8 +703,8 @@ th:last-child, td:last-child {
 
 .analysis-cell {
     padding: 6px 8px;
-    border-bottom: 1px solid black;
-    border-right: 1px solid black;
+    border-bottom: 0.1px solid black;
+    border-right: 0.1px solid black;
     font-weight: bold;
     font-size: 0.9rem;
     color: black;
@@ -667,8 +719,8 @@ th:last-child, td:last-child {
 .analysis-summary {
     margin-top: 15px;
     padding: 10px;
-    background: rgba(255,255,255,0.1);
-    border: 2px solid black;
+    background: transparent;
+    border: 0.1px solid black;
     border-radius: 8px;
     text-align: center;
 }
@@ -680,11 +732,11 @@ th:last-child, td:last-child {
 }
 
 .analysis-row-even {
-    background: rgba(255,255,255,0.3);
+    background: transparent;
 }
 
 .analysis-row-odd {
-    background: rgba(255,255,255,0.1);
+    background: transparent;
 }
 
 .bottom-button-container {
