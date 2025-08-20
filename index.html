@@ -816,7 +816,12 @@
 
             generateAnalysisTable(data, title, type) {
                 const sortedData = Object.entries(data)
-                    .sort(([,a], [,b]) => b - a);
+                    .sort(([nameA, countA], [nameB, countB]) => {
+                        if (countB !== countA) {
+                            return countB - countA; // Primero por cantidad (de mayor a menor)
+                        }
+                        return nameA.localeCompare(nameB); // Luego alfabéticamente en empates
+                    });
 
                 let tableHTML = `
                     <div class="table-container" style="overflow-x: scroll; overflow-y: visible; width: 100%; -webkit-overflow-scrolling: touch; height: fit-content; min-height: fit-content; max-height: fit-content;">
