@@ -1,0 +1,427 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Fallback para Font Awesome - evitar advertencias */
+.fas, .fa {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free', 'Font Awesome 4.7.0', 'FontAwesome', sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+.container {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.spinner {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error {
+    background: #ff6b6b;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.data-table {
+    background: white;
+    border-radius: 15px;
+    padding: 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-bottom: 20px;
+    min-width: 100%;
+}
+
+/* Solo la tabla principal tiene scroll y sticky header */
+#data-container .data-table {
+    max-height: 70vh;
+    overflow-y: auto;
+    overflow-x: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: #ff0000 #f0f0f0;
+}
+
+/* Sticky header para la tabla principal */
+#data-container .data-table th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #667eea;
+    color: white;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Estilos del scrollbar para la tabla principal */
+#data-container .data-table::-webkit-scrollbar {
+    height: 8px;
+    background: #f0f0f0;
+}
+
+#data-container .data-table::-webkit-scrollbar-thumb {
+    background: #ff0000;
+    border-radius: 2px;
+}
+
+#data-container .data-table::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 2px;
+}
+
+/* Asegurar que la tabla tenga ancho mínimo para forzar scroll */
+#data-container table {
+    min-width: 1200px;
+}
+
+/* Estilos específicos para las tablas del análisis */
+#analysis-container table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+    color: black;
+}
+
+#analysis-container th, #analysis-container td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid black !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#analysis-container th {
+    background-color: #667eea;
+    color: white;
+    font-weight: 600;
+    text-align: center;
+}
+
+#analysis-container td:nth-child(2), #analysis-container td:nth-child(3) {
+    text-align: center;
+}
+
+.data-table h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    min-width: 800px;
+    border-collapse: collapse;
+    margin-top: 0;
+    table-layout: auto;
+}
+
+th, td {
+    padding: 8px 8px;
+    text-align: left;
+    border-bottom: 1px solid black !important;
+    border-right: 1px solid black !important;
+    word-wrap: break-word;
+    white-space: nowrap;
+}
+
+/* Hacer que las columnas se adapten al contenido */
+th:nth-child(1), td:nth-child(1) { width: min-content; text-align: center; } /* Fecha - se adapta al contenido */
+th:nth-child(2), td:nth-child(2) { width: auto; } /* Título del directo - se expande */
+th:nth-child(3), td:nth-child(3) { width: min-content; text-align: center; } /* Precio - se adapta al contenido */
+th:nth-child(4), td:nth-child(4) { width: min-content; } /* Procesador - se adapta al contenido */
+th:nth-child(5), td:nth-child(5) { width: min-content; } /* Tarjeta gráfica - se adapta al contenido */
+th:nth-child(6), td:nth-child(6) { width: min-content; } /* Torre - se adapta al contenido */
+
+th:last-child, td:last-child {
+    border-right: none;
+}
+
+.data-table tbody tr:nth-child(even) {
+    background: rgba(0,0,0,0.1) !important;
+}
+
+.data-table tbody tr:nth-child(odd) {
+    background: rgba(255,255,255,0.9) !important;
+}
+
+.data-table tbody tr:nth-child(even):hover {
+    background: rgba(0,0,0,0.15) !important;
+}
+
+.data-table tbody tr:nth-child(odd):hover {
+    background: rgba(255,255,255,1) !important;
+}
+
+.refresh-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 20px auto;
+    display: block;
+    transition: background 0.3s ease;
+}
+
+.refresh-btn:hover {
+    background: #5a6fd8;
+}
+
+/* Clases para elementos específicos */
+.hidden {
+    display: none;
+}
+
+.stats-button-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.go-to-analysis-btn {
+    background: #27ae60 !important;
+    margin: 0 auto 30px auto;
+    display: block;
+    padding: 6px 14px;
+    font-size: 0.9rem;
+}
+
+.back-button-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.back-to-data-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin: 15px auto;
+    display: block;
+    transition: background 0.3s ease;
+}
+
+.back-to-data-btn:hover {
+    background: #218838;
+}
+
+.analysis-title {
+    color: #e1ff02;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.last-updated {
+    text-align: center;
+    color: white;
+    margin-top: 20px;
+    opacity: 0.8;
+}
+
+.stats-info {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.stats-info h3 {
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+}
+
+/* Fondo más oscuro solo para "Total de Montajes" */
+.stat-card:first-child {
+    background: #d1d3d4;
+}
+
+.stat-card .number {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.stat-card .label {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* Estilos para las tablas de análisis */
+.analysis-section {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.analysis-section h2 {
+    color: #667eea;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.analysis-section h3 {
+    color: white;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Contenedor de tabla con scroll horizontal solo cuando sea necesario */
+.table-container {
+    overflow-x: auto;
+    overflow-y: visible;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Estilos del scrollbar */
+.table-container::-webkit-scrollbar {
+    height: 8px;
+    background: #f0f0f0;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 2px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 2px;
+}
+
+/* Media queries para móvil */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .data-table {
+        overflow-x: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+        min-width: 900px;
+    }
+
+    /* Forzar scroll horizontal en las tablas de análisis en móvil */
+    .table-container {
+        overflow-x: scroll !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #667eea #f0f0f0 !important;
+        -ms-overflow-style: auto !important;
+    }
+    
+    /* Mostrar scrollbar en móvil */
+    .table-container::-webkit-scrollbar {
+        display: block !important;
+        height: 8px !important;
+        background: #f0f0f0 !important;
+    }
+    
+    .table-container::-webkit-scrollbar-thumb {
+        background: #667eea !important;
+        border-radius: 2px !important;
+    }
+    
+    .table-container::-webkit-scrollbar-track {
+        background: #f0f0f0 !important;
+        border-radius: 2px !important;
+    }
+}
+
+/* En alta resolución, scrollbars solo cuando sea necesario */
+@media (min-width: 769px) {
+    .table-container {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    /* Ocultar scrollbar en webkit completamente */
+    .table-container::-webkit-scrollbar {
+        display: none;
+    }
+}
