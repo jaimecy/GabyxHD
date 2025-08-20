@@ -70,6 +70,100 @@ body {
 }
 
 /* Solo la tabla principal de datos tiene fondo blanco */
+#data-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Contenedor de la tabla con scroll */
+.table-wrapper {
+    background: white;
+    border-radius: 15px;
+    padding: 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    overflow-x: auto;
+    overflow-y: auto;
+    margin: 0 auto 20px auto;
+    min-width: 100%;
+    max-width: 100%;
+    max-height: 70vh;
+}
+
+/* Scrollbars del contenedor */
+.table-wrapper::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+    background: #f0f0f0;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+/* Firefox scrollbar */
+.table-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: #667eea #f0f0f0;
+}
+
+/* Media query para baja resolución - más ancho para el contenedor */
+@media (max-width: 1200px) {
+    .table-wrapper {
+        min-width: calc(95vw - 10px);
+        max-width: calc(95vw - 10px);
+        margin: 0 auto 20px auto;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    /* Tablas de análisis con scroll horizontal y centradas */
+    #analysis-container .table-container {
+        min-width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+    }
+    
+    #analysis-container table {
+        min-width: 500px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-wrapper {
+        min-width: calc(98vw - 10px);
+        max-width: calc(98vw - 10px);
+        margin: 0 auto 20px auto;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    /* Tablas de análisis con scroll horizontal y centradas */
+    #analysis-container .table-container {
+        min-width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+    }
+    
+    #analysis-container table {
+        min-width: 500px;
+        width: 100%;
+    }
+}
+
 #data-container .data-table {
     background: white;
     border-radius: 15px;
@@ -77,8 +171,9 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     overflow-x: auto;
     overflow-y: hidden;
-    margin-bottom: 20px;
+    margin: 0 auto 20px auto;
     min-width: 100%;
+    max-width: 100%;
 }
 
 /* Solo la tabla principal tiene scroll y sticky header */
@@ -259,22 +354,23 @@ body {
 
 /* Estilos duplicados eliminados */
 
-.data-table h2 {
+/* Título de la tabla principal */
+#data-container .data-table h2 {
     color: #667eea;
     margin-bottom: 20px;
     text-align: center;
 }
 
-/* Estilos SOLO para la tabla principal de datos */
-.data-table {
+/* Estilos SOLO para la tabla principal de datos - CENTRADA Y CON SCROLL */
+#data-container .data-table {
     width: 100%;
     min-width: 800px;
     border-collapse: collapse;
-    margin-top: 0;
+    margin: 0;
     table-layout: auto;
 }
 
-.data-table th, .data-table td {
+#data-container .data-table th, #data-container .data-table td {
     padding: 8px 8px;
     text-align: left;
     border-bottom: 1px solid black !important;
@@ -284,31 +380,31 @@ body {
 }
 
 /* Hacer que las columnas se adapten al contenido - SOLO para la tabla principal de datos */
-.data-table th:nth-child(1), .data-table td:nth-child(1) { width: min-content; text-align: center; } /* Fecha - se adapta al contenido */
-.data-table th:nth-child(2), .data-table td:nth-child(2) { width: auto; } /* Título del directo - se expande */
-.data-table th:nth-child(3), .data-table td:nth-child(3) { width: min-content; text-align: center; } /* Precio - se adapta al contenido */
-.data-table th:nth-child(4), .data-table td:nth-child(4) { width: min-content; } /* Procesador - se adapta al contenido */
-.data-table th:nth-child(5), .data-table td:nth-child(5) { width: min-content; } /* Tarjeta gráfica - se adapta al contenido */
-.data-table th:nth-child(6), .data-table td:nth-child(6) { width: min-content; } /* Torre - se adapta al contenido */
+#data-container .data-table th:nth-child(1), #data-container .data-table td:nth-child(1) { width: min-content; text-align: center; } /* Fecha - se adapta al contenido */
+#data-container .data-table th:nth-child(2), #data-container .data-table td:nth-child(2) { width: auto; } /* Título del directo - se expande */
+#data-container .data-table th:nth-child(3), #data-container .data-table td:nth-child(3) { width: min-content; text-align: center; } /* Precio - se adapta al contenido */
+#data-container .data-table th:nth-child(4), #data-container .data-table td:nth-child(4) { width: min-content; } /* Procesador - se adapta al contenido */
+#data-container .data-table th:nth-child(5), #data-container .data-table td:nth-child(5) { width: min-content; } /* Tarjeta gráfica - se adapta al contenido */
+#data-container .data-table th:nth-child(6), #data-container .data-table td:nth-child(6) { width: min-content; } /* Torre - se adapta al contenido */
 
-th:last-child, td:last-child {
+#data-container .data-table th:last-child, #data-container .data-table td:last-child {
     border-right: none;
 }
 
-.data-table tbody tr:nth-child(even) {
+#data-container .data-table tbody tr:nth-child(even) {
     background: rgba(0,0,0,0.1) !important;
 }
 
-.data-table tbody tr:nth-child(odd) {
-    background: rgba(255,255,255,0.9) !important;
+#data-container .data-table tbody tr:nth-child(odd) {
+    background: white !important;
 }
 
-.data-table tbody tr:nth-child(even):hover {
-    background: rgba(0,0,0,0.15) !important;
+#data-container .data-table tbody tr:nth-child(even):hover {
+    background: rgba(102, 126, 234, 0.1) !important;
 }
 
-.data-table tbody tr:nth-child(odd):hover {
-    background: rgba(255,255,255,1) !important;
+#data-container .data-table tbody tr:nth-child(odd):hover {
+    background: rgba(102, 126, 234, 0.1) !important;
 }
 
 .refresh-btn {
@@ -503,7 +599,7 @@ th:last-child, td:last-child {
         min-width: 120px;
     }
 
-    .data-table {
+    #data-container .data-table {
         overflow-x: scroll;
     }
 

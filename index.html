@@ -31,7 +31,7 @@
 
         <!-- Tabla de Datos -->
         <div id="data-container" class="hidden">
-            <div class="data-table">
+            <div class="table-wrapper">
                 <div id="table-container"></div>
             </div>
         </div>
@@ -426,7 +426,7 @@
                 const headers = data[0];
                 const rows = data.slice(1);
 
-                let tableHTML = '<table><thead><tr>';
+                let tableHTML = '<table class="data-table"><thead><tr>';
                 headers.forEach(header => {
                     tableHTML += `<th>${header}</th>`;
                 });
