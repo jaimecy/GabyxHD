@@ -20,7 +20,7 @@
 
         <!-- Información de Estadísticas -->
         <div id="stats-info" class="hidden">
-            <h3 style="color: #e1ff02; text-align: center; margin-bottom: 20px; font-size: 1.4rem;">ℹ️ Información de los Montajes</h3>
+            <h3 class="stats-title">ℹ️ Información de los Montajes</h3>
             <div id="stats-grid" class="stats-grid"></div>
             <div class="stats-button-container">
                 <button id="go-to-analysis-btn" class="refresh-btn go-to-analysis-btn">
@@ -51,7 +51,7 @@
             </div>
             
             <!-- Botón adicional debajo del análisis -->
-            <div style="margin-top: 25px; text-align: center;">
+            <div class="bottom-button-container">
                 <button id="back-to-data-btn-bottom" class="refresh-btn back-to-data-btn">
                     ⬅️ Volver a los Datos
                 </button>
@@ -183,45 +183,45 @@
                 const analysisContent = document.getElementById('analysis-content');
                 
                 analysisContent.innerHTML = `
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                        <div style="background: #00CED1; border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(0, 206, 209, 0.3);">
-                            <h3 style="color: black; text-align: center; margin-bottom: 20px; font-size: 1.3rem; text-shadow: 0 2px 4px rgba(255,255,255,0.3);">
+                    <div class="analysis-grid">
+                        <div class="processor-section">
+                            <h3 class="section-title">
                                 Procesadores
                             </h3>
                             ${this.generateAnalysisTable(processors, 'Procesador', 'processor')}
                         </div>
                         
-                        <div style="background: #FFD700; border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);">
-                            <h3 style="color: black; text-align: center; margin-bottom: 20px; font-size: 1.3rem; text-shadow: 0 2px 4px rgba(255,255,255,0.3);">
+                        <div class="graphics-section">
+                            <h3 class="section-title">
                                 Tarjetas Gráficas
                             </h3>
                             ${this.generateAnalysisTable(graphics, 'Tarjeta Gráfica', 'graphics')}
                         </div>
                         
-                        <div style="background: #FF8C00; border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3);">
-                            <h3 style="color: black; text-align: center; margin-bottom: 20px; font-size: 1.3rem; text-shadow: 0 2px 4px rgba(255,255,255,0.3);">
+                        <div class="tower-section">
+                            <h3 class="section-title">
                                 Torres
                             </h3>
                             ${this.generateAnalysisTable(cases, 'Torre', 'case')}
                         </div>
                     </div>
                     
-                    <div style="margin-top: 25px; text-align: center; padding: 25px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 15px; border: 2px solid #667eea;">
-                        <h3 style="color: #667eea; margin-bottom: 20px; font-size: 1.4rem;">
+                    <div class="prices-section">
+                        <h3 class="prices-title">
                             Resumen de Precios
                         </h3>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;">
-                            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
-                                <div style="font-size: 2rem; font-weight: bold; color: #667eea; margin-bottom: 8px;">${Math.round(prices.avg)}€</div>
-                                <div style="color: #666; font-size: 1rem; font-weight: 500;">Precio Promedio</div>
+                        <div class="prices-grid">
+                            <div class="price-card">
+                                <div class="price-value price-avg">${Math.round(prices.avg)}€</div>
+                                <div class="price-label">Precio Promedio</div>
                             </div>
-                            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
-                                <div style="font-size: 2rem; font-weight: bold; color: #27ae60; margin-bottom: 8px;">${prices.min}€</div>
-                                <div style="color: #666; font-size: 1rem; font-weight: 500;">Precio Mínimo</div>
+                            <div class="price-card">
+                                <div class="price-value price-min">${prices.min}€</div>
+                                <div class="price-label">Precio Mínimo</div>
                             </div>
-                            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
-                                <div style="font-size: 2rem; font-weight: bold; color: #e74c3c; margin-bottom: 8px;">${prices.max}€</div>
-                                <div style="color: #666; font-size: 1rem; font-weight: 500;">Precio Máximo</div>
+                            <div class="price-card">
+                                <div class="price-value price-max">${prices.max}€</div>
+                                <div class="price-label">Precio Máximo</div>
                             </div>
                         </div>
                     </div>
@@ -238,30 +238,29 @@
                     });
 
                 let tableHTML = `
-                    <div class="table-container" style="overflow-x: scroll; overflow-y: visible; width: 100%; -webkit-overflow-scrolling: touch; height: fit-content; min-height: fit-content; max-height: fit-content;">
-                        <table style="width: 100%; min-width: 400px; border-collapse: collapse; color: black; font-size: 0.9rem; height: fit-content; min-height: fit-content; table-layout: auto;">
+                    <div class="table-container analysis-table-container">
+                        <table class="analysis-table">
                             <thead>
-                                <tr style="background: rgba(255,255,255,0.15); height: fit-content;">
-                                    <th style="padding: 8px 8px; text-align: center; border-bottom: 2px solid black; border-right: 1px solid black; font-weight: 600; font-size: 0.9rem; color: black; width: 250px;">${title}</th>
-                                    <th style="padding: 8px 8px; text-align: center; border-bottom: 2px solid black; border-right: 1px solid black; font-weight: 600; font-size: 0.9rem; color: black; width: 80px;">N° veces</th>
-                                    <th style="padding: 8px 8px; text-align: center; border-bottom: 2px solid black; font-weight: 600; font-size: 0.9rem; color: black; width: 60px;">%</th>
+                                <tr class="analysis-header-row">
+                                    <th class="analysis-header analysis-header-name">${title}</th>
+                                    <th class="analysis-header analysis-header-count">N° veces</th>
+                                    <th class="analysis-header analysis-header-percent">%</th>
                                 </tr>
                             </thead>
-                            <tbody style="height: fit-content; min-height: fit-content;">
+                            <tbody class="analysis-tbody">
                 `;
 
                 const total = Object.values(data).reduce((sum, count) => sum + count, 0);
 
                 sortedData.forEach(([name, count], index) => {
                     const percentage = ((count / total) * 100).toFixed(1);
-                    const isEven = index % 2 === 0;
-                    const rowStyle = isEven ? 'background: rgba(255,255,255,0.3);' : 'background: rgba(255,255,255,0.1);';
+                    const rowClass = index % 2 === 0 ? 'analysis-row analysis-row-even' : 'analysis-row analysis-row-odd';
                     
                     tableHTML += `
-                        <tr style="${rowStyle} height: fit-content; min-height: fit-content;">
-                            <td style="padding: 6px 8px; border-bottom: 1px solid black; border-right: 1px solid black; font-weight: bold; font-size: 0.9rem; color: black; text-align: left; width: 250px;">${name}</td>
-                            <td style="padding: 6px 8px; text-align: center; border-bottom: 1px solid black; border-right: 1px solid black; font-weight: bold; font-size: 0.9rem; color: black; width: 80px;">${count}</td>
-                            <td style="padding: 6px 8px; text-align: center; border-bottom: 1px solid black; font-weight: bold; font-size: 0.9rem; color: black; width: 60px;">${percentage}%</td>
+                        <tr class="${rowClass}">
+                            <td class="analysis-cell analysis-cell-name">${name}</td>
+                            <td class="analysis-cell analysis-cell-count">${count}</td>
+                            <td class="analysis-cell analysis-cell-percent">${percentage}%</td>
                         </tr>
                     `;
                 });
@@ -273,9 +272,9 @@
                 const totalUsage = total;
                 
                 tableHTML += `
-                    <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.1); border: 2px solid black; border-radius: 8px; text-align: center;">
-                        <span style="font-weight: 600; font-size: 0.9rem; color: black;">Total: ${uniqueComponents} componentes únicos</span> | 
-                        <span style="font-weight: 600; font-size: 0.9rem; color: black;">Uso total: ${totalUsage} veces</span>
+                    <div class="analysis-summary">
+                        <span class="analysis-summary-text">Total: ${uniqueComponents} componentes únicos</span> | 
+                        <span class="analysis-summary-text">Uso total: ${totalUsage} veces</span>
                     </div>
                 `;
                 
@@ -439,13 +438,12 @@
                     tableHTML += '<tr>';
                     headers.forEach((header, cellIndex) => {
                         const cellValue = row[cellIndex] || '';
-                        const cellStyle = 'padding: 8px 8px; border-bottom: 1px solid black; border-right: 1px solid black; white-space: nowrap;';
                         
                         // Center align specific columns
                         if (cellIndex === 0 || cellIndex === 2) { // Date and Price columns
-                            tableHTML += `<td style="${cellStyle} text-align: center;">${cellValue}</td>`;
+                            tableHTML += `<td class="data-cell data-cell-center">${cellValue}</td>`;
                         } else {
-                            tableHTML += `<td style="${cellStyle}">${cellValue}</td>`;
+                            tableHTML += `<td class="data-cell">${cellValue}</td>`;
                         }
                     });
                     tableHTML += '</tr>';

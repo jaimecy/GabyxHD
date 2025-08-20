@@ -85,8 +85,6 @@ body {
     max-height: 70vh;
     overflow-y: auto;
     overflow-x: scroll;
-    scrollbar-width: thin;
-    scrollbar-color: #ff0000 #f0f0f0;
 }
 
 /* Sticky header para la tabla principal */
@@ -100,20 +98,45 @@ body {
     text-align: center;
 }
 
-/* Estilos del scrollbar para la tabla principal */
+/* Estilos del scrollbar para la tabla principal - FORZADOS */
 #data-container .data-table::-webkit-scrollbar {
-    height: 8px;
-    background: #f0f0f0;
+    height: 4px !important;
+    width: 4px !important;
+    background: #f0f0f0 !important;
 }
 
 #data-container .data-table::-webkit-scrollbar-thumb {
-    background: #ff0000;
-    border-radius: 2px;
+    background: #667eea !important;
+    border-radius: 2px !important;
+    min-height: 20px !important;
 }
 
 #data-container .data-table::-webkit-scrollbar-track {
-    background: #f0f0f0;
-    border-radius: 2px;
+    background: #f0f0f0 !important;
+    border-radius: 2px !important;
+}
+
+/* Estilos para Firefox */
+#data-container .data-table {
+    scrollbar-width: thin !important;
+    scrollbar-color: #667eea #f0f0f0 !important;
+}
+
+/* Scroll horizontal inteligente para la tabla principal */
+#data-container .data-table {
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+/* Ocultar scrollbar horizontal por defecto */
+#data-container .data-table::-webkit-scrollbar:horizontal {
+    height: 0;
+    background: transparent;
+}
+
+/* En Firefox, scrollbar fino por defecto */
+#data-container .data-table {
+    scrollbar-width: thin;
 }
 
 /* Asegurar que la tabla tenga ancho mínimo para forzar scroll */
@@ -121,33 +144,93 @@ body {
     min-width: 1200px;
 }
 
+/* Scroll horizontal inteligente - solo aparece cuando es necesario */
+
 /* Estilos específicos para las tablas del análisis */
 #analysis-container table {
     width: 100%;
-    min-width: 600px;
+    min-width: 450px;
     border-collapse: collapse;
     color: black;
+    table-layout: fixed;
 }
 
+/* Reset básico para las tablas de análisis */
 #analysis-container th, #analysis-container td {
-    padding: 8px;
-    text-align: left;
-    border: 1px solid black !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    border: none !important;
+    padding: 0 !important;
+    text-align: left !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
 }
 
 #analysis-container th {
-    background-color: #667eea;
-    color: white;
+    background-color: transparent !important;
+    color: black !important;
     font-weight: 600;
     text-align: center;
 }
 
-#analysis-container td:nth-child(2), #analysis-container td:nth-child(3) {
-    text-align: center;
+/* Estilos específicos para las columnas de las tablas de análisis - FORZADOS */
+#analysis-container table th:first-child,
+#analysis-container table td:first-child {
+    width: 80px !important;
+    max-width: 80px !important;
+    min-width: 80px !important;
+    text-align: left !important;
 }
+
+#analysis-container table th:nth-child(2),
+#analysis-container table td:nth-child(2) {
+    width: 20px !important;
+    max-width: 20px !important;
+    min-width: 20px !important;
+    text-align: center !important;
+}
+
+#analysis-container table th:nth-child(3),
+#analysis-container table td:nth-child(3) {
+    width: 20px !important;
+    max-width: 20px !important;
+    min-width: 20px !important;
+    text-align: center !important;
+}
+
+/* Estilos para todas las filas de las tablas de análisis */
+#analysis-container table tr {
+    border: 1px solid black !important;
+}
+
+#analysis-container table th {
+    border: 1px solid black !important;
+    background-color: #667eea !important;
+    color: white !important;
+    font-weight: bold !important;
+    padding: 8px !important;
+}
+
+#analysis-container table td {
+    border: 1px solid black !important;
+    padding: 8px !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Filas alternadas para mejor legibilidad */
+#analysis-container table tr:nth-child(even) td {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+#analysis-container table tr:nth-child(odd) td {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Hover en las filas */
+#analysis-container table tr:hover td {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Estilos duplicados eliminados */
 
 .data-table h2 {
     color: #667eea;
@@ -155,7 +238,8 @@ body {
     text-align: center;
 }
 
-table {
+/* Estilos SOLO para la tabla principal de datos */
+.data-table {
     width: 100%;
     min-width: 800px;
     border-collapse: collapse;
@@ -163,7 +247,7 @@ table {
     table-layout: auto;
 }
 
-th, td {
+.data-table th, .data-table td {
     padding: 8px 8px;
     text-align: left;
     border-bottom: 1px solid black !important;
@@ -172,13 +256,13 @@ th, td {
     white-space: nowrap;
 }
 
-/* Hacer que las columnas se adapten al contenido */
-th:nth-child(1), td:nth-child(1) { width: min-content; text-align: center; } /* Fecha - se adapta al contenido */
-th:nth-child(2), td:nth-child(2) { width: auto; } /* Título del directo - se expande */
-th:nth-child(3), td:nth-child(3) { width: min-content; text-align: center; } /* Precio - se adapta al contenido */
-th:nth-child(4), td:nth-child(4) { width: min-content; } /* Procesador - se adapta al contenido */
-th:nth-child(5), td:nth-child(5) { width: min-content; } /* Tarjeta gráfica - se adapta al contenido */
-th:nth-child(6), td:nth-child(6) { width: min-content; } /* Torre - se adapta al contenido */
+/* Hacer que las columnas se adapten al contenido - SOLO para la tabla principal de datos */
+.data-table th:nth-child(1), .data-table td:nth-child(1) { width: min-content; text-align: center; } /* Fecha - se adapta al contenido */
+.data-table th:nth-child(2), .data-table td:nth-child(2) { width: auto; } /* Título del directo - se expande */
+.data-table th:nth-child(3), .data-table td:nth-child(3) { width: min-content; text-align: center; } /* Precio - se adapta al contenido */
+.data-table th:nth-child(4), .data-table td:nth-child(4) { width: min-content; } /* Procesador - se adapta al contenido */
+.data-table th:nth-child(5), .data-table td:nth-child(5) { width: min-content; } /* Tarjeta gráfica - se adapta al contenido */
+.data-table th:nth-child(6), .data-table td:nth-child(6) { width: min-content; } /* Torre - se adapta al contenido */
 
 th:last-child, td:last-child {
     border-right: none;
@@ -285,17 +369,20 @@ th:last-child, td:last-child {
 }
 
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
+    display: grid !important;
+    grid-template-columns: repeat(4, 200px) !important;
+    gap: 20px !important;
+    margin-top: 20px !important;
+    justify-content: center !important;
 }
 
 .stat-card {
     background: #e9ecef;
     border-radius: 10px;
-    padding: 15px;
+    padding: 10px;
     text-align: center;
+    max-width: 200px !important;
+    width: 200px !important;
 }
 
 /* Fondo más oscuro solo para "Total de Montajes" */
@@ -343,7 +430,6 @@ th:last-child, td:last-child {
     overflow-x: auto;
     overflow-y: visible;
     width: 100%;
-    -webkit-overflow-scrolling: touch;
 }
 
 /* Estilos del scrollbar */
@@ -375,11 +461,11 @@ th:last-child, td:last-child {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;
+        min-width: 120px;
     }
 
     .data-table {
         overflow-x: scroll;
-        -webkit-overflow-scrolling: touch;
     }
 
     table {
@@ -389,9 +475,6 @@ th:last-child, td:last-child {
     /* Forzar scroll horizontal en las tablas de análisis en móvil */
     .table-container {
         overflow-x: scroll !important;
-        -webkit-overflow-scrolling: touch !important;
-        scrollbar-width: thin !important;
-        scrollbar-color: #667eea #f0f0f0 !important;
         -ms-overflow-style: auto !important;
     }
     
@@ -416,7 +499,6 @@ th:last-child, td:last-child {
 /* En alta resolución, scrollbars solo cuando sea necesario */
 @media (min-width: 769px) {
     .table-container {
-        scrollbar-width: none;
         -ms-overflow-style: none;
     }
     
@@ -424,4 +506,200 @@ th:last-child, td:last-child {
     .table-container::-webkit-scrollbar {
         display: none;
     }
+}
+
+/* Clases para reemplazar estilos inline del HTML */
+.stats-title {
+    color: #e1ff02;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.processor-section {
+    background: #00CED1;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 206, 209, 0.3);
+}
+
+.graphics-section {
+    background: #FFD700;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+.tower-section {
+    background: #FF8C00;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3);
+}
+
+.section-title {
+    color: black;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    text-shadow: 0 2px 4px rgba(255,255,255,0.3);
+}
+
+.prices-section {
+    margin-top: 25px;
+    text-align: center;
+    padding: 25px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    border: 2px solid #667eea;
+}
+
+.prices-title {
+    color: #667eea;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+}
+
+.prices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.price-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.price-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.price-label {
+    color: #666;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.price-avg { color: #667eea; }
+.price-min { color: #27ae60; }
+.price-max { color: #e74c3c; }
+
+.analysis-table-container {
+    overflow-x: scroll;
+    overflow-y: visible;
+    width: 100%;
+    height: fit-content;
+    min-height: fit-content;
+    max-height: fit-content;
+}
+
+.analysis-table {
+    width: 100%;
+    min-width: 400px;
+    border-collapse: collapse;
+    color: black;
+    font-size: 0.9rem;
+    height: fit-content;
+    min-height: fit-content;
+    table-layout: auto;
+    white-space: nowrap;
+}
+
+/* Eliminar estilos conflictivos */
+
+.analysis-header-row {
+    background: rgba(255,255,255,0.15);
+    height: fit-content;
+}
+
+.analysis-header {
+    padding: 8px 8px;
+    text-align: center;
+    border-bottom: 2px solid black;
+    border-right: 1px solid black;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: black;
+}
+
+.analysis-header:last-child {
+    border-right: none;
+}
+
+/* Eliminar clases conflictivas */
+
+.analysis-tbody {
+    height: fit-content;
+    min-height: fit-content;
+}
+
+.analysis-row {
+    height: fit-content;
+    min-height: fit-content;
+}
+
+.analysis-cell {
+    padding: 6px 8px;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: black;
+}
+
+.analysis-cell:last-child {
+    border-right: none;
+}
+
+/* Eliminar clases conflictivas */
+
+.analysis-summary {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid black;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.analysis-summary-text {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: black;
+}
+
+.analysis-row-even {
+    background: rgba(255,255,255,0.3);
+}
+
+.analysis-row-odd {
+    background: rgba(255,255,255,0.1);
+}
+
+.bottom-button-container {
+    margin-top: 25px;
+    text-align: center;
+}
+
+/* Clases para las celdas de datos de la tabla principal */
+.data-cell {
+    padding: 8px 8px;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    white-space: nowrap;
+}
+
+.data-cell-center {
+    text-align: center;
 }
