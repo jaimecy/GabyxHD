@@ -265,11 +265,25 @@ body {
     text-overflow: clip !important;
 }
 
+/* Forzar centrado de los títulos de las secciones */
+#analysis-container .section-title {
+    text-align: center !important;
+}
+
+/* Forzar centrado de TODOS los títulos de secciones - más específico */
+.processor-section .section-title,
+.graphics-section .section-title,
+.tower-section .section-title {
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
+}
+
 #analysis-container th {
     background-color: transparent !important;
     color: black !important;
     font-weight: 600;
-    text-align: center;
+    text-align: center !important;
 }
 
 /* Estilos específicos para las columnas de las tablas de análisis - FORZADOS */
@@ -278,7 +292,20 @@ body {
     width: 80px !important;
     max-width: 80px !important;
     min-width: 80px !important;
-    text-align: left !important;
+}
+
+/* Forzar centrado de TODOS los headers de las tablas de análisis */
+#analysis-container table th {
+    text-align: center !important;
+}
+
+/* Forzar centrado de manera más agresiva - sobrescribir TODO */
+#analysis-container table th,
+#analysis-container .analysis-header,
+#analysis-container .analysis-header-name,
+#analysis-container .analysis-header-count,
+#analysis-container .analysis-header-percent {
+    text-align: center !important;
 }
 
 #analysis-container table th:nth-child(2),
@@ -309,6 +336,7 @@ body {
     padding: 8px !important;
     border: 0.1px solid black !important;
     border-width: 0.1px !important;
+    text-align: center !important;
 }
 
 #analysis-container table td {
@@ -377,6 +405,11 @@ body {
     border-right: 1px solid black !important;
     word-wrap: break-word;
     white-space: nowrap;
+}
+
+/* Centrar todos los títulos de la tabla principal */
+#data-container .data-table th {
+    text-align: center !important;
 }
 
 /* Hacer que las columnas se adapten al contenido - SOLO para la tabla principal de datos */
@@ -520,7 +553,7 @@ body {
     }
 }
 
-/* Fondo más oscuro solo para "Total de Montajes" */
+/* Fondo más oscuro solo para "Montajes" */
 .stat-card:first-child {
     background: #d1d3d4;
 }
@@ -773,7 +806,7 @@ body {
 
 .analysis-header {
     padding: 8px 8px;
-    text-align: center;
+    text-align: center !important;
     border-bottom: 0.1px solid black;
     border-right: 0.1px solid black;
     font-weight: 600;
