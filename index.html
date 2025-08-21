@@ -23,7 +23,7 @@
             <h3 class="stats-title">ℹ️ Información de los Montajes</h3>
             <div id="stats-grid" class="stats-grid"></div>
             <div class="stats-button-container">
-                <button id="go-to-analysis-btn" class="refresh-btn go-to-analysis-btn">
+                <button id="go-to-analysis-btn" class="go-to-analysis-btn">
                     📊 Análisis de Componentes
                 </button>
             </div>
@@ -39,7 +39,7 @@
         <!-- Sección de Análisis (oculta por defecto) -->
         <div id="analysis-container" class="hidden">
             <div class="back-button-container">
-                <button id="back-to-data-btn" class="refresh-btn back-to-data-btn">
+                <button id="back-to-data-btn" class="back-to-data-btn">
                     ⬅️ Volver a los Datos
                 </button>
             </div>
@@ -52,17 +52,13 @@
             
             <!-- Botón adicional debajo del análisis -->
             <div class="bottom-button-container">
-                <button id="back-to-data-btn-bottom" class="refresh-btn back-to-data-btn">
+                <button id="back-to-data-btn-bottom" class="back-to-data-btn">
                     ⬅️ Volver a los Datos
                 </button>
             </div>
         </div>
 
-        <button id="refresh-btn" class="refresh-btn hidden">
-            🔄 Actualizar Datos
-        </button>
 
-        <div id="last-updated" class="last-updated hidden"></div>
     </div>
 
     <script>
@@ -78,7 +74,6 @@
                 try {
                     await this.loadSheetData('Datos');
                     this.setupEventListeners();
-                    this.showRefreshButton();
                     this.hideLoading();
                 } catch (error) {
                     this.showError('Error al inicializar: ' + error.message);
@@ -118,16 +113,77 @@
                         row['Torre'] || ''
                     ]);
                     
-                    // Agregar los headers al inicio
-                    processedRows.unshift(headers);
+                    // Filtrar filas con fechas válidas y ordenar por fecha decreciente
+                    const validRows = processedRows.filter(row => {
+                        const dateStr = row[0].trim();
+                        if (!dateStr) return false;
+                        
+                        // Intentar diferentes formatos de fecha
+                        let date = new Date(dateStr);
+                        if (isNaN(date.getTime())) {
+                            // Si falla, intentar con formato DD-MM-YYYY
+                            const parts = dateStr.split('-');
+                            if (parts.length === 3) {
+                                date = new Date(parts[2], parts[1] - 1, parts[0]);
+                            }
+                        }
+                        
+                        return !isNaN(date.getTime());
+                    });
                     
-                    this.sheetsData[sheetName] = processedRows;
+                    const invalidRows = processedRows.filter(row => {
+                        const dateStr = row[0].trim();
+                        if (!dateStr) return true;
+                        
+                        let date = new Date(dateStr);
+                        if (isNaN(date.getTime())) {
+                            const parts = dateStr.split('-');
+                            if (parts.length === 3) {
+                                date = new Date(parts[2], parts[1] - 1, parts[0]);
+                            }
+                        }
+                        
+                        return isNaN(date.getTime());
+                    });
+                    
+                    // Ordenar filas válidas por fecha decreciente (más reciente primero)
+                    validRows.sort((a, b) => {
+                        const dateStrA = a[0].trim();
+                        const dateStrB = b[0].trim();
+                        
+                        let dateA = new Date(dateStrA);
+                        if (isNaN(dateA.getTime())) {
+                            const parts = dateStrA.split('-');
+                            if (parts.length === 3) {
+                                dateA = new Date(parts[2], parts[1] - 1, parts[0]);
+                            }
+                        }
+                        
+                        let dateB = new Date(dateStrB);
+                        if (isNaN(dateB.getTime())) {
+                            const parts = dateStrB.split('-');
+                            if (parts.length === 3) {
+                                dateB = new Date(parts[2], parts[1] - 1, parts[0]);
+                            }
+                        }
+                        
+                        return dateB - dateA; // Orden decreciente
+                    });
+                    
+
+                    
+                    // Agregar filas inválidas al final (sin ordenar)
+                    const finalRows = [...validRows, ...invalidRows];
+                    
+                    // Crear un nuevo array con las filas finales
+                    const finalData = [headers, ...finalRows];
+                    
+                    this.sheetsData[sheetName] = finalData;
                     this.displaySheetData(sheetName);
                     this.displayStats();
-                    this.generateAnalysis(processedRows);
+                    this.generateAnalysis(finalData);
                     
                 } catch (error) {
-                    console.error('Error al cargar datos:', error);
                     throw new Error('Error al cargar datos de la hoja: ' + error.message);
                 }
             }
@@ -238,16 +294,16 @@
                     });
 
                 let tableHTML = `
-                    <div class="table-container analysis-table-container">
-                        <table class="analysis-table">
+                    <div style="width: 100%; overflow-x: auto; padding: 10px; background: transparent; border-radius: 8px;">
+                        <table style="width: 500px; min-width: 500px; border-collapse: collapse; background: transparent;">
                             <thead>
-                                <tr class="analysis-header-row">
-                                    <th class="analysis-header analysis-header-name">${title}</th>
-                                    <th class="analysis-header analysis-header-count">N° veces</th>
-                                    <th class="analysis-header analysis-header-percent">%</th>
+                                <tr>
+                                    <th style="width: 400px; padding: 10px; text-align: left; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">${title}</th>
+                                    <th style="width: 200px; padding: 10px; text-align: center; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">N° veces</th>
+                                    <th style="width: 200px; padding: 10px; text-align: center; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">%</th>
                                 </tr>
                             </thead>
-                            <tbody class="analysis-tbody">
+                            <tbody>
                 `;
 
                 const total = Object.values(data).reduce((sum, count) => sum + count, 0);
@@ -256,53 +312,39 @@
                     const percentage = ((count / total) * 100).toFixed(1);
                     const rowClass = index % 2 === 0 ? 'analysis-row analysis-row-even' : 'analysis-row analysis-row-odd';
                     
+                    const rowBg = index % 2 === 0 ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)';
                     tableHTML += `
-                        <tr class="${rowClass}">
-                            <td class="analysis-cell analysis-cell-name">${name}</td>
-                            <td class="analysis-cell analysis-cell-count">${count}</td>
-                            <td class="analysis-cell analysis-cell-percent">${percentage}%</td>
+                        <tr>
+                            <td style="width: 400px; padding: 10px; text-align: left; background-color: ${rowBg}; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${name}</td>
+                            <td style="width: 200px; padding: 10px; text-align: center; background-color: ${rowBg}; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${count}</td>
+                            <td style="width: 200px; padding: 10px; text-align: center; background-color: ${rowBg}; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${percentage}%</td>
                         </tr>
                     `;
                 });
 
                 tableHTML += '</tbody></table></div>';
                 
-                // Agregar resumen del total de componentes únicos
+                // Agregar resumen del total de componentes distintos
                 const uniqueComponents = Object.keys(data).length;
                 const totalUsage = total;
                 
                 tableHTML += `
                     <div class="analysis-summary">
-                        <span class="analysis-summary-text">${uniqueComponents} componentes únicos</span> | 
+                        <span class="analysis-summary-text">${uniqueComponents} componentes distintos</span> | 
                         <span class="analysis-summary-text">Cantidad total: ${totalUsage}</span>
                     </div>
                 `;
                 
+
+                
                 return tableHTML;
             }
 
-            async refreshData() {
-                try {
-                    this.showLoading('Actualizando datos...');
-                    await this.loadSheetData('Datos');
-                    this.updateLastUpdated();
-                    this.hideLoading();
-                } catch (error) {
-                    this.showError('Error al actualizar: ' + error.message);
-                    this.hideLoading();
-                }
-            }
 
-            updateLastUpdated() {
-                const now = new Date();
-                const timeString = now.toLocaleString('es-ES');
-                document.getElementById('last-updated').innerHTML = 
-                    `⏰ Última actualización: ${timeString}`;
-                document.getElementById('last-updated').style.display = 'block';
-            }
+
+
 
             setupEventListeners() {
-                document.getElementById('refresh-btn').onclick = () => this.refreshData();
                 document.getElementById('go-to-analysis-btn').onclick = () => this.showAnalysis();
                 document.getElementById('back-to-data-btn').onclick = () => this.showData();
                 document.getElementById('back-to-data-btn-bottom').onclick = () => this.showData(); // Add listener for the new button
@@ -357,9 +399,7 @@
                 }, 500);
             }
 
-            showRefreshButton() {
-                document.getElementById('refresh-btn').classList.remove('hidden');
-            }
+
 
             showLoading(message) {
                 document.getElementById('loading').innerHTML = `⏳ ${message}`;
@@ -385,7 +425,7 @@
                 const uniqueGraphics = new Set();
                 const uniqueCases = new Set();
 
-                // Contar componentes únicos
+                // Contar componentes distintos
                 data.slice(1).forEach(row => {
                     if (row[3] && row[3].trim()) uniqueProcessors.add(row[3].trim());
                     if (row[4] && row[4].trim()) uniqueGraphics.add(row[4].trim());
@@ -399,16 +439,16 @@
                         <div class="label">Montajes</div>
                     </div>
                     <div class="stat-card">
-                        <div class="number">${uniqueCases.size}</div>
-                        <div class="label">Torres Únicas</div>
-                    </div>
-                    <div class="stat-card">
                         <div class="number">${uniqueProcessors.size}</div>
-                        <div class="label">Procesadores Únicos</div>
+                        <div class="label">Procesadores distintos</div>
                     </div>
                     <div class="stat-card">
                         <div class="number">${uniqueGraphics.size}</div>
-                        <div class="label">Tarjetas Gráficas Únicas</div>
+                        <div class="label">Tarjetas Gráficas distintas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">${uniqueCases.size}</div>
+                        <div class="label">Torres distintas</div>
                     </div>
                 `;
 
@@ -427,14 +467,22 @@
                 const rows = data.slice(1);
 
                 let tableHTML = '<table class="data-table"><thead><tr>';
-                headers.forEach(header => {
-                    tableHTML += `<th>${header}</th>`;
+                headers.forEach((header, headerIndex) => {
+                    if (headerIndex === 0) { // Columna de Fecha
+                        tableHTML += '<th style="position: relative;">';
+                        tableHTML += '<div style="position: absolute; left: 5px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; z-index: 10;">';
+                        tableHTML += '<button onclick="scrollToFirstRow()" style="background: rgba(255,255,255,0.8); border: none; cursor: pointer; font-size: 12px; line-height: 1; padding: 0; color: #667eea; transition: all 0.2s ease; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.backgroundColor=\'#FFD700\'; this.style.color=\'white\'; this.style.transform=\'scale(1.1)\'" onmouseout="this.style.backgroundColor=\'rgba(255,255,255,0.8)\'; this.style.color=\'#667eea\'; this.style.transform=\'scale(1)\'" title="Ir a la fecha más reciente">▲</button>';
+                        tableHTML += '<button onclick="scrollToLastRow()" style="background: rgba(255,255,255,0.8); border: none; cursor: pointer; font-size: 12px; line-height: 1; padding: 0; color: #667eea; transition: all 0.2s ease; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.backgroundColor=\'#FFD700\'; this.style.color=\'white\'; this.style.transform=\'scale(1.1)\'" onmouseout="this.style.backgroundColor=\'rgba(255,255,255,0.8)\'; this.style.color=\'#667eea\'; this.style.transform=\'scale(1)\'" title="Ir a la fecha más antigua">▼</button>';
+                        tableHTML += '</div>';
+                        tableHTML += header;
+                        tableHTML += '</th>';
+                    } else {
+                        tableHTML += `<th>${header}</th>`;
+                    }
                 });
                 tableHTML += '</tr></thead><tbody>';
 
                 rows.forEach((row, index) => {
-                    if (index === 0) return; // Skip header row
-                    
                     tableHTML += '<tr>';
                     headers.forEach((header, cellIndex) => {
                         const cellValue = row[cellIndex] || '';
@@ -451,6 +499,52 @@
 
                 tableHTML += '</tbody></table>';
                 document.getElementById('table-container').innerHTML = tableHTML;
+            }
+        }
+
+        // Función global para scroll a la primera fila
+        function scrollToFirstRow() {
+            const tableContainer = document.getElementById('table-container');
+            const table = tableContainer.querySelector('table');
+            
+            if (table) {
+                const tbody = table.querySelector('tbody');
+                if (tbody && tbody.rows.length > 0) {
+                    const firstRow = tbody.rows[0];
+                    firstRow.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                    
+                    // Resaltar brevemente la fila
+                    firstRow.style.backgroundColor = '#e3f2fd';
+                    setTimeout(() => {
+                        firstRow.style.backgroundColor = '';
+                    }, 2000);
+                }
+            }
+        }
+
+        // Función global para scroll a la última fila
+        function scrollToLastRow() {
+            const tableContainer = document.getElementById('table-container');
+            const table = tableContainer.querySelector('table');
+            
+            if (table) {
+                const tbody = table.querySelector('tbody');
+                if (tbody && tbody.rows.length > 0) {
+                    const lastRow = tbody.rows[tbody.rows.length - 1];
+                    lastRow.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                    
+                    // Resaltar brevemente la fila
+                    lastRow.style.backgroundColor = '#e3f2fd';
+                    setTimeout(() => {
+                        lastRow.style.backgroundColor = '';
+                    }, 2000);
+                }
             }
         }
 
