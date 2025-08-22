@@ -195,6 +195,7 @@
                 const processors = {};
                 const graphics = {};
                 const cases = {};
+                const combinations = {}; // Para las combinaciones TOP 5
 
                 // Índices de las columnas
                 const priceIndex = 2; // Precio en €
@@ -223,6 +224,18 @@
                         const cleanCase = caseItem.trim();
                         cases[cleanCase] = (cases[cleanCase] || 0) + 1;
                     }
+
+                    // Análisis de combinaciones (procesador + gráfica + torre)
+                    if (processorItem && graphicsItem && caseItem) {
+                        const processor = processorItem.trim();
+                        const graphics = graphicsItem.trim();
+                        const caseName = caseItem.trim();
+                        
+                        if (processor && graphics && caseName) {
+                            const combination = `${processor} + ${graphics} + ${caseName}`;
+                            combinations[combination] = (combinations[combination] || 0) + 1;
+                        }
+                    }
                 });
 
                 // Análisis de precios
@@ -231,14 +244,21 @@
                 const minPrice = Math.min(...prices);
                 const maxPrice = Math.max(...prices);
 
-                this.displayAnalysis(processors, graphics, cases, { avg: avgPrice, min: minPrice, max: maxPrice, total: rows.length });
+                this.displayAnalysis(processors, graphics, cases, combinations, { avg: avgPrice, min: minPrice, max: maxPrice, total: rows.length });
             }
 
-            displayAnalysis(processors, graphics, cases, prices) {
+            displayAnalysis(processors, graphics, cases, combinations, prices) {
                 // Crear contenido del análisis
                 const analysisContent = document.getElementById('analysis-content');
                 
                 analysisContent.innerHTML = `
+                    <div class="combinations-section">
+                        <h3 class="section-title">
+                            TOP Combinaciones
+                        </h3>
+                        ${this.generateCombinationsTable(combinations)}
+                    </div>
+                    
                     <div class="analysis-grid">
                         <div class="processor-section">
                             <h3 class="section-title">
@@ -312,12 +332,11 @@
                     const percentage = ((count / total) * 100).toFixed(1);
                     const rowClass = index % 2 === 0 ? 'analysis-row analysis-row-even' : 'analysis-row analysis-row-odd';
                     
-                    const rowBg = index % 2 === 0 ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)';
                     tableHTML += `
-                        <tr>
-                            <td style="width: 400px; padding: 10px; text-align: left; background-color: ${rowBg}; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${name}</td>
-                            <td style="width: 200px; padding: 10px; text-align: center; background-color: ${rowBg}; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${count}</td>
-                            <td style="width: 200px; padding: 10px; text-align: center; background-color: ${rowBg}; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${percentage}%</td>
+                        <tr class="${rowClass}">
+                            <td style="width: 400px; padding: 10px; text-align: left; background-color: transparent; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${name}</td>
+                            <td style="width: 200px; padding: 10px; text-align: center; background-color: transparent; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${count}</td>
+                            <td style="width: 200px; padding: 10px; text-align: center; background-color: transparent; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${percentage}%</td>
                         </tr>
                     `;
                 });
@@ -336,6 +355,55 @@
                 `;
                 
 
+                
+                return tableHTML;
+            }
+
+            generateCombinationsTable(combinations) {
+                const sortedCombinations = Object.entries(combinations)
+                    .filter(([name, count]) => count > 1) // Solo combinaciones que aparecen más de una vez
+                    .sort(([nameA, countA], [nameB, countB]) => {
+                        if (countB !== countA) {
+                            return countB - countA; // Primero por cantidad (de mayor a menor)
+                        }
+                        return nameA.localeCompare(nameB); // Luego alfabéticamente en empates
+                    })
+                    .slice(0, 10); // Solo las TOP 10
+
+                let tableHTML = `
+                    <div style="width: 100%; display: flex; justify-content: center; padding: 10px; background: transparent; border-radius: 8px;">
+                        <table style="width: 1000px !important; min-width: 1000px !important; max-width: 1000px !important; border-collapse: collapse; background: transparent; table-layout: fixed !important;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30px !important; min-width: 30px !important; max-width: 30px !important; padding: 8px; text-align: center; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">TOP</th>
+                                    <th style="width: 150px !important; min-width: 150px !important; max-width: 150px !important; padding: 8px; text-align: left; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">Procesador</th>
+                                    <th style="width: 150px !important; min-width: 150px !important; max-width: 150px !important; padding: 8px; text-align: left; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">Tarjeta Gráfica</th>
+                                    <th style="width: 150px !important; min-width: 150px !important; max-width: 150px !important; padding: 8px; text-align: left; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">Torre</th>
+                                    <th style="width: 50px !important; min-width: 50px !important; max-width: 50px !important; padding: 8px; text-align: center; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">N° veces</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                sortedCombinations.forEach(([combination, count], index) => {
+                    // Separar la combinación en sus componentes
+                    const parts = combination.split(' + ');
+                    const processor = parts[0] || '';
+                    const graphics = parts[1] || '';
+                    const caseName = parts[2] || '';
+                    
+                    tableHTML += `
+                        <tr class="analysis-row">
+                            <td style="width: 30px !important; min-width: 30px !important; max-width: 30px !important; padding: 8px; text-align: center !important; background-color: white !important; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${index + 1}</td>
+                            <td style="width: 150px !important; min-width: 150px !important; max-width: 150px !important; padding: 8px; text-align: left !important; background-color: white !important; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${processor}</td>
+                            <td style="width: 150px !important; min-width: 150px !important; max-width: 150px !important; padding: 8px; text-align: left !important; background-color: white !important; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${graphics}</td>
+                            <td style="width: 150px !important; min-width: 150px !important; max-width: 150px !important; padding: 8px; text-align: left !important; background-color: white !important; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${caseName}</td>
+                            <td style="width: 50px !important; min-width: 50px !important; max-width: 50px !important; padding: 8px; text-align: center !important; background-color: white !important; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${count}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += '</tbody></table></div>';
                 
                 return tableHTML;
             }
@@ -472,19 +540,25 @@
                     const isPenultimateColumn = headerIndex === headers.length - 2;
                     
                     if (headerIndex === 0) { // Columna de Fecha
-                        tableHTML += `<th style="position: relative; box-sizing: border-box; padding: 12px 8px; width: 203px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">`;
+                        tableHTML += `<th style="position: relative; box-sizing: border-box; padding: 12px 8px; width: 40px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">`;
                         tableHTML += '<div style="position: absolute; left: 5px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; z-index: 10;">';
                         tableHTML += '<button onclick="scrollToFirstRow()" style="background: rgba(255,255,255,0.8); border: none; cursor: pointer; font-size: 12px; line-height: 1; padding: 0; color: #667eea; transition: all 0.2s ease; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.backgroundColor=\'#FFD700\'; this.style.color=\'white\'; this.style.transform=\'scale(1.1)\'" onmouseout="this.style.backgroundColor=\'rgba(255,255,255,0.8)\'; this.style.color=\'#667eea\'; this.style.transform=\'scale(1)\'" title="Ir a la fecha más reciente">▲</button>';
                         tableHTML += '<button onclick="scrollToLastRow()" style="background: rgba(255,255,255,0.8); border: none; cursor: pointer; font-size: 12px; line-height: 1; padding: 0; color: #667eea; transition: all 0.2s ease; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.backgroundColor=\'#FFD700\'; this.style.color=\'white\'; this.style.transform=\'scale(1.1)\'" onmouseout="this.style.backgroundColor=\'rgba(255,255,255,0.8)\'; this.style.color=\'#667eea\'; this.style.transform=\'scale(1)\'" title="Ir a la fecha más antigua">▼</button>';
                         tableHTML += '</div>';
                         tableHTML += header;
                         tableHTML += '</th>';
-                    } else if (isPenultimateColumn) { // Penúltima columna sin borde
-                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 200px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                    } else if (headerIndex === 1) { // Segunda columna - Título del directo de Twitch
+                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 230px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
                     } else if (isLastColumn) { // Última columna sin borde
-                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 200px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
-                    } else { // Columnas intermedias
-                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 200px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 120px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                    } else if (headerIndex === 2) { // Tercera columna - Precio en €
+                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 40px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                    } else if (headerIndex === 3) { // Cuarta columna - Procesador
+                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 100px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                    } else if (headerIndex === 4) { // Quinta columna - Tarjeta gráfica
+                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 100px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                    } else { // Otras columnas
+                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 60px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
                     }
                 });
                 tableHTML += '</tr></thead><tbody>';

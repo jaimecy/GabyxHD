@@ -237,7 +237,7 @@ body {
 
 /* Asegurar que la tabla tenga ancho mínimo para forzar scroll */
 #data-container table {
-    min-width: 1200px;
+    min-width: 400px; /* Reducido para permitir anchos personalizados */
 }
 
 /* Scroll horizontal inteligente - solo aparece cuando es necesario */
@@ -392,10 +392,10 @@ body {
 /* Estilos SOLO para la tabla principal de datos - CENTRADA Y CON SCROLL */
 #data-container .data-table {
     width: 100%;
-    min-width: 800px;
+    min-width: 400px; /* Reducido para permitir anchos personalizados */
     border-collapse: collapse;
     margin: 0;
-    table-layout: auto;
+    table-layout: fixed; /* Cambiado a fixed para respetar anchos personalizados */
 }
 
 #data-container .data-table td {
@@ -404,7 +404,7 @@ body {
     border-bottom: 1px solid black !important;
     /* border-right: 1px solid black !important; */ /* Comentado para usar estilos inline */
     word-wrap: break-word;
-    white-space: nowrap;
+    white-space: normal; /* Cambiado de nowrap a normal para permitir envolver texto */
 }
 
 /* Centrar todos los títulos de la tabla principal */
@@ -427,19 +427,11 @@ body {
     /* border-right: none; */ /* Comentado para usar estilos inline */
 }
 
-#data-container .data-table tbody tr:nth-child(even) {
-    background: rgba(0,0,0,0.1) !important;
-}
-
-#data-container .data-table tbody tr:nth-child(odd) {
+#data-container .data-table tbody tr {
     background: white !important;
 }
 
-#data-container .data-table tbody tr:nth-child(even):hover {
-    background: rgba(102, 126, 234, 0.1) !important;
-}
-
-#data-container .data-table tbody tr:nth-child(odd):hover {
+#data-container .data-table tbody tr:hover {
     background: rgba(102, 126, 234, 0.1) !important;
 }
 
@@ -643,13 +635,13 @@ body {
     box-sizing: border-box;
 }
 
-/* Estilos para la tabla principal */
-.data-table {
+/* Estilos para la tabla principal - ELIMINADA REGLA DUPLICADA */
+/* .data-table {
     min-width: 100%;
     border-collapse: separate;
     border-spacing: 0;
     table-layout: fixed;
-}
+} */
 
 /* Primera columna (fecha) con ancho proporcional */
 .data-table th:first-child,
@@ -1010,11 +1002,13 @@ body {
 .analysis-tbody {
     height: fit-content;
     min-height: fit-content;
+    background: transparent !important;
 }
 
 .analysis-row {
     height: fit-content;
     min-height: fit-content;
+    background: transparent !important;
 }
 
 .analysis-cell {
@@ -1024,6 +1018,7 @@ body {
     font-weight: bold;
     font-size: 0.9rem;
     color: black;
+    background: transparent !important;
 }
 
 .analysis-cell:last-child {
@@ -1064,9 +1059,95 @@ body {
 .data-cell {
     padding: 8px 8px;
     border-bottom: 1px solid black;
-    white-space: nowrap;
+    white-space: normal; /* Cambiado de nowrap a normal para permitir envolver texto */
 }
 
 .data-cell-center {
     text-align: center;
+}
+
+/* Estilos para la sección de combinaciones TOP 5 */
+.combinations-section {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.combinations-section .section-title {
+    margin-bottom: 20px;
+    text-align: center;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Asegurar que la tabla de combinaciones tenga columnas del mismo ancho */
+.combinations-section table {
+    table-layout: fixed !important;
+    width: 1000px !important;
+    min-width: 1000px !important;
+    max-width: 1000px !important;
+    margin: 0 auto !important;
+}
+
+.combinations-section th,
+.combinations-section td {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Forzar anchos específicos para las columnas de combinaciones */
+.combinations-section th:nth-child(1),
+.combinations-section td:nth-child(1) {
+    width: 30px !important;
+    min-width: 30px !important;
+    max-width: 30px !important;
+    text-align: center !important;
+}
+
+/* Regla ultra específica para forzar el centrado de la primera columna */
+.combinations-section table tbody tr td:first-child {
+    text-align: center !important;
+}
+
+.combinations-section table thead tr th:first-child {
+    text-align: center !important;
+}
+
+/* Forzar fondo blanco en las filas de datos */
+.combinations-section table tbody tr td {
+    background-color: white !important;
+}
+
+.combinations-section th:nth-child(2),
+.combinations-section td:nth-child(2) {
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
+    text-align: left !important;
+}
+
+.combinations-section th:nth-child(3),
+.combinations-section td:nth-child(3) {
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
+    text-align: left !important;
+}
+
+.combinations-section th:nth-child(4),
+.combinations-section td:nth-child(4) {
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
+    text-align: left !important;
+}
+
+.combinations-section th:nth-child(5),
+.combinations-section td:nth-child(5) {
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    text-align: center !important;
 }
