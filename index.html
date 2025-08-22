@@ -468,16 +468,23 @@
 
                 let tableHTML = '<table class="data-table"><thead><tr>';
                 headers.forEach((header, headerIndex) => {
+                    const isLastColumn = headerIndex === headers.length - 1;
+                    const isPenultimateColumn = headerIndex === headers.length - 2;
+                    
                     if (headerIndex === 0) { // Columna de Fecha
-                        tableHTML += '<th style="position: relative;">';
+                        tableHTML += `<th style="position: relative; box-sizing: border-box; padding: 12px 8px; width: 203px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">`;
                         tableHTML += '<div style="position: absolute; left: 5px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; z-index: 10;">';
                         tableHTML += '<button onclick="scrollToFirstRow()" style="background: rgba(255,255,255,0.8); border: none; cursor: pointer; font-size: 12px; line-height: 1; padding: 0; color: #667eea; transition: all 0.2s ease; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.backgroundColor=\'#FFD700\'; this.style.color=\'white\'; this.style.transform=\'scale(1.1)\'" onmouseout="this.style.backgroundColor=\'rgba(255,255,255,0.8)\'; this.style.color=\'#667eea\'; this.style.transform=\'scale(1)\'" title="Ir a la fecha más reciente">▲</button>';
                         tableHTML += '<button onclick="scrollToLastRow()" style="background: rgba(255,255,255,0.8); border: none; cursor: pointer; font-size: 12px; line-height: 1; padding: 0; color: #667eea; transition: all 0.2s ease; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.backgroundColor=\'#FFD700\'; this.style.color=\'white\'; this.style.transform=\'scale(1.1)\'" onmouseout="this.style.backgroundColor=\'rgba(255,255,255,0.8)\'; this.style.color=\'#667eea\'; this.style.transform=\'scale(1)\'" title="Ir a la fecha más antigua">▼</button>';
                         tableHTML += '</div>';
                         tableHTML += header;
                         tableHTML += '</th>';
-                    } else {
-                        tableHTML += `<th>${header}</th>`;
+                    } else if (isPenultimateColumn) { // Penúltima columna sin borde
+                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 200px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                    } else if (isLastColumn) { // Última columna sin borde
+                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 200px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                    } else { // Columnas intermedias
+                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 200px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
                     }
                 });
                 tableHTML += '</tr></thead><tbody>';

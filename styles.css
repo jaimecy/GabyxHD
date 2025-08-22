@@ -402,7 +402,7 @@ body {
     padding: 8px 8px;
     text-align: left;
     border-bottom: 1px solid black !important;
-    border-right: 1px solid black !important;
+    /* border-right: 1px solid black !important; */ /* Comentado para usar estilos inline */
     word-wrap: break-word;
     white-space: nowrap;
 }
@@ -414,15 +414,17 @@ body {
 }
 
 /* Hacer que las columnas se adapten al contenido - SOLO para la tabla principal de datos */
-#data-container .data-table th:nth-child(1), #data-container .data-table td:nth-child(1) { width: 203px !important; min-width: 203px !important; text-align: center; } /* Fecha - se adapta al contenido */
-#data-container .data-table th:nth-child(2), #data-container .data-table td:nth-child(2) { width: 200px !important; min-width: 200px !important; } /* Título del directo - se expande */
-#data-container .data-table th:nth-child(3), #data-container .data-table td:nth-child(3) { width: 200px !important; min-width: 200px !important; text-align: center; } /* Precio - se adapta al contenido */
-#data-container .data-table th:nth-child(4), #data-container .data-table td:nth-child(4) { width: 200px !important; min-width: 200px !important; } /* Procesador - se adapta al contenido */
-#data-container .data-table th:nth-child(5), #data-container .data-table td:nth-child(5) { width: 200px !important; min-width: 200px !important; } /* Tarjeta gráfica - se adapta al contenido */
-#data-container .data-table th:nth-child(6), #data-container .data-table td:nth-child(6) { width: 200px !important; min-width: 200px !important; } /* Torre - se adapta al contenido */
+/* Comentado para usar estilos inline */
+/* #data-container .data-table th:nth-child(1), #data-container .data-table td:nth-child(1) { width: 203px !important; min-width: 203px !important; text-align: center; } /* Fecha - se adapta al contenido */
+/* #data-container .data-table th:nth-child(2), #data-container .data-table td:nth-child(2) { width: 200px !important; min-width: 200px !important; } /* Título del directo - se expande */
+/* #data-container .data-table th:nth-child(3), #data-container .data-table td:nth-child(3) { width: 200px !important; min-width: 200px !important; text-align: center; } /* Precio - se adapta al contenido */
+/* Comentado para usar estilos inline */
+/* #data-container .data-table th:nth-child(4), #data-container .data-table td:nth-child(4) { width: 200px !important; min-width: 200px !important; } /* Procesador - se adapta al contenido */
+/* #data-container .data-table th:nth-child(5), #data-container .data-table td:nth-child(5) { width: 200px !important; min-width: 200px !important; } /* Tarjeta gráfica - se adapta al contenido */
+/* #data-container .data-table th:nth-child(6), #data-container .data-table td:nth-child(6) { width: 200px !important; min-width: 200px !important; } /* Torre - se adapta al contenido */
 
 #data-container .data-table th:last-child, #data-container .data-table td:last-child {
-    border-right: none;
+    /* border-right: none; */ /* Comentado para usar estilos inline */
 }
 
 #data-container .data-table tbody tr:nth-child(even) {
@@ -636,16 +638,16 @@ body {
     padding: 12px 8px;
     text-align: left;
     font-weight: bold;
-    border-right: 1px solid black !important;
-    border-bottom: none !important;
     white-space: nowrap;
     position: relative;
+    box-sizing: border-box;
 }
 
 /* Estilos para la tabla principal */
 .data-table {
     min-width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     table-layout: fixed;
 }
 
@@ -653,48 +655,48 @@ body {
 .data-table th:first-child,
 .data-table td:first-child {
     position: relative;
+    text-align: center !important;
 }
 
-
-
-/* Asegurar que todos los headers tengan bordes consistentes y anchos equilibrados */
-.data-table thead th:nth-child(1) {
-    border-right: 1px solid black !important;
-    width: 200px !important;
-    position: relative;
-    overflow: visible;
-    box-sizing: border-box;
+/* Columna de precios centrada */
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+    text-align: center !important;
 }
 
-.data-table thead th:nth-child(2) {
-    border-right: 1px solid black !important;
-    width: 200px !important;
-    min-width: 200px !important;
-}
-
-.data-table thead th:nth-child(3) {
-    border-right: 1px solid black !important;
-    width: 200px !important;
-    min-width: 200px !important;
-}
-
-.data-table thead th:nth-child(4) {
-    border-right: 1px solid black !important;
-    width: 200px !important;
-    min-width: 200px !important;
-}
-
+/* TODAS las líneas verticales de la tabla */
+/* Headers con líneas verticales */
+.data-table thead th:nth-child(1),
+.data-table thead th:nth-child(2),
+.data-table thead th:nth-child(3),
+.data-table thead th:nth-child(4),
 .data-table thead th:nth-child(5) {
     border-right: 1px solid black !important;
-    width: 200px !important;
-    min-width: 200px !important;
 }
 
-.data-table thead th:nth-child(6) {
-    border-right: none !important;
-    width: 200px !important;
-    min-width: 200px !important;
+/* Celdas de datos con líneas verticales */
+.data-table tbody td:nth-child(1),
+.data-table tbody td:nth-child(2),
+.data-table tbody td:nth-child(3),
+.data-table tbody td:nth-child(4),
+.data-table tbody td:nth-child(5) {
+    border-right: 1px solid black !important;
 }
+
+/* La última columna NO tiene línea vertical */
+.data-table thead th:nth-child(6),
+.data-table tbody td:nth-child(6) {
+    border-right: none !important;
+}
+
+
+
+/* Asegurar que todos los headers tengan anchos equilibrados (sin bordes) */
+/* Comentado para eliminar todas las líneas verticales */
+
+
+
+
 
 /* Estilos para las tablas de análisis */
 .analysis-section {
@@ -973,6 +975,15 @@ body {
     padding: 8px 12px;
 }
 
+/* Estilos específicos para Firefox - usar pseudo-elementos */
+@-moz-document url-prefix() {
+    .data-table thead th {
+        position: relative;
+    }
+    
+
+}
+
 /* Eliminar estilos conflictivos */
 
 .analysis-header-row {
@@ -1053,7 +1064,6 @@ body {
 .data-cell {
     padding: 8px 8px;
     border-bottom: 1px solid black;
-    border-right: 1px solid black;
     white-space: nowrap;
 }
 
