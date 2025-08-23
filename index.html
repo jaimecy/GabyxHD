@@ -44,9 +44,16 @@
                 </button>
             </div>
             <div>
+                <!-- Nueva tabla de combinaciones más populares -->
+                <div class="combinations-section">
+                    <h3 class="combinations-title">🏆 Top Combinaciones Más Populares</h3>
+                    <div id="combinations-table-container" class="combinations-table-container"></div>
+                </div>
+                
                 <h2 class="analysis-title">
                     📊 Análisis de Componentes Montados
                 </h2>
+                
                 <div id="analysis-content"></div>
             </div>
             
@@ -195,7 +202,7 @@
                 const processors = {};
                 const graphics = {};
                 const cases = {};
-                const combinations = {}; // Para las combinaciones TOP 5
+                const combinations = {};
 
                 // Índices de las columnas
                 const priceIndex = 2; // Precio en €
@@ -227,13 +234,13 @@
 
                     // Análisis de combinaciones (procesador + gráfica + torre)
                     if (processorItem && graphicsItem && caseItem) {
-                        const processor = processorItem.trim();
-                        const graphics = graphicsItem.trim();
-                        const caseName = caseItem.trim();
+                        const cleanProcessor = processorItem.trim();
+                        const cleanGraphics = graphicsItem.trim();
+                        const cleanCase = caseItem.trim();
                         
-                        if (processor && graphics && caseName) {
-                            const combination = `${processor} + ${graphics} + ${caseName}`;
-                            combinations[combination] = (combinations[combination] || 0) + 1;
+                        if (cleanProcessor && cleanGraphics && cleanCase) {
+                            const combinationKey = `${cleanProcessor}|${cleanGraphics}|${cleanCase}`;
+                            combinations[combinationKey] = (combinations[combinationKey] || 0) + 1;
                         }
                     }
                 });
@@ -244,21 +251,15 @@
                 const minPrice = Math.min(...prices);
                 const maxPrice = Math.max(...prices);
 
-                this.displayAnalysis(processors, graphics, cases, combinations, { avg: avgPrice, min: minPrice, max: maxPrice, total: rows.length });
+                this.displayAnalysis(processors, graphics, cases, { avg: avgPrice, min: minPrice, max: maxPrice, total: rows.length });
+                this.displayCombinationsTable(combinations);
             }
 
-            displayAnalysis(processors, graphics, cases, combinations, prices) {
+            displayAnalysis(processors, graphics, cases, prices) {
                 // Crear contenido del análisis
                 const analysisContent = document.getElementById('analysis-content');
                 
                 analysisContent.innerHTML = `
-                    <div class="combinations-section">
-                        <h3 class="section-title">
-                            TOP Combinaciones
-                        </h3>
-                        ${this.generateCombinationsTable(combinations)}
-                    </div>
-                    
                     <div class="analysis-grid">
                         <div class="processor-section">
                             <h3 class="section-title">
@@ -304,6 +305,53 @@
                 `;
             }
 
+            displayCombinationsTable(combinations) {
+                const combinationsContainer = document.getElementById('combinations-table-container');
+                
+                if (!combinations || Object.keys(combinations).length === 0) {
+                    combinationsContainer.innerHTML = '<p class="no-combinations">No hay combinaciones disponibles para mostrar.</p>';
+                    return;
+                }
+
+                // Convertir combinaciones a array, filtrar las que solo se usaron una vez y ordenar por número de veces usado (de mayor a menor)
+                const sortedCombinations = Object.entries(combinations)
+                    .filter(([, count]) => count > 1) // Solo combinaciones usadas más de una vez
+                    .sort(([, countA], [, countB]) => countB - countA)
+                    .slice(0, 20); // Mostrar solo las top 20 combinaciones
+
+                let tableHTML = `
+                    <div class="analysis-table-container">
+                        <table class="combinations-table" style="width: 780px !important; table-layout: fixed !important;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px !important; min-width: 80px !important; max-width: 80px !important;">N° veces</th>
+                                    <th style="width: 200px !important; min-width: 200px !important; max-width: 200px !important;">Procesador</th>
+                                    <th style="width: 200px !important; min-width: 200px !important; max-width: 200px !important;">Gráfica</th>
+                                    <th style="width: 300px !important; min-width: 300px !important; max-width: 300px !important;">Torre</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                sortedCombinations.forEach(([combinationKey, count], index) => {
+                    const [processor, graphics, case_] = combinationKey.split('|');
+                    const rowClass = index % 2 === 0 ? 'combinations-row combinations-row-even' : 'combinations-row combinations-row-odd';
+                    
+                    tableHTML += `
+                        <tr class="${rowClass}">
+                            <td class="combinations-count" style="width: 80px !important; min-width: 80px !important; max-width: 80px !important; text-align: center !important;">${count}</td>
+                            <td class="combinations-processor" style="width: 200px !important; min-width: 200px !important; max-width: 200px !important; text-align: center !important;">${processor}</td>
+                            <td class="combinations-graphics" style="width: 200px !important; min-width: 200px !important; max-width: 200px !important; text-align: center !important;">${graphics}</td>
+                            <td class="combinations-case" style="width: 300px !important; min-width: 300px !important; max-width: 300px !important; text-align: center !important;">${case_}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += '</tbody></table></div>';
+                
+                combinationsContainer.innerHTML = tableHTML;
+            }
+
             generateAnalysisTable(data, title, type) {
                 const sortedData = Object.entries(data)
                     .sort(([nameA, countA], [nameB, countB]) => {
@@ -314,13 +362,13 @@
                     });
 
                 let tableHTML = `
-                    <div style="width: 100%; overflow-x: auto; padding: 10px; background: transparent; border-radius: 8px;">
-                        <table style="width: 500px; min-width: 500px; border-collapse: collapse; background: transparent;">
+                    <div class="analysis-table-container">
+                        <table class="analysis-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 400px; padding: 10px; text-align: left; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">${title}</th>
-                                    <th style="width: 200px; padding: 10px; text-align: center; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">N° veces</th>
-                                    <th style="width: 200px; padding: 10px; text-align: center; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">%</th>
+                                    <th>${title}</th>
+                                    <th>N° veces</th>
+                                    <th>%</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -334,9 +382,9 @@
                     
                     tableHTML += `
                         <tr class="${rowClass}">
-                            <td style="width: 400px; padding: 10px; text-align: left; background-color: transparent; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${name}</td>
-                            <td style="width: 200px; padding: 10px; text-align: center; background-color: transparent; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${count}</td>
-                            <td style="width: 200px; padding: 10px; text-align: center; background-color: transparent; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${percentage}%</td>
+                            <td>${name}</td>
+                            <td>${count}</td>
+                            <td>${percentage}%</td>
                         </tr>
                     `;
                 });
@@ -359,54 +407,7 @@
                 return tableHTML;
             }
 
-            generateCombinationsTable(combinations) {
-                const sortedCombinations = Object.entries(combinations)
-                    .filter(([name, count]) => count > 1) // Solo combinaciones que aparecen más de una vez
-                    .sort(([nameA, countA], [nameB, countB]) => {
-                        if (countB !== countA) {
-                            return countB - countA; // Primero por cantidad (de mayor a menor)
-                        }
-                        return nameA.localeCompare(nameB); // Luego alfabéticamente en empates
-                    })
-                    .slice(0, 10); // Solo las TOP 10
 
-                let tableHTML = `
-                    <div style="width: 100%; display: flex; justify-content: center; padding: 10px; background: transparent; border-radius: 8px;">
-                        <table style="width: 1000px !important; min-width: 1000px !important; max-width: 1000px !important; border-collapse: collapse; background: transparent; table-layout: fixed !important;">
-                            <thead>
-                                <tr>
-                                    <th style="width: 30px !important; min-width: 30px !important; max-width: 30px !important; padding: 8px; text-align: center; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">TOP</th>
-                                    <th style="width: 150px !important; min-width: 150px !important; max-width: 150px !important; padding: 8px; text-align: left; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">Procesador</th>
-                                    <th style="width: 150px !important; min-width: 150px !important; max-width: 150px !important; padding: 8px; text-align: left; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">Tarjeta Gráfica</th>
-                                    <th style="width: 150px !important; min-width: 150px !important; max-width: 150px !important; padding: 8px; text-align: left; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">Torre</th>
-                                    <th style="width: 50px !important; min-width: 50px !important; max-width: 50px !important; padding: 8px; text-align: center; border-bottom: 2px solid rgba(255,255,255,0.5); color: white; font-weight: bold; background-color: rgba(255,255,255,0.2); vertical-align: middle;">N° veces</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
-
-                sortedCombinations.forEach(([combination, count], index) => {
-                    // Separar la combinación en sus componentes
-                    const parts = combination.split(' + ');
-                    const processor = parts[0] || '';
-                    const graphics = parts[1] || '';
-                    const caseName = parts[2] || '';
-                    
-                    tableHTML += `
-                        <tr class="analysis-row">
-                            <td style="width: 30px !important; min-width: 30px !important; max-width: 30px !important; padding: 8px; text-align: center !important; background-color: white !important; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${index + 1}</td>
-                            <td style="width: 150px !important; min-width: 150px !important; max-width: 150px !important; padding: 8px; text-align: left !important; background-color: white !important; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${processor}</td>
-                            <td style="width: 150px !important; min-width: 150px !important; max-width: 150px !important; padding: 8px; text-align: left !important; background-color: white !important; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${graphics}</td>
-                            <td style="width: 150px !important; min-width: 150px !important; max-width: 150px !important; padding: 8px; text-align: left !important; background-color: white !important; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${caseName}</td>
-                            <td style="width: 50px !important; min-width: 50px !important; max-width: 50px !important; padding: 8px; text-align: center !important; background-color: white !important; border-bottom: 1px solid rgba(255,255,255,0.3); color: black; font-weight: bold;">${count}</td>
-                        </tr>
-                    `;
-                });
-
-                tableHTML += '</tbody></table></div>';
-                
-                return tableHTML;
-            }
 
 
 
@@ -540,25 +541,25 @@
                     const isPenultimateColumn = headerIndex === headers.length - 2;
                     
                     if (headerIndex === 0) { // Columna de Fecha
-                        tableHTML += `<th style="position: relative; box-sizing: border-box; padding: 12px 8px; width: 40px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">`;
-                        tableHTML += '<div style="position: absolute; left: 5px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; z-index: 10;">';
-                        tableHTML += '<button onclick="scrollToFirstRow()" style="background: rgba(255,255,255,0.8); border: none; cursor: pointer; font-size: 12px; line-height: 1; padding: 0; color: #667eea; transition: all 0.2s ease; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.backgroundColor=\'#FFD700\'; this.style.color=\'white\'; this.style.transform=\'scale(1.1)\'" onmouseout="this.style.backgroundColor=\'rgba(255,255,255,0.8)\'; this.style.color=\'#667eea\'; this.style.transform=\'scale(1)\'" title="Ir a la fecha más reciente">▲</button>';
-                        tableHTML += '<button onclick="scrollToLastRow()" style="background: rgba(255,255,255,0.8); border: none; cursor: pointer; font-size: 12px; line-height: 1; padding: 0; color: #667eea; transition: all 0.2s ease; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.backgroundColor=\'#FFD700\'; this.style.color=\'white\'; this.style.transform=\'scale(1.1)\'" onmouseout="this.style.backgroundColor=\'rgba(255,255,255,0.8)\'; this.style.color=\'#667eea\'; this.style.transform=\'scale(1)\'" title="Ir a la fecha más antigua">▼</button>';
+                        tableHTML += `<th>`;
+                        tableHTML += '<div class="date-nav-buttons">';
+                        tableHTML += '<button onclick="scrollToFirstRow()" class="date-nav-button" title="Ir a la fecha más reciente">▲</button>';
+                        tableHTML += '<button onclick="scrollToLastRow()" class="date-nav-button" title="Ir a la fecha más antigua">▼</button>';
                         tableHTML += '</div>';
                         tableHTML += header;
                         tableHTML += '</th>';
                     } else if (headerIndex === 1) { // Segunda columna - Título del directo de Twitch
-                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 230px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                        tableHTML += `<th>${header}</th>`;
                     } else if (isLastColumn) { // Última columna sin borde
-                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 120px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                        tableHTML += `<th>${header}</th>`;
                     } else if (headerIndex === 2) { // Tercera columna - Precio en €
-                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 40px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                        tableHTML += `<th>${header}</th>`;
                     } else if (headerIndex === 3) { // Cuarta columna - Procesador
-                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 100px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                        tableHTML += `<th>${header}</th>`;
                     } else if (headerIndex === 4) { // Quinta columna - Tarjeta gráfica
-                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 100px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                        tableHTML += `<th>${header}</th>`;
                     } else { // Otras columnas
-                        tableHTML += `<th style="box-sizing: border-box; padding: 12px 8px; width: 60px !important; background: #667eea !important; color: white; border: none !important; outline: none !important;">${header}</th>`;
+                        tableHTML += `<th>${header}</th>`;
                     }
                 });
                 tableHTML += '</tr></thead><tbody>';
