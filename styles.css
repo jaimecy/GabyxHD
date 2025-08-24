@@ -1,3 +1,14 @@
+/*
+ * ESTILOS UNIFICADOS PARA TODAS LAS TABLAS
+ * 
+ * Todas las tablas ahora tienen:
+ * - Misma fuente: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+ * - Mismo tamaño: 16px
+ * - Mismos scrollbars: altura 12px, color #666666 (gris oscuro), fondo #f0f0f0
+ * - Mismo line-height: 1.4
+ * - Mismos bordes: 1px solid #000000 (negro) para todas las celdas
+ */
+
 * {
     margin: 0;
     padding: 0;
@@ -133,7 +144,7 @@ body {
     }
     
     #analysis-container table {
-        min-width: 500px;
+        min-width: 200px;
         width: 100%;
     }
     
@@ -187,7 +198,7 @@ body {
     }
     
     #analysis-container table {
-        min-width: 500px;
+        min-width: 200px;
         width: 100%;
     }
     
@@ -270,29 +281,7 @@ body {
     min-height: 44px;
 }
 
-/* Estilos del scrollbar para la tabla principal - FORZADOS */
-#data-container .data-table::-webkit-scrollbar {
-    height: 4px !important;
-    width: 4px !important;
-    background: #f0f0f0 !important;
-}
-
-#data-container .data-table::-webkit-scrollbar-thumb {
-    background: #667eea !important;
-    border-radius: 2px !important;
-    min-height: 20px !important;
-}
-
-#data-container .data-table::-webkit-scrollbar-track {
-    background: #f0f0f0 !important;
-    border-radius: 2px !important;
-}
-
-/* Estilos para Firefox */
-#data-container .data-table {
-    scrollbar-width: thin !important;
-    scrollbar-color: #667eea #f0f0f0 !important;
-}
+/* Los estilos de scrollbar están unificados arriba para todas las tablas */
 
 /* Scroll horizontal inteligente para la tabla principal */
 #data-container .data-table {
@@ -410,20 +399,18 @@ body {
 #analysis-container table {
     width: 100%;
     min-width: 450px;
-    border-collapse: separate !important;
+    border-collapse: collapse !important;
     border-spacing: 0 !important;
     color: black;
     table-layout: fixed;
     margin: 0 !important;
     padding: 0 !important;
-    border: none !important;
 }
 
 /* Reset básico para las tablas de análisis */
 #analysis-container th, #analysis-container td {
-    border: none !important;
-    padding: 0 !important;
-    text-align: left !important;
+    padding: 8px !important;
+    text-align: center !important;
     white-space: normal !important;
     overflow: visible !important;
     text-overflow: clip !important;
@@ -451,11 +438,13 @@ body {
 }
 
 /* Estilos específicos para las columnas de las tablas de análisis - FORZADOS */
+/* Primera columna más estrecha para tablas más compactas */
 #analysis-container table th:first-child,
 #analysis-container table td:first-child {
-    width: 200px !important;
-    max-width: 200px !important;
-    min-width: 200px !important;
+    width: 100px !important;
+    max-width: 100px !important;
+    min-width: 100px !important;
+    text-align: left !important;
 }
 
 /* Forzar centrado de TODOS los headers de las tablas de análisis */
@@ -474,70 +463,41 @@ body {
 
 #analysis-container table th:nth-child(2),
 #analysis-container table td:nth-child(2) {
-    width: 40px !important;
-    max-width: 40px !important;
-    min-width: 40px !important;
+    width: 30px !important;
+    max-width: 30px !important;
+    min-width: 30px !important;
     text-align: center !important;
 }
 
 #analysis-container table th:nth-child(3),
 #analysis-container table td:nth-child(3) {
-    width: 40px !important;
-    max-width: 40px !important;
-    min-width: 40px !important;
+    width: 30px !important;
+    max-width: 30px !important;
+    min-width: 30px !important;
     text-align: center !important;
 }
 
-/* Estilos simples para las tablas de análisis */
-#analysis-container table {
-    border-collapse: collapse !important;
-}
+/* Los estilos están unificados arriba */
 
 #analysis-container table th {
     background-color: #667eea !important;
     color: white !important;
     font-weight: bold !important;
     padding: 8px !important;
-    border: 0.1px solid black !important;
-    border-width: 0.1px !important;
     text-align: center !important;
 }
 
 #analysis-container table td {
     padding: 8px !important;
-    border: 0.1px solid black !important;
-    border-width: 0.1px !important;
 }
 
-/* Scrollbars inteligentes en Firefox para las tablas de análisis */
-@-moz-document url-prefix() {
-    #analysis-container .table-container {
-        scrollbar-width: thin !important;
-        -ms-overflow-style: auto !important;
-        overflow-x: auto !important;
-        overflow-y: visible !important;
-    }
-    
-    #analysis-container .table-container::-webkit-scrollbar {
-        display: block !important;
-        height: 4px !important;
-        background: transparent !important;
-    }
-    
-    #analysis-container .table-container::-webkit-scrollbar-thumb {
-        background: #667eea !important;
-        border-radius: 2px !important;
-    }
-    
-    #analysis-container .table-container::-webkit-scrollbar-track {
-        background: transparent !important;
-    }
-}
+/* Los estilos de scrollbar están unificados arriba para todas las tablas */
 
 /* Scroll horizontal para las tablas de análisis */
 #analysis-container .table-container {
     overflow-x: auto !important;
     overflow-y: visible !important;
+    /* Los estilos de scrollbar están unificados arriba para todas las tablas */
 }
 
 /* Eliminar regla Firefox específica - box-shadow funciona en todos los navegadores */
@@ -565,8 +525,6 @@ body {
 #data-container .data-table td {
     padding: 8px 8px;
     text-align: left;
-    border-bottom: 1px solid black !important;
-    /* border-right: 1px solid black !important; */ /* Comentado para usar estilos inline */
     word-wrap: break-word;
     white-space: normal; /* Cambiado de nowrap a normal para permitir envolver texto */
 }
@@ -847,30 +805,7 @@ body {
     max-width: 100px !important;
 }
 
-/* TODAS las líneas verticales de la tabla */
-/* Headers con líneas verticales */
-.data-table thead th:nth-child(1),
-.data-table thead th:nth-child(2),
-.data-table thead th:nth-child(3),
-.data-table thead th:nth-child(4),
-.data-table thead th:nth-child(5) {
-    border-right: 1px solid black !important;
-}
-
-/* Celdas de datos con líneas verticales */
-.data-table tbody td:nth-child(1),
-.data-table tbody td:nth-child(2),
-.data-table tbody td:nth-child(3),
-.data-table tbody td:nth-child(4),
-.data-table tbody td:nth-child(5) {
-    border-right: 1px solid black !important;
-}
-
-/* La última columna NO tiene línea vertical */
-.data-table thead th:nth-child(6),
-.data-table tbody td:nth-child(6) {
-    border-right: none !important;
-}
+/* Los bordes están unificados arriba para todas las tablas */
 
 
 
@@ -910,21 +845,7 @@ body {
     width: 100%;
 }
 
-/* Estilos del scrollbar */
-.table-container::-webkit-scrollbar {
-    height: 8px;
-    background: #f0f0f0;
-}
-
-.table-container::-webkit-scrollbar-thumb {
-    background: #667eea;
-    border-radius: 2px;
-}
-
-.table-container::-webkit-scrollbar-track {
-    background: #f0f0f0;
-    border-radius: 2px;
-}
+/* Los estilos de scrollbar están unificados arriba para todas las tablas */
 
 /* Media queries para móvil */
 @media (max-width: 768px) {
@@ -947,7 +868,7 @@ body {
     }
 
     table {
-        min-width: 900px;
+        min-width: 230px;
     }
 
     /* Forzar scroll horizontal en las tablas de análisis en móvil */
@@ -956,22 +877,7 @@ body {
         -ms-overflow-style: auto !important;
     }
     
-    /* Mostrar scrollbar en móvil */
-    .table-container::-webkit-scrollbar {
-        display: block !important;
-        height: 8px !important;
-        background: #f0f0f0 !important;
-    }
-    
-    .table-container::-webkit-scrollbar-thumb {
-        background: #667eea !important;
-        border-radius: 2px !important;
-    }
-    
-    .table-container::-webkit-scrollbar-track {
-        background: #f0f0f0 !important;
-        border-radius: 2px !important;
-    }
+    /* Los estilos de scrollbar están unificados arriba para todas las tablas */
 }
 
 /* Media query para pantallas muy pequeñas */
@@ -1037,17 +943,7 @@ body {
     }
 }
 
-/* En alta resolución, scrollbars solo cuando sea necesario */
-@media (min-width: 769px) {
-    .table-container {
-        -ms-overflow-style: none;
-    }
-    
-    /* Ocultar scrollbar en webkit completamente */
-    .table-container::-webkit-scrollbar {
-        display: none;
-    }
-}
+/* Los estilos de scrollbar están unificados arriba para todas las tablas */
 
 /* Clases para reemplazar estilos inline del HTML */
 .stats-title {
@@ -1059,7 +955,7 @@ body {
 
 .analysis-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
 }
 
@@ -1147,48 +1043,22 @@ body {
     text-align: center;
 }
 
-/* Estilos de scrollbar para Webkit (Chrome, Safari, Edge) */
-.analysis-table-container::-webkit-scrollbar {
-    height: 12px !important;
-    background: #f0f0f0 !important;
-}
-
-.analysis-table-container::-webkit-scrollbar-thumb {
-    background: #007bff !important;
-    border-radius: 6px !important;
-    border: 2px solid #f0f0f0 !important;
-}
-
-.analysis-table-container::-webkit-scrollbar-track {
-    background: #f0f0f0 !important;
-    border-radius: 6px !important;
-}
-
-/* Estilos de scrollbar para Firefox */
-.analysis-table-container {
-    scrollbar-width: thin !important;
-    scrollbar-color: #007bff #f0f0f0 !important;
-}
-
-/* Estilos de scrollbar para IE/Edge Legacy */
-.analysis-table-container {
-    -ms-overflow-style: auto !important;
-}
+/* Los estilos de scrollbar están unificados arriba para todas las tablas */
 
 .analysis-table {
-    width: 280px;
-    min-width: 280px;
+    width: 200px;
+    min-width: 200px;
     border-collapse: collapse;
     color: black;
-    font-size: 0.9rem;
+    font-size: 16px !important;
     white-space: nowrap;
     table-layout: fixed;
 }
 
 .analysis-header-name,
 .analysis-cell-name {
-    width: 200px;
-    min-width: 200px;
+    width: 150px;
+    min-width: 150px;
     text-align: left;
     padding: 8px 12px;
 }
@@ -1228,10 +1098,8 @@ body {
 .analysis-header {
     padding: 8px 8px;
     text-align: center !important;
-    border-bottom: 0.1px solid black;
-    border-right: 0.1px solid black;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 16px !important;
     color: black;
 }
 
@@ -1260,10 +1128,8 @@ body {
 
 .analysis-cell {
     padding: 6px 8px;
-    border-bottom: 0.1px solid black;
-    border-right: 0.1px solid black;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 16px !important;
     color: black;
     background: transparent !important;
 }
@@ -1285,7 +1151,7 @@ body {
 
 .analysis-summary-text {
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 16px !important;
     color: black;
 }
 
@@ -1305,7 +1171,6 @@ body {
 /* Clases para las celdas de datos de la tabla principal */
 .data-cell {
     padding: 8px 8px;
-    border-bottom: 1px solid black;
     white-space: normal; /* Cambiado de nowrap a normal para permitir envolver texto */
 }
 
@@ -1332,7 +1197,6 @@ body {
 #data-container .data-table th {
     background: #667eea !important;
     color: white !important;
-    border: none !important;
     outline: none !important;
     box-sizing: border-box;
     padding: 12px 8px;
@@ -1342,13 +1206,6 @@ body {
     height: auto;
     min-height: 44px;
     font-size: 16px !important;
-    border-right: 1px solid rgba(255,255,255,0.3) !important;
-}
-
-/* Última columna sin borde derecho */
-.data-table th:last-child,
-#data-container .data-table th:last-child {
-    border-right: none !important;
 }
 
 /* Celdas de datos */
@@ -1717,15 +1574,12 @@ body {
     max-width: 780px;
     width: 780px;
     text-align: center;
+    /* Los estilos de scrollbar están unificados arriba para todas las tablas */
 }
 
 
 
-/* Firefox - scrollbar fino */
-.combinations-table-wrapper {
-    scrollbar-width: thin;
-    scrollbar-color: #FFD700 #f0f0f0;
-}
+/* Los estilos de scrollbar están unificados arriba para todas las tablas */
 
 
 
@@ -1735,7 +1589,7 @@ body {
     max-width: 780px !important;
     border-collapse: collapse;
     color: black;
-    font-size: 0.95rem;
+    font-size: 16px !important;
     table-layout: fixed !important;
     flex-shrink: 0;
     display: inline-block;
@@ -1746,13 +1600,11 @@ body {
     color: white;
     font-weight: bold;
     padding: 12px 8px;
-    border: 1px solid #ddd;
     text-align: center;
 }
 
 .combinations-table td {
     padding: 10px 8px;
-    border: 1px solid #ddd;
     text-align: center !important;
     vertical-align: middle !important;
 }
@@ -1883,7 +1735,7 @@ body {
 
 .combinations-summary-text {
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 16px !important;
     color: #333;
     margin: 0 10px;
 }
@@ -1910,4 +1762,127 @@ body {
         margin: 0;
         min-width: 780px;
     }
+}
+
+/* Estilos unificados para TODAS las tablas */
+table, .data-table, .analysis-table, .combinations-table {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+    border-collapse: collapse !important;
+}
+
+/* Bordes unificados para TODAS las tablas - mismo grosor */
+table, .data-table, .analysis-table, .combinations-table,
+table th, .data-table th, .analysis-table th, .combinations-table th,
+table td, .data-table td, .analysis-table td, .combinations-table td {
+    border: 1px solid #000000 !important;
+    border-width: 1px !important;
+}
+
+/* FORZAR bordes en las tablas de análisis específicamente */
+#analysis-container table,
+#analysis-container table th,
+#analysis-container table td,
+.analysis-table,
+.analysis-table th,
+.analysis-table td,
+.analysis-header,
+.analysis-cell {
+    border: 1px solid #000000 !important;
+    border-width: 1px !important;
+}
+
+/* Asegurar que las tablas de análisis tengan bordes visibles */
+.analysis-table-container table,
+.analysis-table-container table th,
+.analysis-table-container table td {
+    border: 1px solid #000000 !important;
+    border-width: 1px !important;
+}
+
+/* Forzar bordes en todas las celdas de análisis */
+.processor-section table,
+.graphics-section table,
+.tower-section table,
+.processor-section table th,
+.processor-section table td,
+.graphics-section table th,
+.graphics-section table td,
+.tower-section table th,
+.tower-section table td {
+    border: 1px solid #000000 !important;
+    border-width: 1px !important;
+}
+
+/* REGLA FINAL CON MÁXIMA PRIORIDAD - forzar bordes en análisis */
+#analysis-container * table,
+#analysis-container * table *,
+#analysis-container table,
+#analysis-container table * {
+    border: 1px solid #000000 !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+}
+
+/* Estilos unificados para todas las celdas de tabla */
+th, td, .data-table th, .data-table td, .analysis-table th, .analysis-table td, .combinations-table th, .combinations-table td {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+}
+
+/* TODOS los headers de TODAS las tablas centrados */
+th, .data-table th, .analysis-table th, .combinations-table th {
+    text-align: center !important;
+}
+
+/* FORZAR centrado de headers de primeras columnas específicamente */
+.data-table th:first-child,
+.analysis-table th:first-child,
+.combinations-table th:first-child,
+#data-container .data-table th:first-child,
+#analysis-container table th:first-child {
+    text-align: center !important;
+}
+
+/* Scrollbars unificados para TODAS las tablas y contenedores */
+.table-wrapper::-webkit-scrollbar,
+.table-container::-webkit-scrollbar,
+.analysis-table-container::-webkit-scrollbar,
+.combinations-table-wrapper::-webkit-scrollbar,
+#data-container .data-table::-webkit-scrollbar {
+    height: 12px !important;
+    width: 12px !important;
+    background: #f0f0f0 !important;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb,
+.table-container::-webkit-scrollbar-thumb,
+.analysis-table-container::-webkit-scrollbar-thumb,
+.combinations-table-wrapper::-webkit-scrollbar-thumb,
+#data-container .data-table::-webkit-scrollbar-thumb {
+    background: #666666 !important;
+    border-radius: 6px !important;
+    min-height: 20px !important;
+    border: 1px solid #f0f0f0 !important;
+}
+
+.table-wrapper::-webkit-scrollbar-track,
+.table-container::-webkit-scrollbar-track,
+.analysis-table-container::-webkit-scrollbar-track,
+.combinations-table-wrapper::-webkit-scrollbar-track,
+#data-container .data-table::-webkit-scrollbar-track {
+    background: #f0f0f0 !important;
+    border-radius: 4px !important;
+}
+
+/* Firefox scrollbar unificado para todas las tablas */
+.table-wrapper,
+.table-container,
+.analysis-table-container,
+.combinations-table-wrapper,
+#data-container .data-table {
+    scrollbar-width: thin !important;
+    scrollbar-color: #666666 #f0f0f0 !important;
 }
