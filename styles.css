@@ -157,8 +157,8 @@ body {
     
     #data-container .data-table th:nth-child(3),
     #data-container .data-table td:nth-child(3) {
-        min-width: 70px !important;
-        width: 70px !important;
+        min-width: 120px !important;
+        width: 120px !important;
     }
     
     /* Anchos para columnas de procesador, gráfica y torre en baja resolución */
@@ -212,9 +212,9 @@ body {
     
     #data-container .data-table th:nth-child(3),
     #data-container .data-table td:nth-child(3) {
-        min-width: 70px !important;
-        width: 70px !important;
-        max-width: 70px !important;
+        min-width: 120px !important;
+        width: 120px !important;
+        max-width: 120px !important;
     }
     
     /* Anchos para columnas de procesador, gráfica y torre en móvil */
@@ -329,9 +329,9 @@ body {
     
     #data-container .data-table th:nth-child(3),
     #data-container .data-table td:nth-child(3) {
-        min-width: 70px !important;
-        width: 70px !important;
-        max-width: 70px !important;
+        min-width: 120px !important;
+        width: 120px !important;
+        max-width: 120px !important;
     }
     
     #data-container .data-table th:nth-child(4),
@@ -369,7 +369,7 @@ body {
 
 #data-container .data-table th:nth-child(3),
 #data-container .data-table td:nth-child(3) {
-    min-width: 70px !important;
+    min-width: 120px !important;
 }
 
 /* Anchos para columnas de procesador, gráfica y torre - FORZADOS */
@@ -614,6 +614,7 @@ body {
     text-align: center;
     margin-bottom: 20px;
     margin-top: 50px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 
@@ -780,9 +781,9 @@ body {
 
 /* Columna Precio (tercera columna) */
 .data-table th:nth-child(3) {
-    min-width: 90px !important;
-    width: 90px !important;
-    max-width: 90px !important;
+    min-width: 120px !important;
+    width: 120px !important;
+    max-width: 120px !important;
 }
 
 /* Columna Procesador (cuarta columna) */
@@ -903,9 +904,9 @@ body {
     
     #data-container .data-table th:nth-child(3),
     #data-container .data-table td:nth-child(3) {
-        min-width: 70px !important;
-        width: 70px !important;
-        max-width: 70px !important;
+        min-width: 120px !important;
+        width: 120px !important;
+        max-width: 120px !important;
     }
     
     /* Anchos para columnas de procesador, gráfica y torre en pantallas muy pequeñas */
@@ -950,8 +951,9 @@ body {
 .stats-title {
     color: #e1ff02;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     font-size: 1.4rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .analysis-grid {
@@ -1410,9 +1412,9 @@ body {
 
 .data-table th:nth-child(3),
 .data-table td:nth-child(3) {
-    width: 70px !important;
-    min-width: 70px !important;
-    max-width: 70px !important;
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
     text-align: center !important;
     vertical-align: middle !important;
 }
@@ -1660,8 +1662,8 @@ body {
     box-shadow: none;
     overflow-x: auto;
     margin: 0 auto;
-    max-width: 780px;
-    width: 780px;
+    max-width: 820px;
+    width: 820px;
     text-align: center;
     /* Los estilos de scrollbar están unificados arriba para todas las tablas */
 }
@@ -1673,9 +1675,9 @@ body {
 
 
 .combinations-table {
-    width: 780px !important;
-    min-width: 780px !important;
-    max-width: 780px !important;
+    width: 820px !important;
+    min-width: 820px !important;
+    max-width: 820px !important;
     border-collapse: collapse;
     color: black;
     font-size: 16px !important;
@@ -1788,9 +1790,9 @@ body {
 /* Anchos fijos para cada columna - FORZADOS */
 .combinations-table th:nth-child(1),
 .combinations-table td:nth-child(1) {
-    width: 80px !important;
-    min-width: 80px !important;
-    max-width: 80px !important;
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
     text-align: center !important;
 }
 
