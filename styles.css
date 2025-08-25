@@ -999,7 +999,7 @@ body {
 
 .prices-title {
     color: #667eea;
-    margin-bottom: 20px;
+    margin-bottom: 2px !important;
     font-size: 1.4rem;
 }
 
@@ -1572,7 +1572,7 @@ body {
     text-align: center;
     font-size: 14px;
     font-style: italic;
-    margin: 2px 0 20px 0;
+    margin: -5px 0 20px 0;
     opacity: 0.8;
 }
 
