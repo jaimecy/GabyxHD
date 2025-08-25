@@ -544,11 +544,13 @@
                     
                     if (headerIndex === 0) { // Columna de Fecha
                         tableHTML += `<th>`;
-                        tableHTML += '<div class="date-nav-buttons">';
-                        tableHTML += '<button onclick="scrollToFirstRow()" class="date-nav-button" title="Ir a la fecha más reciente">▲</button>';
-                        tableHTML += '<button onclick="scrollToLastRow()" class="date-nav-button" title="Ir a la fecha más antigua">▼</button>';
+                        tableHTML += '<div class="date-header-inline">';
+                        tableHTML += '<div class="date-arrows-inline">';
+                        tableHTML += '<button id="scroll-up-btn" onclick="scrollToFirstRow()" class="date-nav-button-inline" title="Ir a la fecha más reciente">▲</button>';
+                        tableHTML += '<button id="scroll-down-btn" onclick="scrollToLastRow()" class="date-nav-button-inline" title="Ir a la fecha más antigua">▼</button>';
                         tableHTML += '</div>';
-                        tableHTML += header;
+                        tableHTML += '<span class="date-text">' + header + '</span>';
+                        tableHTML += '</div>';
                         tableHTML += '</th>';
                     } else if (headerIndex === 1) { // Segunda columna - Título del directo de Twitch
                         tableHTML += `<th>${header}</th>`;
@@ -595,6 +597,13 @@
                         tableWrapper.parentNode.insertBefore(messageElement, tableWrapper.nextSibling);
                     }
                 }
+                
+                // Actualizar estado inicial de los botones de scroll
+                setTimeout(() => {
+                    if (typeof updateScrollButtons === 'function') {
+                        updateScrollButtons();
+                    }
+                }, 100);
             }
         }
 
@@ -617,6 +626,11 @@
                     setTimeout(() => {
                         firstRow.style.backgroundColor = '';
                     }, 2000);
+                    
+                    // Actualizar estado de botones después del scroll
+                    setTimeout(() => {
+                        updateScrollButtons();
+                    }, 500);
                 }
             }
         }
@@ -640,13 +654,70 @@
                     setTimeout(() => {
                         lastRow.style.backgroundColor = '';
                     }, 2000);
+                    
+                    // Actualizar estado de botones después del scroll
+                    setTimeout(() => {
+                        updateScrollButtons();
+                    }, 500);
                 }
             }
         }
 
+        // Función para actualizar el estado de los botones de scroll
+        function updateScrollButtons() {
+            const tableContainer = document.getElementById('table-container');
+            const table = tableContainer.querySelector('table');
+            
+            if (!table) return;
+            
+            const tbody = table.querySelector('tbody');
+            if (!tbody || tbody.rows.length === 0) return;
+            
+            const scrollUpBtn = document.getElementById('scroll-up-btn');
+            const scrollDownBtn = document.getElementById('scroll-down-btn');
+            
+            if (!scrollUpBtn || !scrollDownBtn) return;
+            
+            // Obtener la posición del scroll del contenedor de la tabla
+            const tableWrapper = tableContainer.closest('.table-wrapper');
+            if (!tableWrapper) return;
+            
+            const scrollTop = tableWrapper.scrollTop;
+            const scrollHeight = tableWrapper.scrollHeight;
+            const clientHeight = tableWrapper.clientHeight;
+            
+            // Si estamos en la parte superior, ocultar botón hacia arriba
+            if (scrollTop <= 10) {
+                scrollUpBtn.classList.add('date-nav-button-hidden');
+                scrollUpBtn.classList.remove('date-nav-button-visible');
+            } else {
+                scrollUpBtn.classList.remove('date-nav-button-hidden');
+                scrollUpBtn.classList.add('date-nav-button-visible');
+            }
+            
+            // Si estamos en la parte inferior, ocultar botón hacia abajo
+            if (scrollTop + clientHeight >= scrollHeight - 10) {
+                scrollDownBtn.classList.add('date-nav-button-hidden');
+                scrollDownBtn.classList.remove('date-nav-button-visible');
+            } else {
+                scrollDownBtn.classList.remove('date-nav-button-hidden');
+                scrollDownBtn.classList.add('date-nav-button-visible');
+            }
+        }
+        
         // Inicializar la aplicación cuando se carga la página
         document.addEventListener('DOMContentLoaded', () => {
             new PCBuildsViewer();
+            
+            // Agregar listener de scroll para actualizar botones
+            setTimeout(() => {
+                const tableWrapper = document.querySelector('.table-wrapper');
+                if (tableWrapper) {
+                    tableWrapper.addEventListener('scroll', updateScrollButtons);
+                    // Actualizar estado inicial de los botones
+                    updateScrollButtons();
+                }
+            }, 1000);
         });
     </script>
 </body>

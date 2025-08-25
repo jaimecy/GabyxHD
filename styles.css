@@ -278,7 +278,8 @@ body {
     word-wrap: break-word;
     line-height: 1.2;
     height: auto;
-    min-height: 44px;
+    min-height: 50px;
+    padding: 12px 8px;
 }
 
 /* Los estilos de scrollbar están unificados arriba para todas las tablas */
@@ -1084,8 +1085,6 @@ body {
     .data-table thead th {
         position: relative;
     }
-    
-
 }
 
 /* Eliminar estilos conflictivos */
@@ -1204,7 +1203,7 @@ body {
     word-wrap: break-word;
     line-height: 1.2;
     height: auto;
-    min-height: 44px;
+    min-height: 50px;
     font-size: 16px !important;
 }
 
@@ -1400,6 +1399,8 @@ body {
     vertical-align: middle !important;
 }
 
+
+
 .data-table th:nth-child(2),
 .data-table td:nth-child(2) {
     width: 600px !important;
@@ -1489,10 +1490,73 @@ body {
     }
 }
 
-/* Botones de navegación en la columna fecha - DEBAJO del texto */
+/* Header de fecha con flechas al lado del texto (NUEVO DISEÑO) */
+.date-header-inline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+}
+
+.date-text {
+    font-weight: 600;
+    color: white;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.date-arrows-inline {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+}
+
+.date-nav-button-inline {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    cursor: pointer;
+    font-size: 10px;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.date-nav-button-inline:hover {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.1);
+}
+
+/* Clases para ocultar botones según la posición */
+.date-nav-button-hidden {
+    opacity: 0.3 !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+}
+
+.date-nav-button-visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Botones de navegación en la columna fecha - DEBAJO del texto (MANTENER PARA COMPATIBILIDAD) */
 .date-nav-buttons {
     position: absolute;
-    bottom: 2px;
+    bottom: 15px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
