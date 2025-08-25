@@ -111,15 +111,15 @@
                         throw new Error('No se encontraron datos en la hoja');
                     }
                     
-                    // Convertir los datos al formato esperado por el frontend
-                    const processedRows = rows.map(row => [
-                        row['Fecha'] || '',
-                        row['Título del directo de Twitch'] || '',
-                        row['Precio en €'] || '',
-                        row['Procesador'] || '',
-                        row['Tarjeta gráfica'] || '',
-                        row['Torre'] || ''
-                    ]);
+                                         // Convertir los datos al formato esperado por el frontend
+                     const processedRows = rows.map(row => [
+                         row['Fecha'] || '',
+                         row['Título del directo de Twitch'] || '',
+                         row['Precio €'] || '',
+                         row['Procesador'] || '',
+                         row['Tarjeta gráfica'] || '',
+                         row['Torre'] || ''
+                     ]);
                     
                     // Filtrar filas con fechas válidas y ordenar por fecha decreciente
                     const validRows = processedRows.filter(row => {
@@ -205,8 +205,8 @@
                 const cases = {};
                 const combinations = {};
 
-                // Índices de las columnas
-                const priceIndex = 2; // Precio en €
+                                 // Índices de las columnas
+                 const priceIndex = 2; // Precio €
                 const processorIndex = 3; // Procesador
                 const graphicsIndex = 4; // Tarjeta gráfica
                 const caseIndex = 5; // Torre
@@ -288,6 +288,7 @@
                         <h3 class="prices-title">
                             Resumen de Precios
                         </h3>
+                        <div class="cost-explanation">(El precio es de todos los componentes)</div>
                         <div class="prices-grid">
                             <div class="price-card">
                                 <div class="price-value price-avg">${Math.round(prices.avg)}€</div>
@@ -582,6 +583,18 @@
 
                 tableHTML += '</tbody></table>';
                 document.getElementById('table-container').innerHTML = tableHTML;
+                
+                // Añadir el mensaje explicativo FUERA del contenedor de la tabla
+                const tableWrapper = document.querySelector('.table-wrapper');
+                if (tableWrapper) {
+                    const existingMessage = tableWrapper.nextElementSibling;
+                    if (!existingMessage || !existingMessage.classList.contains('price-explanation')) {
+                        const messageElement = document.createElement('p');
+                        messageElement.className = 'price-explanation';
+                                                 messageElement.textContent = '* El precio es de todos los componentes.';
+                        tableWrapper.parentNode.insertBefore(messageElement, tableWrapper.nextSibling);
+                    }
+                }
             }
         }
 

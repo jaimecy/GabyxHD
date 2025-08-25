@@ -164,14 +164,14 @@ body {
     /* Anchos para columnas de procesador, gráfica y torre en baja resolución */
     #data-container .data-table th:nth-child(4),
     #data-container .data-table td:nth-child(4) {
-        min-width: 350px !important;
-        width: 350px !important;
+        min-width: 60px !important;
+        width: 60px !important;
     }
     
     #data-container .data-table th:nth-child(5),
     #data-container .data-table td:nth-child(5) {
-        min-width: 350px !important;
-        width: 350px !important;
+        min-width: 60px !important;
+        width: 60px !important;
     }
     
     #data-container .data-table th:nth-child(6),
@@ -220,16 +220,16 @@ body {
     /* Anchos para columnas de procesador, gráfica y torre en móvil */
     #data-container .data-table th:nth-child(4),
     #data-container .data-table td:nth-child(4) {
-        min-width: 350px !important;
-        width: 350px !important;
-        max-width: 350px !important;
+        min-width: 60px !important;
+        width: 60px !important;
+        max-width: 60px !important;
     }
     
     #data-container .data-table th:nth-child(5),
     #data-container .data-table td:nth-child(5) {
-        min-width: 350px !important;
-        width: 350px !important;
-        max-width: 350px !important;
+        min-width: 60px !important;
+        width: 60px !important;
+        max-width: 60px !important;
     }
     
     #data-container .data-table th:nth-child(6),
@@ -554,7 +554,7 @@ body {
 }
 
 #data-container .data-table tbody tr:hover {
-    background: rgba(102, 126, 234, 0.1) !important;
+    background: rgba(102, 126, 234, 0.3) !important;
 }
 
 
@@ -786,16 +786,16 @@ body {
 
 /* Columna Procesador (cuarta columna) */
 .data-table th:nth-child(4) {
-    min-width: 100px !important;
-    width: 100px !important;
-    max-width: 100px !important;
+    min-width: 60px !important;
+    width: 60px !important;
+    max-width: 60px !important;
 }
 
 /* Columna Tarjeta gráfica (quinta columna) */
 .data-table th:nth-child(5) {
-    min-width: 100px !important;
-    width: 100px !important;
-    max-width: 100px !important;
+    min-width: 60px !important;
+    width: 60px !important;
+    max-width: 60px !important;
 }
 
 /* Columna Torre (última columna) */
@@ -909,17 +909,17 @@ body {
     
     /* Anchos para columnas de procesador, gráfica y torre en pantallas muy pequeñas */
     #data-container .data-table th:nth-child(4),
-    #data-container .data-table td:nth-child(5) {
-        min-width: 350px !important;
-        width: 350px !important;
-        max-width: 350px !important;
+    #data-container .data-table td:nth-child(4) {
+        min-width: 60px !important;
+        width: 60px !important;
+        max-width: 60px !important;
     }
     
     #data-container .data-table th:nth-child(5),
     #data-container .data-table td:nth-child(5) {
-        min-width: 350px !important;
-        width: 350px !important;
-        max-width: 350px !important;
+        min-width: 60px !important;
+        width: 60px !important;
+        max-width: 60px !important;
     }
     
     #data-container .data-table th:nth-child(6),
@@ -955,7 +955,7 @@ body {
 
 .analysis-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
 }
 
@@ -1551,6 +1551,31 @@ body {
     }
 }
 
+/* Estilos para el mensaje explicativo del precio */
+.price-explanation {
+    color: #333;
+    margin: 15px auto 15px auto;
+    text-align: left;
+    font-size: 16px;
+    font-weight: bold;
+    font-style: italic;
+    transition: all 0.3s ease;
+    max-width: 600px;
+    display: block;
+    width: fit-content;
+    padding-left: 0;
+}
+
+/* Estilos para el mensaje explicativo de costes en el resumen */
+.cost-explanation {
+    color: #666;
+    text-align: center;
+    font-size: 14px;
+    font-style: italic;
+    margin: 2px 0 20px 0;
+    opacity: 0.8;
+}
+
 /* Estilos para la tabla de combinaciones más populares */
 .combinations-section {
     margin-top: 30px;
@@ -1681,6 +1706,11 @@ body {
 
 .combinations-table tbody tr:hover {
     background: rgba(102, 126, 234, 0.1);
+    color: white !important;
+}
+
+.combinations-table tbody tr:hover td {
+    color: white !important;
 }
 
 .combinations-row-even {
