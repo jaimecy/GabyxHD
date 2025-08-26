@@ -33,6 +33,18 @@ app.use((err, req, res, next) => {
     });
 });
 
+// Endpoint de ping para verificar conectividad
+app.get('/api/ping', (req, res) => {
+    res.json({
+        success: true,
+        message: 'Pong!',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        environment: process.env.NODE_ENV || 'development'
+    });
+});
+
 // Endpoint principal para obtener datos de Google Sheets
 app.get('/api/sheets-data', async (req, res) => {
     try {
