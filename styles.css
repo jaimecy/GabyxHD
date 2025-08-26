@@ -2034,7 +2034,8 @@ th, .data-table th, .analysis-table th, .combinations-table th {
     text-align: center;
     padding: 30px;
     font-size: 18px;
-    color: #666;
+    color: white;
+    font-weight: bold;
 }
 
 .spinner {
