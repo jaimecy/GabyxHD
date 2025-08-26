@@ -49,54 +49,6 @@
             }
         });
 
-        // Detectar cuando se abren las herramientas de desarrollo (versión suavizada)
-        let devtools = {
-            open: false,
-            warningShown: false
-        };
-
-        setInterval(function() {
-            const threshold = 160;
-            const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-            const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-            
-            if (widthThreshold || heightThreshold) {
-                if (!devtools.open) {
-                    devtools.open = true;
-                    // En lugar de redirigir, mostrar una advertencia sutil
-                    if (!devtools.warningShown) {
-                        devtools.warningShown = true;
-                        // Crear una notificación sutil
-                        const warning = document.createElement('div');
-                        warning.style.cssText = `
-                            position: fixed;
-                            top: 10px;
-                            right: 10px;
-                            background: rgba(255, 0, 0, 0.8);
-                            color: white;
-                            padding: 10px;
-                            border-radius: 5px;
-                            z-index: 9999;
-                            font-size: 12px;
-                            max-width: 200px;
-                        `;
-                        warning.textContent = '⚠️ Herramientas de desarrollo detectadas';
-                        document.body.appendChild(warning);
-                        
-                        // Remover la advertencia después de 3 segundos
-                        setTimeout(() => {
-                            if (warning.parentNode) {
-                                warning.parentNode.removeChild(warning);
-                            }
-                        }, 3000);
-                    }
-                }
-            } else {
-                devtools.open = false;
-                devtools.warningShown = false;
-            }
-        }, 1000); // Aumentar el intervalo para reducir falsos positivos
-
         // Deshabilitar consola de manera más suave
         if (typeof console !== 'undefined') {
             console.log = function() {};
