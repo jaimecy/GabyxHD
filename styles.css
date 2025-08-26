@@ -1771,12 +1771,12 @@ body {
 }
 
 .combinations-table tbody tr:hover {
-    background: rgba(102, 126, 234, 0.1);
-    color: white !important;
+    background: rgb(209, 216, 249);
+    color: black !important;
 }
 
 .combinations-table tbody tr:hover td {
-    color: white !important;
+    color: black !important;
 }
 
 .combinations-row-even {
