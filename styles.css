@@ -508,6 +508,31 @@ body {
         overflow-x: auto;
     }
     
+    /* Estilos responsivos para errores en móviles */
+    .error-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .retry-button, .status-button, .connectivity-button {
+        width: 100%;
+        max-width: 280px;
+        margin: 5px 0;
+    }
+    
+    .error-tips {
+        margin: 15px 10px;
+        padding: 12px;
+    }
+    
+    .error-tips ul {
+        padding-left: 15px;
+    }
+    
+    .error-tips li {
+        font-size: 14px;
+    }
+    
     /* Tablas de análisis con scroll horizontal y centradas */
     #analysis-container .table-container {
         min-width: 100%;
