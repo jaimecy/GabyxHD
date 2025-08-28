@@ -30,12 +30,14 @@
             </div>
         </div>
 
-        <!-- Tabla de Datos -->
-        <div id="data-container" class="hidden">
+        <!-- NUEVA TABLA CON PROPIEDADES DE COMBINATIONS-TABLE - PARA FIREFOX -->
+        <div id="main-table-firefox-container" class="hidden">
             <div class="table-wrapper">
-                <div id="table-container"></div>
+                <div id="main-table-firefox-container-inner"></div>
             </div>
         </div>
+
+        <!-- TABLA VIEJA ELIMINADA - SOLO QUEDA LA NUEVA TABLA -->
 
         <!-- Sección de Análisis (oculta por defecto) -->
         <div id="analysis-container" class="hidden">
@@ -73,7 +75,7 @@
         class PCBuildsViewer {
             constructor() {
                 this.sheetsData = {};
-                this.apiUrl = 'https://gabyxhd-production.up.railway.app/api/sheets-data'; // Backend en Railway
+                this.apiUrl = 'https://gabyxhd.onrender.com/api/sheets-data'; // Backend en Render
                 this.spreadsheetId = '1OCMcUJ0VerXZLEgyjapb_lNvRZQL05lIcGf882AaTfU';
                 this.init();
             }
@@ -143,7 +145,7 @@
                 try {
                     this.showLoading('Verificando estado del servidor...');
                     
-                    const response = await fetch('https://gabyxhd-production.up.railway.app/health', {
+                                         const response = await fetch('https://gabyxhd.onrender.com/health', {
                         method: 'GET',
                         signal: AbortSignal.timeout(10000)
                     });
@@ -500,7 +502,7 @@
                 }
                 
                 // OCULTAR COMPLETAMENTE la sección de datos y estadísticas
-                document.getElementById('data-container').style.display = 'none';
+                document.getElementById('main-table-firefox-container').style.display = 'none';
                 document.getElementById('stats-info').style.display = 'none';
                 
                 // MOSTRAR SOLO la sección de análisis
@@ -526,7 +528,7 @@
                 document.getElementById('analysis-container').classList.add('hidden');
                 
                 // MOSTRAR la sección de datos y estadísticas
-                document.getElementById('data-container').style.display = 'block';
+                document.getElementById('main-table-firefox-container').style.display = 'block';
                 document.getElementById('stats-info').style.display = 'block';
                 
                 // Desplazarse arriba del todo - FORZAR el scroll
@@ -596,67 +598,51 @@
                 `;
 
                 document.getElementById('stats-info').classList.remove('hidden');
-                document.getElementById('data-container').style.display = 'block';
+                document.getElementById('main-table-firefox-container').style.display = 'block';
             }
 
             displaySheetData(sheetName) {
                 const data = this.sheetsData[sheetName];
                 if (!data || data.length === 0) {
-                    document.getElementById('table-container').innerHTML = '<p>No hay datos en esta hoja.</p>';
+                    document.getElementById('main-table-firefox-container-inner').innerHTML = '<p>No hay datos en esta hoja.</p>';
                     return;
                 }
 
                 const headers = data[0];
                 const rows = data.slice(1);
 
-                let tableHTML = '<table class="data-table"><thead><tr>';
+                // GENERAR SOLO LA NUEVA TABLA
+                let tableHTMLFirefox = '<table class="main-table-firefox"><thead><tr>';
                 headers.forEach((header, headerIndex) => {
-                    const isLastColumn = headerIndex === headers.length - 1;
-                    const isPenultimateColumn = headerIndex === headers.length - 2;
-                    
                     if (headerIndex === 0) { // Columna de Fecha
-                        tableHTML += `<th>`;
-                        tableHTML += '<div class="date-header-inline">';
-                        tableHTML += '<div class="date-arrows-inline">';
-                        tableHTML += '<button id="scroll-up-btn" onclick="scrollToFirstRow()" class="date-nav-button-inline" title="Ir a la fecha más reciente">▲</button>';
-                        tableHTML += '<button id="scroll-down-btn" onclick="scrollToLastRow()" class="date-nav-button-inline" title="Ir a la fecha más antigua">▼</button>';
-                        tableHTML += '</div>';
-                        tableHTML += '<span class="date-text">' + header + '</span>';
-                        tableHTML += '</div>';
-                        tableHTML += '</th>';
-                    } else if (headerIndex === 1) { // Segunda columna - Título del directo de Twitch
-                        tableHTML += `<th>${header}</th>`;
-                    } else if (isLastColumn) { // Última columna sin borde
-                        tableHTML += `<th>${header}</th>`;
+                        tableHTMLFirefox += `<th>`;
+                        tableHTMLFirefox += '<div class="date-header-inline">';
+                        tableHTMLFirefox += '<div class="date-arrows-inline">';
+                        tableHTMLFirefox += '<button id="scroll-up-btn-firefox" onclick="scrollToFirstRowFirefox()" class="date-nav-button-inline" title="Ir a la fecha más reciente">▲</button>';
+                        tableHTMLFirefox += '<button id="scroll-down-btn-firefox" onclick="scrollToLastRowFirefox()" class="date-nav-button-inline" title="Ir a la fecha más antigua">▼</button>';
+                        tableHTMLFirefox += '</div>';
+                        tableHTMLFirefox += '<span class="date-text">' + header + '</span>';
+                        tableHTMLFirefox += '</div>';
+                        tableHTMLFirefox += '</th>';
                     } else if (headerIndex === 2) { // Tercera columna - Precio en €
-                        tableHTML += `<th>Precio €*</th>`;
-                    } else if (headerIndex === 3) { // Cuarta columna - Procesador
-                        tableHTML += `<th>${header}</th>`;
-                    } else if (headerIndex === 4) { // Quinta columna - Tarjeta gráfica
-                        tableHTML += `<th>${header}</th>`;
-                    } else { // Otras columnas
-                        tableHTML += `<th>${header}</th>`;
+                        tableHTMLFirefox += `<th>Precio €*</th>`;
+                    } else {
+                        tableHTMLFirefox += `<th>${header}</th>`;
                     }
                 });
-                tableHTML += '</tr></thead><tbody>';
+                tableHTMLFirefox += '</tr></thead><tbody>';
 
                 rows.forEach((row, index) => {
-                    tableHTML += '<tr>';
+                    tableHTMLFirefox += '<tr>';
                     headers.forEach((header, cellIndex) => {
                         const cellValue = row[cellIndex] || '';
-                        
-                        // Center align specific columns
-                        if (cellIndex === 0 || cellIndex === 2) { // Date and Price columns
-                            tableHTML += `<td class="data-cell data-cell-center">${cellValue}</td>`;
-                        } else {
-                            tableHTML += `<td class="data-cell">${cellValue}</td>`;
-                        }
+                        tableHTMLFirefox += `<td>${cellValue}</td>`;
                     });
-                    tableHTML += '</tr>';
+                    tableHTMLFirefox += '</tr>';
                 });
 
-                tableHTML += '</tbody></table>';
-                document.getElementById('table-container').innerHTML = tableHTML;
+                tableHTMLFirefox += '</tbody></table>';
+                document.getElementById('main-table-firefox-container-inner').innerHTML = tableHTMLFirefox;
                 
                 // Añadir el mensaje explicativo FUERA del contenedor de la tabla
                 const tableWrapper = document.querySelector('.table-wrapper');
@@ -665,7 +651,7 @@
                     if (!existingMessage || !existingMessage.classList.contains('price-explanation')) {
                         const messageElement = document.createElement('p');
                         messageElement.className = 'price-explanation';
-                                                 messageElement.textContent = '* El precio es de todos los componentes.';
+                        messageElement.textContent = '* El precio es de todos los componentes.';
                         tableWrapper.parentNode.insertBefore(messageElement, tableWrapper.nextSibling);
                     }
                 }
@@ -679,86 +665,24 @@
             }
         }
 
-        // Función global para scroll a la primera fila
-        function scrollToFirstRow() {
-            const tableContainer = document.getElementById('table-container');
-            const table = tableContainer.querySelector('table');
-            
-            if (table) {
-                const tbody = table.querySelector('tbody');
-                if (tbody && tbody.rows.length > 0) {
-                    const firstRow = tbody.rows[0];
-                    firstRow.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'center' 
-                    });
-                    
-                    // Resaltar brevemente la fila
-                    firstRow.style.backgroundColor = '#e3f2fd';
-                    setTimeout(() => {
-                        firstRow.style.backgroundColor = '';
-                    }, 2000);
-                    
-                    // Actualizar estado de botones después del scroll
-                    setTimeout(() => {
-                        updateScrollButtons();
-                    }, 500);
-                }
-            }
-        }
+        // FUNCIONES DE SCROLL OBSOLETAS ELIMINADAS - SOLO QUEDAN LAS DE FIREFOX
 
-        // Función global para scroll a la última fila
-        function scrollToLastRow() {
-            const tableContainer = document.getElementById('table-container');
-            const table = tableContainer.querySelector('table');
-            
-            if (table) {
-                const tbody = table.querySelector('tbody');
-                if (tbody && tbody.rows.length > 0) {
-                    const lastRow = tbody.rows[tbody.rows.length - 1];
-                    lastRow.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'center' 
-                    });
-                    
-                    // Resaltar brevemente la fila
-                    lastRow.style.backgroundColor = '#e3f2fd';
-                    setTimeout(() => {
-                        lastRow.style.backgroundColor = '';
-                    }, 2000);
-                    
-                    // Actualizar estado de botones después del scroll
-                    setTimeout(() => {
-                        updateScrollButtons();
-                    }, 500);
-                }
-            }
-        }
-
-        // Función para actualizar el estado de los botones de scroll
+        // Función para actualizar el estado de los botones de scroll (CORREGIDA)
         function updateScrollButtons() {
-            const tableContainer = document.getElementById('table-container');
-            const table = tableContainer.querySelector('table');
-            
-            if (!table) return;
-            
-            const tbody = table.querySelector('tbody');
-            if (!tbody || tbody.rows.length === 0) return;
-            
-            const scrollUpBtn = document.getElementById('scroll-up-btn');
-            const scrollDownBtn = document.getElementById('scroll-down-btn');
+            const scrollUpBtn = document.getElementById('scroll-up-btn-firefox');
+            const scrollDownBtn = document.getElementById('scroll-down-btn-firefox');
             
             if (!scrollUpBtn || !scrollDownBtn) return;
             
-            // Obtener la posición del scroll del contenedor de la tabla
-            const tableWrapper = tableContainer.closest('.table-wrapper');
-            if (!tableWrapper) return;
+            const tableContainer = document.getElementById('main-table-firefox-container-inner');
             
-            const scrollTop = tableWrapper.scrollTop;
-            const scrollHeight = tableWrapper.scrollHeight;
-            const clientHeight = tableWrapper.clientHeight;
+            if (!tableContainer) return;
             
-            // Si estamos en la parte superior, ocultar botón hacia arriba
+            const scrollTop = tableContainer.scrollTop;
+            const scrollHeight = tableContainer.scrollHeight;
+            const clientHeight = tableContainer.clientHeight;
+            
+            // Si estamos en la parte superior (primera fila), ocultar botón hacia arriba
             if (scrollTop <= 10) {
                 scrollUpBtn.classList.add('date-nav-button-hidden');
                 scrollUpBtn.classList.remove('date-nav-button-visible');
@@ -767,8 +691,13 @@
                 scrollUpBtn.classList.add('date-nav-button-visible');
             }
             
-            // Si estamos en la parte inferior, ocultar botón hacia abajo
-            if (scrollTop + clientHeight >= scrollHeight - 10) {
+            // Si no hay scroll vertical, siempre mostrar la flecha de abajo
+            if (scrollHeight <= clientHeight) {
+                // No hay scroll vertical - siempre mostrar flecha de abajo
+                scrollDownBtn.classList.remove('date-nav-button-hidden');
+                scrollDownBtn.classList.add('date-nav-button-visible');
+            } else if (scrollTop + clientHeight >= scrollHeight - 10) {
+                // Si estamos en la parte inferior (última fila), ocultar botón hacia abajo
                 scrollDownBtn.classList.add('date-nav-button-hidden');
                 scrollDownBtn.classList.remove('date-nav-button-visible');
             } else {
@@ -776,18 +705,86 @@
                 scrollDownBtn.classList.add('date-nav-button-visible');
             }
         }
+
+        // FUNCIONES DE SCROLL PARA LA NUEVA TABLA FIREFOX
+        function scrollToFirstRowFirefox() {
+            console.log('Función scrollToFirstRowFirefox ejecutada');
+            const tableContainer = document.getElementById('main-table-firefox-container-inner');
+            
+            console.log('Elementos encontrados:', { tableContainer: !!tableContainer });
+            
+            if (tableContainer) {
+                console.log('Haciendo scroll al inicio...');
+                // Scroll al inicio del contenedor que tiene overflow-y: auto
+                tableContainer.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                
+                // Resaltar brevemente la primera fila
+                const table = tableContainer.querySelector('table');
+                if (table) {
+                    const tbody = table.querySelector('tbody');
+                    if (tbody && tbody.rows.length > 0) {
+                        const firstRow = tbody.rows[0];
+                        firstRow.style.backgroundColor = '#e3f2fd';
+                        setTimeout(() => {
+                            firstRow.style.backgroundColor = '';
+                        }, 2000);
+                    }
+                }
+                
+                // Actualizar estado de los botones después del scroll
+                setTimeout(() => {
+                    updateScrollButtons();
+                }, 500);
+            }
+        }
+
+        function scrollToLastRowFirefox() {
+            console.log('Función scrollToLastRowFirefox ejecutada');
+            const tableContainer = document.getElementById('main-table-firefox-container-inner');
+            
+            console.log('Elementos encontrados:', { tableContainer: !!tableContainer });
+            
+            if (tableContainer) {
+                console.log('Haciendo scroll al final...');
+                // Scroll al final del contenedor que tiene overflow-y: auto
+                tableContainer.scrollTo({
+                    top: tableContainer.scrollHeight,
+                    behavior: 'smooth'
+                });
+                
+                // Resaltar brevemente la última fila
+                const table = tableContainer.querySelector('table');
+                if (table) {
+                    const tbody = table.querySelector('tbody');
+                    if (tbody && tbody.rows.length > 0) {
+                        const lastRow = tbody.rows[tbody.rows.length - 1];
+                        lastRow.style.backgroundColor = '#e3f2fd';
+                        setTimeout(() => {
+                            lastRow.style.backgroundColor = '';
+                        }, 2000);
+                    }
+                }
+                
+                // Actualizar estado de los botones después del scroll
+                setTimeout(() => {
+                    updateScrollButtons();
+                }, 500);
+            }
+        }
         
         // Inicializar la aplicación cuando se carga la página
         document.addEventListener('DOMContentLoaded', () => {
             new PCBuildsViewer();
             
-            // Agregar listener de scroll para actualizar botones
+            // Inicializar estado de los botones de scroll y agregar listener
             setTimeout(() => {
-                const tableWrapper = document.querySelector('.table-wrapper');
-                if (tableWrapper) {
-                    tableWrapper.addEventListener('scroll', updateScrollButtons);
-                    // Actualizar estado inicial de los botones
-                    updateScrollButtons();
+                updateScrollButtons();
+                const tableContainer = document.getElementById('main-table-firefox-container-inner');
+                if (tableContainer) {
+                    tableContainer.addEventListener('scroll', updateScrollButtons);
                 }
             }, 1000);
         });

@@ -9,6 +9,346 @@
  * - Mismos bordes: 1px solid #000000 (negro) para todas las celdas
  */
 
+/* RESTAURAR TODAS LAS LÍNEAS - REGLAS SIMPLES Y FUNCIONALES */
+/* BORDES PARA TODAS LAS TABLAS */
+.data-table,
+.analysis-table,
+.combinations-table,
+#analysis-container table,
+.combinations-table {
+    border-collapse: collapse !important;
+}
+
+/* TABLA PRINCIPAL CON PROPIEDADES DE COMBINATIONS-TABLE - PARA FIREFOX */
+.main-table-firefox {
+    width: 100% !important; /* ADAPTARSE AL ANCHO DEL CONTENEDOR */
+    min-width: 800px !important; /* ANCHO MÍNIMO PARA RESPETAR COLUMNAS */
+    border-collapse: collapse;
+    color: black;
+    font-size: 16px !important;
+    table-layout: fixed !important;
+    flex-shrink: 0;
+    display: table;
+    margin: 0; /* SIN MARGEN - SE ADAPTA AL CONTENEDOR */
+}
+
+/* BORDES PARA LA NUEVA TABLA - IGUAL QUE COMBINATIONS-TABLE */
+.main-table-firefox th,
+.main-table-firefox td {
+    border: 1px solid #000000 !important;
+}
+
+/* ANCHOS DE COLUMNAS - EXACTAMENTE IGUAL QUE LA TABLA PRINCIPAL */
+.main-table-firefox th:nth-child(1),
+.main-table-firefox td:nth-child(1) {
+    width: 110px !important;
+    min-width: 110px !important;
+    max-width: 110px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.main-table-firefox th:nth-child(2),
+.main-table-firefox td:nth-child(2) {
+    width: 600px !important;
+    min-width: 600px !important;
+    max-width: 600px !important;
+}
+
+.main-table-firefox th:nth-child(3),
+.main-table-firefox td:nth-child(3) {
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.main-table-firefox th:nth-child(4),
+.main-table-firefox td:nth-child(4) {
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
+}
+
+.main-table-firefox th:nth-child(5),
+.main-table-firefox td:nth-child(5) {
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
+}
+
+.main-table-firefox th:nth-child(6),
+.main-table-firefox td:nth-child(6) {
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+}
+
+/* CONTENEDOR RESPONSIVE - EXACTAMENTE IGUAL QUE LA TABLA PRINCIPAL */
+#main-table-firefox-container {
+    width: 100% !important; /* ADAPTARSE AL ANCHO DE LA VENTANA */
+    min-width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto 20px auto !important; /* MISMO MARGEN QUE LA TABLA PRINCIPAL */
+    overflow-x: auto !important; /* SCROLL HORIZONTAL CUANDO SEA NECESARIO */
+    overflow-y: hidden !important; /* SIN SCROLL VERTICAL */
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    position: relative; /* NECESARIO PARA POSITION STICKY */
+}
+
+#main-table-firefox-container .table-wrapper {
+    width: 100% !important; /* ADAPTARSE AL ANCHO DE LA VENTANA */
+    min-width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow-x: auto !important; /* SCROLL HORIZONTAL CUANDO SEA NECESARIO */
+    overflow-y: visible !important;
+}
+
+#main-table-firefox-container-inner {
+    width: 100% !important; /* ADAPTARSE AL ANCHO DE LA VENTANA */
+    min-width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow-x: auto !important; /* SCROLL HORIZONTAL CUANDO SEA NECESARIO */
+    overflow-y: visible !important;
+}
+
+/* HEADER INMÓVIL - POSITION STICKY - EXACTAMENTE IGUAL QUE LA TABLA PRINCIPAL */
+#main-table-firefox-container-inner {
+    max-height: 70vh !important; /* NECESARIO PARA POSITION STICKY */
+    overflow-y: auto !important; /* NECESARIO PARA POSITION STICKY */
+}
+
+.main-table-firefox thead th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important; /* MISMO Z-INDEX QUE LA TABLA PRINCIPAL */
+    background-color: #667eea !important; /* MANTENER COLOR DE FONDO */
+}
+
+/* RESPONSIVE PARA MÓVIL - EXACTAMENTE IGUAL QUE LA TABLA PRINCIPAL */
+@media (max-width: 768px) {
+    #main-table-firefox-container {
+        width: 100% !important; /* ADAPTARSE AL ANCHO DE LA VENTANA */
+        min-width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important; /* SCROLL HORIZONTAL COMO LA TABLA PRINCIPAL */
+    }
+    
+    #main-table-firefox-container .table-wrapper {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+    }
+    
+    #main-table-firefox-container-inner {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+    }
+    
+    .main-table-firefox {
+        min-width: 800px !important; /* ANCHO MÍNIMO PARA FORZAR SCROLL HORIZONTAL */
+        width: 800px !important;
+    }
+    
+    /* FORZAR ANCHOS ESPECÍFICOS PARA CADA COLUMNA - EXACTAMENTE IGUAL QUE LA TABLA PRINCIPAL */
+    .main-table-firefox th:nth-child(1),
+    .main-table-firefox td:nth-child(1) {
+        min-width: 120px !important; /* AUMENTADO PARA QUE SEA IGUAL QUE LA TABLA PRINCIPAL */
+        width: 120px !important;
+        max-width: 120px !important;
+    }
+    
+    .main-table-firefox th:nth-child(2),
+    .main-table-firefox td:nth-child(2) {
+        min-width: 200px !important;
+        width: 200px !important;
+        max-width: 200px !important;
+    }
+    
+    .main-table-firefox th:nth-child(3),
+    .main-table-firefox td:nth-child(3) {
+        min-width: 120px !important;
+        width: 120px !important;
+        max-width: 120px !important;
+    }
+    
+    .main-table-firefox th:nth-child(4),
+    .main-table-firefox td:nth-child(4) {
+        min-width: 250px !important; /* EXACTAMENTE IGUAL QUE LA TABLA PRINCIPAL EN MÓVIL */
+        width: 250px !important;
+        max-width: 250px !important;
+    }
+    
+    .main-table-firefox th:nth-child(5),
+    .main-table-firefox td:nth-child(5) {
+        min-width: 250px !important; /* EXACTAMENTE IGUAL QUE LA TABLA PRINCIPAL EN MÓVIL */
+        width: 250px !important;
+        max-width: 250px !important;
+    }
+    
+    .main-table-firefox th:nth-child(6),
+    .main-table-firefox td:nth-child(6) {
+        min-width: 250px !important; /* EXACTAMENTE IGUAL QUE LA TABLA PRINCIPAL EN MÓVIL */
+        width: 250px !important;
+        max-width: 250px !important;
+    }
+    
+    /* REDUCIR PADDING EN MÓVIL PARA AHORRAR ESPACIO - EXACTAMENTE IGUAL QUE LA TABLA PRINCIPAL */
+.main-table-firefox th,
+.main-table-firefox td {
+    padding: 6px 4px !important;
+}
+
+/* HEADERS SIEMPRE CENTRADOS - EN CUALQUIER RESOLUCIÓN */
+#main-table-firefox-container .main-table-firefox th:nth-child(1),
+#main-table-firefox-container .main-table-firefox th:nth-child(2),
+#main-table-firefox-container .main-table-firefox th:nth-child(3),
+#main-table-firefox-container .main-table-firefox th:nth-child(4),
+#main-table-firefox-container .main-table-firefox th:nth-child(5),
+#main-table-firefox-container .main-table-firefox th:nth-child(6) {
+    text-align: center !important; /* HEADERS SIEMPRE CENTRADOS */
+}
+
+/* DATOS CON ALINEACIÓN ESPECÍFICA EN MÓVIL */
+#main-table-firefox-container .main-table-firefox tbody td:nth-child(1) {
+    text-align: center !important; /* FECHA CENTRADA */
+}
+
+#main-table-firefox-container .main-table-firefox tbody td:nth-child(2) {
+    text-align: left !important; /* TÍTULO A LA IZQUIERDA */
+}
+
+#main-table-firefox-container .main-table-firefox tbody td:nth-child(3) {
+    text-align: center !important; /* PRECIO CENTRADO */
+}
+
+#main-table-firefox-container .main-table-firefox tbody td:nth-child(4) {
+    text-align: left !important; /* PROCESADOR A LA IZQUIERDA */
+}
+
+#main-table-firefox-container .main-table-firefox tbody td:nth-child(5) {
+    text-align: left !important; /* GRÁFICA A LA IZQUIERDA */
+}
+
+#main-table-firefox-container .main-table-firefox tbody td:nth-child(6) {
+    text-align: left !important; /* TORRE A LA IZQUIERDA */
+}
+}
+
+/* Estilos responsivos para la nueva tabla - EXACTAMENTE IGUAL QUE LA PRINCIPAL */
+.main-table-firefox {
+    table-layout: fixed;
+}
+
+.main-table-firefox th {
+    background-color: #667eea;
+    color: white;
+    font-weight: bold;
+    padding: 12px 8px;
+    text-align: center;
+}
+
+.main-table-firefox td {
+    padding: 10px 8px;
+    vertical-align: middle !important;
+}
+
+/* ALINEACIÓN CORRECTA PARA LA NUEVA TABLA - SIN REGLAS DE CENTRADO */
+.main-table-firefox td,
+.main-table-firefox th {
+    vertical-align: middle !important;
+}
+
+/* ALINEACIÓN CON MÁXIMA PRIORIDAD - HEADERS SIEMPRE CENTRADOS, DATOS CON ALINEACIÓN ESPECÍFICA */
+/* HEADERS SIEMPRE CENTRADOS - MÁXIMA PRIORIDAD */
+#main-table-firefox-container .main-table-firefox thead th:nth-child(1),
+#main-table-firefox-container .main-table-firefox thead th:nth-child(2),
+#main-table-firefox-container .main-table-firefox thead th:nth-child(3),
+#main-table-firefox-container .main-table-firefox thead th:nth-child(4),
+#main-table-firefox-container .main-table-firefox thead th:nth-child(5),
+#main-table-firefox-container .main-table-firefox thead th:nth-child(6) {
+    text-align: center !important; /* HEADERS SIEMPRE CENTRADOS */
+}
+
+/* ALINEACIÓN DEL CONTENIDO DE DATOS - SOLO EN TBODY, FECHA Y PRECIO CENTRADOS, RESTO A LA IZQUIERDA */
+/* FORZAR ALINEACIÓN CON MÁXIMA PRIORIDAD */
+.main-table-firefox tbody tr td:nth-child(1) {
+    text-align: center !important; /* FECHA CENTRADA */
+}
+
+.main-table-firefox tbody tr td:nth-child(2) {
+    text-align: left !important; /* TÍTULO A LA IZQUIERDA */
+}
+
+.main-table-firefox tbody tr td:nth-child(3) {
+    text-align: center !important; /* PRECIO CENTRADO */
+}
+
+.main-table-firefox tbody tr td:nth-child(4) {
+    text-align: left !important; /* PROCESADOR A LA IZQUIERDA */
+}
+
+.main-table-firefox tbody tr td:nth-child(5) {
+    text-align: left !important; /* GRÁFICA A LA IZQUIERDA */
+}
+
+.main-table-firefox tbody tr td:nth-child(6) {
+    text-align: left !important; /* TORRE A LA IZQUIERDA */
+}
+
+/* ESTILOS DE FILAS - IGUAL QUE COMBINATIONS-TABLE */
+.main-table-firefox tbody tr {
+    background: white;
+}
+
+.main-table-firefox tbody tr:hover {
+    background: rgb(209, 216, 249);
+    color: black !important;
+}
+
+.main-table-firefox tbody tr:hover td {
+    color: black !important;
+}
+
+/* BORDES PARA HEADERS - TODAS LAS TABLAS */
+.data-table th,
+.analysis-table th,
+.combinations-table th,
+#analysis-container table th,
+.combinations-table th {
+    border: 1px solid #000000 !important;
+}
+
+/* BORDES PARA CELDAS - TODAS LAS TABLAS */
+.data-table td,
+.analysis-table td,
+.combinations-table td,
+#analysis-container table td,
+.combinations-table td {
+    border: 1px solid #000000 !important;
+}
+
+/* REGLAS ESPECÍFICAS PARA FIREFOX ELIMINADAS - YA NO SON NECESARIAS */
+
+
+
+
+
+
+
+
+
 * {
     margin: 0;
     padding: 0;
@@ -88,6 +428,15 @@ body {
     width: 100%;
 }
 
+/* FORZAR POSICIÓN RELATIVA EN TABLA PRINCIPAL PARA FIREFOX */
+#data-container .data-table {
+    position: relative !important;
+}
+
+#data-container .data-table th {
+    position: relative !important;
+}
+
 /* Contenedor de la tabla con scroll */
 .table-wrapper {
     background: white;
@@ -148,37 +497,7 @@ body {
         width: 100%;
     }
     
-    /* Asegurar anchos mínimos para columnas críticas en baja resolución */
-    #data-container .data-table th:first-child,
-    #data-container .data-table td:first-child {
-        min-width: 80px !important;
-        width: 80px !important;
-    }
-    
-    #data-container .data-table th:nth-child(3),
-    #data-container .data-table td:nth-child(3) {
-        min-width: 120px !important;
-        width: 120px !important;
-    }
-    
-    /* Anchos para columnas de procesador, gráfica y torre en baja resolución */
-    #data-container .data-table th:nth-child(4),
-    #data-container .data-table td:nth-child(4) {
-        min-width: 60px !important;
-        width: 60px !important;
-    }
-    
-    #data-container .data-table th:nth-child(5),
-    #data-container .data-table td:nth-child(5) {
-        min-width: 60px !important;
-        width: 60px !important;
-    }
-    
-    #data-container .data-table th:nth-child(6),
-    #data-container .data-table td:nth-child(6) {
-        min-width: 350px !important;
-        width: 350px !important;
-    }
+    /* REGLAS OBSOLETAS DE DATA-CONTAINER ELIMINADAS */
 }
 
 @media (max-width: 768px) {
@@ -218,181 +537,20 @@ body {
     }
     
     /* Anchos para columnas de procesador, gráfica y torre en móvil */
-    #data-container .data-table th:nth-child(4),
-    #data-container .data-table td:nth-child(4) {
-        min-width: 60px !important;
-        width: 60px !important;
-        max-width: 60px !important;
-    }
-    
-    #data-container .data-table th:nth-child(5),
-    #data-container .data-table td:nth-child(5) {
-        min-width: 60px !important;
-        width: 60px !important;
-        max-width: 60px !important;
-    }
-    
-    #data-container .data-table th:nth-child(6),
-    #data-container .data-table td:nth-child(6) {
-        min-width: 350px !important;
-        width: 350px !important;
-        max-width: 350px !important;
-    }
-    
-    /* Reducir padding en móvil para ahorrar espacio */
-    #data-container .data-table th,
-    #data-container .data-table td {
-        padding: 6px 4px !important;
-    }
+    /* REGLAS OBSOLETAS DE DATA-CONTAINER ELIMINADAS */
 }
 
-#data-container .data-table {
-    background: white;
-    border-radius: 15px;
-    padding: 0;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    overflow-x: auto;
-    overflow-y: hidden;
-    margin: 0 auto 20px auto;
-    min-width: 100%;
-    max-width: 100%;
-}
+/* REGLAS OBSOLETAS DE DATA-CONTAINER ELIMINADAS */
 
-/* Solo la tabla principal tiene scroll y sticky header */
-#data-container .data-table {
-    max-height: 70vh;
-    overflow-y: auto;
-    overflow-x: scroll;
-}
+/* REGLAS OBSOLETAS DE DATA-CONTAINER ELIMINADAS */
 
-/* Sticky header para la tabla principal */
-#data-container .data-table th {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background-color: #667eea;
-    color: white;
-    font-weight: 600;
-    text-align: center;
-    white-space: normal;
-    word-wrap: break-word;
-    line-height: 1.2;
-    height: auto;
-    min-height: 50px;
-    padding: 12px 8px;
-}
+/* REGLAS OBSOLETAS DE DATA-CONTAINER ELIMINADAS */
 
 /* Los estilos de scrollbar están unificados arriba para todas las tablas */
 
-/* Scroll horizontal inteligente para la tabla principal */
-#data-container .data-table {
-    overflow-x: auto;
-    overflow-y: visible;
-}
+/* REGLAS OBSOLETAS DE DATA-CONTAINER ELIMINADAS */
 
-/* Ocultar scrollbar horizontal por defecto */
-#data-container .data-table::-webkit-scrollbar:horizontal {
-    height: 0;
-    background: transparent;
-}
-
-/* En Firefox, scrollbar fino por defecto */
-#data-container .data-table {
-    scrollbar-width: thin;
-}
-
-/* Asegurar que la tabla tenga ancho mínimo para forzar scroll */
-#data-container table {
-    min-width: 400px; /* Reducido para permitir anchos personalizados */
-}
-
-/* FORZAR ANCHOS DE COLUMNAS EN MÓVIL - REGLAS CON MÁXIMA PRIORIDAD */
-@media (max-width: 768px) {
-    #data-container .data-table {
-        min-width: 800px !important; /* Forzar ancho mínimo para que las columnas se respeten */
-    }
-    
-    /* Forzar anchos específicos para cada columna */
-    #data-container .data-table th:nth-child(1),
-    #data-container .data-table td:nth-child(1) {
-        min-width: 80px !important;
-        width: 80px !important;
-        max-width: 80px !important;
-    }
-    
-    #data-container .data-table th:nth-child(2),
-    #data-container .data-table td:nth-child(2) {
-        min-width: 200px !important;
-        width: 200px !important;
-        max-width: 200px !important;
-    }
-    
-    #data-container .data-table th:nth-child(3),
-    #data-container .data-table td:nth-child(3) {
-        min-width: 120px !important;
-        width: 120px !important;
-        max-width: 120px !important;
-    }
-    
-    #data-container .data-table th:nth-child(4),
-    #data-container .data-table td:nth-child(4) {
-        min-width: 250px !important;
-        width: 250px !important;
-        max-width: 250px !important;
-    }
-    
-    #data-container .data-table th:nth-child(5),
-    #data-container .data-table td:nth-child(5) {
-        min-width: 250px !important;
-        width: 250px !important;
-        max-width: 250px !important;
-    }
-    
-    #data-container .data-table th:nth-child(6),
-    #data-container .data-table td:nth-child(6) {
-        min-width: 250px !important;
-        width: 250px !important;
-        max-width: 250px !important;
-    }
-}
-
-/* Estilos responsivos para la tabla principal */
-#data-container .data-table {
-    table-layout: fixed;
-}
-
-/* Asegurar anchos mínimos para columnas críticas en todas las resoluciones */
-#data-container .data-table th:first-child,
-#data-container .data-table td:first-child {
-    min-width: 80px !important;
-}
-
-#data-container .data-table th:nth-child(3),
-#data-container .data-table td:nth-child(3) {
-    min-width: 120px !important;
-}
-
-/* Anchos para columnas de procesador, gráfica y torre - FORZADOS */
-#data-container .data-table th:nth-child(4),
-#data-container .data-table td:nth-child(4) {
-    min-width: 350px !important;
-    width: 350px !important;
-    max-width: 350px !important;
-}
-
-#data-container .data-table th:nth-child(5),
-#data-container .data-table td:nth-child(5) {
-    min-width: 350px !important;
-    width: 350px !important;
-    max-width: 350px !important;
-}
-
-#data-container .data-table th:nth-child(6),
-#data-container .data-table td:nth-child(6) {
-    min-width: 350px !important;
-    width: 350px !important;
-    max-width: 350px !important;
-}
+/* REGLAS OBSOLETAS DE DATA-CONTAINER ELIMINADAS */
 
 /* Scroll horizontal inteligente - solo aparece cuando es necesario */
 
@@ -518,7 +676,7 @@ body {
 #data-container .data-table {
     width: 100%;
     min-width: 400px; /* Reducido para permitir anchos personalizados */
-    border-collapse: collapse;
+    border-collapse: collapse; /* Exactamente igual que combinations-table */
     margin: 0;
     table-layout: fixed; /* Cambiado a fixed para respetar anchos personalizados */
 }
@@ -533,7 +691,7 @@ body {
 /* Centrar todos los títulos de la tabla principal */
 #data-container .data-table th {
     text-align: center !important;
-    border-bottom: none !important;
+    /* Sin reglas de bordes específicas - igual que combinations-table */
 }
 
 /* Hacer que las columnas se adapten al contenido - SOLO para la tabla principal de datos */
@@ -811,8 +969,8 @@ body {
 
 
 
-/* Asegurar que todos los headers tengan anchos equilibrados (sin bordes) */
-/* Comentado para eliminar todas las líneas verticales */
+/* Asegurar que todos los headers tengan líneas verticales */
+/* FORZAR bordes verticales en TODAS las tablas */
 
 
 
@@ -1105,7 +1263,7 @@ body {
 }
 
 .analysis-header:last-child {
-    border-right: none;
+    border-right: 1px solid #000000;
 }
 
 /* Eliminar clases conflictivas */
@@ -1136,7 +1294,7 @@ body {
 }
 
 .analysis-cell:last-child {
-    border-right: none;
+    border-right: 1px solid #000000;
 }
 
 /* Eliminar clases conflictivas */
@@ -1868,58 +2026,9 @@ table, .data-table, .analysis-table, .combinations-table {
     border-collapse: collapse !important;
 }
 
-/* Bordes unificados para TODAS las tablas - mismo grosor */
-table, .data-table, .analysis-table, .combinations-table,
-table th, .data-table th, .analysis-table th, .combinations-table th,
-table td, .data-table td, .analysis-table td, .combinations-table td {
-    border: 1px solid #000000 !important;
-    border-width: 1px !important;
-}
 
-/* FORZAR bordes en las tablas de análisis específicamente */
-#analysis-container table,
-#analysis-container table th,
-#analysis-container table td,
-.analysis-table,
-.analysis-table th,
-.analysis-table td,
-.analysis-header,
-.analysis-cell {
-    border: 1px solid #000000 !important;
-    border-width: 1px !important;
-}
 
-/* Asegurar que las tablas de análisis tengan bordes visibles */
-.analysis-table-container table,
-.analysis-table-container table th,
-.analysis-table-container table td {
-    border: 1px solid #000000 !important;
-    border-width: 1px !important;
-}
 
-/* Forzar bordes en todas las celdas de análisis */
-.processor-section table,
-.graphics-section table,
-.tower-section table,
-.processor-section table th,
-.processor-section table td,
-.graphics-section table th,
-.graphics-section table td,
-.tower-section table th,
-.tower-section table td {
-    border: 1px solid #000000 !important;
-    border-width: 1px !important;
-}
-
-/* REGLA FINAL CON MÁXIMA PRIORIDAD - forzar bordes en análisis */
-#analysis-container * table,
-#analysis-container * table *,
-#analysis-container table,
-#analysis-container table * {
-    border: 1px solid #000000 !important;
-    border-width: 1px !important;
-    border-style: solid !important;
-}
 
 /* Estilos unificados para todas las celdas de tabla */
 th, td, .data-table th, .data-table td, .analysis-table th, .analysis-table td, .combinations-table th, .combinations-table td {
