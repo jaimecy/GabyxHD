@@ -1039,7 +1039,7 @@
 
                 monthlyStats.forEach(monthData => {
                     const monthName = this.getMonthName(monthData.month);
-                    const avgPrice = monthData.avgPrice.toFixed(2);
+                    const avgPrice = Math.round(monthData.avgPrice);
                     
                     monthlyHTML += `
                         <tr>
