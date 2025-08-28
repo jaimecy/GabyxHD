@@ -23,6 +23,12 @@
         <div id="stats-info" class="hidden">
             <h3 class="stats-title">ℹ️ Información de los Montajes</h3>
             <div id="stats-grid" class="stats-grid"></div>
+            
+            <!-- ENLACE A ESTADÍSTICAS MENSUALES -->
+            <div class="monthly-stats-link">
+                <a href="#monthly-stats-section">📊 Ver Estadísticas Mensuales 2025</a>
+            </div>
+            
             <div class="stats-button-container">
                 <button id="go-to-analysis-btn" class="go-to-analysis-btn">
                     📊 Análisis de Componentes
@@ -666,6 +672,12 @@
                 document.getElementById('go-to-analysis-btn').onclick = () => this.showAnalysis();
                 document.getElementById('back-to-data-btn').onclick = () => this.showData();
                 document.getElementById('back-to-data-btn-bottom').onclick = () => this.showData(); // Add listener for the new button
+                
+                // Event listener para mostrar/ocultar estadísticas mensuales
+                const monthlyStatsTitle = document.getElementById('monthly-stats-title');
+                if (monthlyStatsTitle) {
+                    monthlyStatsTitle.onclick = () => this.toggleMonthlyStats();
+                }
             }
 
             showAnalysis() {
@@ -769,6 +781,9 @@
                         <div class="label">Torres distintas</div>
                     </div>
                 `;
+
+                // Generar estadísticas mensuales
+                this.displayMonthlyStats(data);
 
                 document.getElementById('stats-info').classList.remove('hidden');
                 document.getElementById('main-table-firefox-container').style.display = 'block';
@@ -999,6 +1014,104 @@
                     confirmationDiv.style.display = 'none';
                 }, 3000);
             }
+
+            // Generar estadísticas mensuales
+            displayMonthlyStats(data) {
+                const monthlyStats = this.calculateMonthlyStats(data);
+                const monthlyStatsTable = document.getElementById('monthly-stats-table-final');
+                
+                if (monthlyStats.length === 0) {
+                    monthlyStatsTable.innerHTML = '<p class="no-monthly-data">No hay datos suficientes para estadísticas mensuales.</p>';
+                    return;
+                }
+
+                let monthlyHTML = `
+                    <table class="monthly-stats-table">
+                        <thead>
+                            <tr>
+                                <th>Mes</th>
+                                <th>N° Montajes</th>
+                                <th>Promedio €</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                monthlyStats.forEach(monthData => {
+                    const monthName = this.getMonthName(monthData.month);
+                    const avgPrice = monthData.avgPrice.toFixed(2);
+                    
+                    monthlyHTML += `
+                        <tr>
+                            <td>${monthName}</td>
+                            <td>${monthData.count}</td>
+                            <td>${avgPrice}</td>
+                        </tr>
+                    `;
+                });
+
+                monthlyHTML += '</tbody></table>';
+                monthlyStatsTable.innerHTML = monthlyHTML;
+            }
+
+            // Calcular estadísticas mensuales
+            calculateMonthlyStats(data) {
+                const monthlyData = {};
+                
+                // Procesar cada fila de datos (excluyendo headers)
+                data.slice(1).forEach(row => {
+                    const dateStr = row[0]; // Primera columna es la fecha
+                    const priceStr = row[2]; // Tercera columna es el precio
+                    
+                    if (!dateStr || !priceStr) return;
+                    
+                    const date = this.parseDate(dateStr);
+                    if (!date || isNaN(date.getTime())) return;
+                    
+                    const month = date.getMonth();
+                    const year = date.getFullYear();
+                    const monthKey = `${year}-${month}`;
+                    
+                    const price = this.parsePrice(priceStr);
+                    if (isNaN(price)) return;
+                    
+                    if (!monthlyData[monthKey]) {
+                        monthlyData[monthKey] = {
+                            month: month,
+                            year: year,
+                            count: 0,
+                            totalPrice: 0
+                        };
+                    }
+                    
+                    monthlyData[monthKey].count++;
+                    monthlyData[monthKey].totalPrice += price;
+                });
+                
+                // Calcular promedios
+                Object.values(monthlyData).forEach(monthData => {
+                    monthData.avgPrice = monthData.totalPrice / monthData.count;
+                });
+                
+                // Ordenar por fecha (de menor a mayor mes del año)
+                return Object.values(monthlyData)
+                    .sort((a, b) => {
+                        if (a.year !== b.year) return a.year - b.year;
+                        return a.month - b.month;
+                    });
+            }
+
+            // Obtener nombre del mes en español
+            getMonthName(monthIndex) {
+                const months = [
+                    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                ];
+                return months[monthIndex];
+            }
+
+
+
         }
 
         // FUNCIONES DE SCROLL OBSOLETAS ELIMINADAS - SOLO QUEDAN LAS DE FIREFOX
@@ -1114,9 +1227,32 @@
                 if (tableContainer) {
                     tableContainer.addEventListener('scroll', updateScrollButtons);
                 }
+                
+
             }, 1000);
         });
+        
+        // Función para scroll hacia arriba
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
     </script>
+
+    <!-- ESTADÍSTICAS MENSUALES AL FINAL -->
+    <div class="monthly-stats-wrapper">
+        <h2 id="monthly-stats-section" class="monthly-stats-section-title">📅 Estadísticas Mensuales 2025</h2>
+        <div id="monthly-stats-table-final" class="monthly-stats-table-container"></div>
+    </div>
+    
+    <!-- FLECHA HACIA ARRIBA -->
+    <div class="scroll-to-top-container">
+        <button id="scroll-to-top-btn" class="scroll-to-top-btn" onclick="scrollToTop()">
+            <span class="scroll-arrow">▲</span>
+        </button>
+    </div>
 </body>
 </html>
 

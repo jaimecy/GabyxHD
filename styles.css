@@ -809,6 +809,13 @@ body {
     margin-bottom: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     text-align: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .stats-info h3 {
@@ -842,6 +849,212 @@ body {
     .stat-card {
         width: 120px !important;
         max-width: 120px !important;
+    }
+}
+
+/* ENLACE A ESTADÍSTICAS MENSUALES */
+.monthly-stats-link {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.monthly-stats-link a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.monthly-stats-link a:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+
+
+/* WRAPPER PARA ESTADÍSTICAS MENSUALES */
+.monthly-stats-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.monthly-stats-section-title {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 1px 0 15px 0;
+    text-align: center;
+    max-width: 800px;
+}
+
+/* FLECHA HACIA ARRIBA */
+.scroll-to-top-container {
+    text-align: center;
+    margin: 30px auto;
+}
+
+.scroll-to-top-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scroll-to-top-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-arrow {
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.monthly-stats-container.compact {
+    margin: 0;
+    padding: 0;
+    width: 450px;
+}
+
+.monthly-stats-container:not(.compact) {
+    margin: 0;
+    padding-bottom: 20px; /* Espacio extra cuando la tabla está visible */
+    width: 450px;
+}
+
+.monthly-stats-title {
+    color: #ffffff;
+    text-align: center;
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 20px 20px 15px 20px;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    position: relative;
+}
+
+.monthly-stats-title::after {
+    content: "👆 Click para ver estadísticas";
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.monthly-stats-container:not(.compact) .monthly-stats-title::after {
+    opacity: 0 !important;
+}
+
+.monthly-stats-title:hover {
+    color: #ffd700;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.monthly-stats-title:hover::after {
+    opacity: 1;
+}
+
+/* La tabla se muestra siempre ahora */
+
+.monthly-stats-table {
+    width: 350px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.monthly-stats-table-container {
+    overflow-x: auto;
+    border-radius: 0 0 10px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    width: 350px;
+    margin: 0 auto;
+    display: block;
+}
+
+.monthly-stats-table th {
+    background: #667eea;
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    padding: 8px 4px;
+    border: 1px solid #000000 !important;
+    width: 33.33%;
+}
+
+.monthly-stats-table td {
+    padding: 8px 4px;
+    text-align: center;
+    border: 1px solid #000000 !important;
+    color: #333;
+    width: 33.33%;
+}
+
+.monthly-stats-table {
+    border: 1px solid #000000 !important;
+}
+
+.monthly-stats-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.monthly-stats-table tr:hover {
+    background-color: #e3f2fd;
+}
+
+.no-monthly-data {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+    padding: 20px;
+}
+
+/* Responsive para la tabla */
+@media (max-width: 768px) {
+    .monthly-stats-table-container {
+        margin: 0 -10px;
+    }
+    
+    .monthly-stats-table th,
+    .monthly-stats-table td {
+        padding: 8px 6px;
+        font-size: 0.9rem;
     }
 }
 
@@ -1803,7 +2016,7 @@ body {
 /* Estilos para el mensaje explicativo del precio */
 .price-explanation {
     color: #333;
-    margin: 15px auto 15px auto;
+    margin: 15px auto 5px auto;
     text-align: left;
     font-size: 16px;
     font-weight: bold;
