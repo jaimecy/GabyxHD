@@ -690,9 +690,15 @@
                 document.getElementById('main-table-firefox-container').style.display = 'none';
                 document.getElementById('stats-info').style.display = 'none';
                 
+                // OCULTAR las estadísticas mensuales
+                const monthlyStatsWrapper = document.querySelector('.monthly-stats-wrapper');
+                if (monthlyStatsWrapper) {
+                    monthlyStatsWrapper.style.display = 'none';
+                }
+                
                 // MOSTRAR SOLO la sección de análisis
                 document.getElementById('analysis-container').style.display = 'block';
-                document.getElementById('analysis-container').classList.remove('hidden');
+                document.getElementById('analysis-container').classList.add('hidden');
                 
                 // Desplazarse al inicio de la página
                 setTimeout(() => {
@@ -715,6 +721,12 @@
                 // MOSTRAR la sección de datos y estadísticas
                 document.getElementById('main-table-firefox-container').style.display = 'block';
                 document.getElementById('stats-info').style.display = 'block';
+                
+                // MOSTRAR las estadísticas mensuales
+                const monthlyStatsWrapper = document.querySelector('.monthly-stats-wrapper');
+                if (monthlyStatsWrapper) {
+                    monthlyStatsWrapper.style.display = 'block';
+                }
                 
                 // Desplazarse arriba del todo - FORZAR el scroll
                 setTimeout(() => {
