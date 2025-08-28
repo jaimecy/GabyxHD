@@ -708,13 +708,9 @@
 
         // FUNCIONES DE SCROLL PARA LA NUEVA TABLA FIREFOX
         function scrollToFirstRowFirefox() {
-            console.log('Función scrollToFirstRowFirefox ejecutada');
             const tableContainer = document.getElementById('main-table-firefox-container-inner');
             
-            console.log('Elementos encontrados:', { tableContainer: !!tableContainer });
-            
             if (tableContainer) {
-                console.log('Haciendo scroll al inicio...');
                 // Scroll al inicio del contenedor que tiene overflow-y: auto
                 tableContainer.scrollTo({
                     top: 0,
@@ -742,13 +738,9 @@
         }
 
         function scrollToLastRowFirefox() {
-            console.log('Función scrollToLastRowFirefox ejecutada');
             const tableContainer = document.getElementById('main-table-firefox-container-inner');
             
-            console.log('Elementos encontrados:', { tableContainer: !!tableContainer });
-            
             if (tableContainer) {
-                console.log('Haciendo scroll al final...');
                 // Scroll al final del contenedor que tiene overflow-y: auto
                 tableContainer.scrollTo({
                     top: tableContainer.scrollHeight,
