@@ -2182,3 +2182,124 @@ th, .data-table th, .analysis-table th, .combinations-table th {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* Estilos para headers ordenables */
+.sortable-header {
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: background-color 0.2s ease;
+    position: relative;
+}
+
+.sortable-header:hover {
+    background-color: #5a6fd8 !important; /* Azul más oscuro al hacer hover */
+}
+
+.sortable-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+}
+
+.header-text {
+    font-weight: 600;
+    color: white; /* Texto blanco como estaba originalmente */
+}
+
+.sort-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 8px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.sort-arrow {
+    font-size: 12px;
+    line-height: 1;
+    color: #ffffff; /* Flechas completamente blancas por defecto */
+    transition: color 0.2s ease;
+}
+
+.sort-arrow-up {
+    margin-bottom: 2px;
+}
+
+.sort-arrow-down {
+    margin-top: 2px;
+}
+
+.sort-arrow.active {
+    color: #ffffff; /* Flechas activas completamente blancas */
+    opacity: 1;
+    font-weight: bold;
+}
+
+.sortable-header:hover .sort-indicator {
+    opacity: 1;
+}
+
+.sortable-header:hover .sort-arrow {
+    color: #ffd700; /* Flechas amarillas al hacer hover */
+}
+
+/* Mensaje de confirmación de ordenamiento */
+.sort-confirmation {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin: 15px 0;
+    text-align: center;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mantener los colores originales de los headers */
+.main-table-firefox th {
+    background-color: #667eea !important; /* Color original azul */
+    color: white !important; /* Texto blanco como estaba originalmente */
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    padding: 8px 4px;
+    transition: background-color 0.2s ease;
+}
+
+.main-table-firefox th:hover {
+    background-color: #5a6fd8 !important; /* Azul ligeramente más oscuro al hacer hover */
+}
+
+/* Estilos responsivos para móviles */
+@media (max-width: 768px) {
+    .sortable-header-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .sort-indicator {
+        margin-left: 0;
+        margin-top: 5px;
+    }
+    
+    .sort-arrow {
+        font-size: 14px;
+    }
+}

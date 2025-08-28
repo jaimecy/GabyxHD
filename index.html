@@ -788,17 +788,25 @@
                 let tableHTMLFirefox = '<table class="main-table-firefox"><thead><tr>';
                 headers.forEach((header, headerIndex) => {
                     if (headerIndex === 0) { // Columna de Fecha
-                        tableHTMLFirefox += `<th>`;
-                        tableHTMLFirefox += '<div class="date-header-inline">';
-                        tableHTMLFirefox += '<div class="date-arrows-inline">';
-                        tableHTMLFirefox += '<button id="scroll-up-btn-firefox" onclick="scrollToFirstRowFirefox()" class="date-nav-button-inline" title="Ir a la fecha más reciente">▲</button>';
-                        tableHTMLFirefox += '<button id="scroll-down-btn-firefox" onclick="scrollToLastRowFirefox()" class="date-nav-button-inline" title="Ir a la fecha más antigua">▼</button>';
-                        tableHTMLFirefox += '</div>';
-                        tableHTMLFirefox += '<span class="date-text">' + header + '</span>';
-                        tableHTMLFirefox += '</div>';
-                        tableHTMLFirefox += '</th>';
+                        tableHTMLFirefox += `<th class="sortable-header" onclick="window.pcBuildsViewer.sortTable(0)">
+                            <div class="sortable-header-content">
+                                <span class="header-text">${header}</span>
+                                <div class="sort-indicator">
+                                    <span class="sort-arrow sort-arrow-up">▲</span>
+                                    <span class="sort-arrow sort-arrow-down">▼</span>
+                                </div>
+                            </div>
+                        </th>`;
                     } else if (headerIndex === 2) { // Tercera columna - Precio en €
-                        tableHTMLFirefox += `<th>Precio €*</th>`;
+                        tableHTMLFirefox += `<th class="sortable-header" onclick="window.pcBuildsViewer.sortTable(2)">
+                            <div class="sortable-header-content">
+                                <span class="header-text">Precio €*</span>
+                                <div class="sort-indicator">
+                                    <span class="sort-arrow sort-arrow-up">▲</span>
+                                    <span class="sort-arrow sort-arrow-down">▼</span>
+                                </div>
+                            </div>
+                        </th>`;
                     } else {
                         tableHTMLFirefox += `<th>${header}</th>`;
                     }
@@ -835,6 +843,161 @@
                         updateScrollButtons();
                     }
                 }, 100);
+            }
+
+            // Método para ordenar la tabla por columna
+            sortTable(columnIndex) {
+                const data = this.sheetsData['Datos'];
+                if (!data || data.length < 2) return;
+
+                const headers = data[0];
+                const rows = data.slice(1);
+                
+                // Obtener el estado actual de ordenamiento para esta columna
+                const currentSortState = this.getSortState(columnIndex);
+                const newSortDirection = currentSortState === 'asc' ? 'desc' : 'asc';
+                
+                // Ordenar las filas
+                const sortedRows = this.sortRows(rows, columnIndex, newSortDirection);
+                
+                // Actualizar el estado de ordenamiento
+                this.setSortState(columnIndex, newSortDirection);
+                
+                // Actualizar los indicadores visuales
+                this.updateSortIndicators(columnIndex, newSortDirection);
+                
+                // Recrear la tabla con los datos ordenados
+                const newData = [headers, ...sortedRows];
+                this.sheetsData['Datos'] = newData;
+                this.displaySheetData('Datos');
+                
+                // Mostrar mensaje de confirmación
+                const columnName = columnIndex === 0 ? 'Fecha' : 'Precio';
+                const direction = newSortDirection === 'asc' ? 'ascendente' : 'descendente';
+                this.showSortConfirmation(columnName, direction);
+            }
+
+            // Obtener el estado actual de ordenamiento para una columna
+            getSortState(columnIndex) {
+                if (!this.sortStates) this.sortStates = {};
+                return this.sortStates[columnIndex] || null;
+            }
+
+            // Establecer el estado de ordenamiento para una columna
+            setSortState(columnIndex, direction) {
+                if (!this.sortStates) this.sortStates = {};
+                this.sortStates[columnIndex] = direction;
+            }
+
+            // Ordenar las filas según la columna y dirección
+            sortRows(rows, columnIndex, direction) {
+                return [...rows].sort((a, b) => {
+                    let valueA = a[columnIndex];
+                    let valueB = b[columnIndex];
+
+                    if (columnIndex === 0) { // Columna de Fecha
+                        // Convertir fechas a objetos Date para comparación
+                        valueA = this.parseDate(valueA);
+                        valueB = this.parseDate(valueB);
+                        
+                        if (direction === 'asc') {
+                            return valueA - valueB;
+                        } else {
+                            return valueB - valueA;
+                        }
+                    } else if (columnIndex === 2) { // Columna de Precio
+                        // Convertir precios a números para comparación
+                        valueA = this.parsePrice(valueA);
+                        valueB = this.parsePrice(valueB);
+                        
+                        if (direction === 'asc') {
+                            return valueA - valueB;
+                        } else {
+                            return valueB - valueA;
+                        }
+                    }
+                    
+                    return 0;
+                });
+            }
+
+            // Parsear fecha en diferentes formatos
+            parseDate(dateStr) {
+                if (!dateStr || !dateStr.trim()) return new Date(0);
+                
+                // Intentar formato estándar
+                let date = new Date(dateStr);
+                if (!isNaN(date.getTime())) return date;
+                
+                // Intentar formato DD-MM-YYYY
+                const parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    date = new Date(parts[2], parts[1] - 1, parts[0]);
+                    if (!isNaN(date.getTime())) return date;
+                }
+                
+                // Si no se puede parsear, retornar fecha mínima
+                return new Date(0);
+            }
+
+            // Parsear precio a número
+            parsePrice(priceStr) {
+                if (!priceStr || !priceStr.trim()) return 0;
+                
+                // Remover símbolos de moneda y espacios
+                const cleanPrice = priceStr.toString().replace(/[€\s,]/g, '');
+                const price = parseFloat(cleanPrice);
+                
+                return isNaN(price) ? 0 : price;
+            }
+
+            // Actualizar indicadores visuales de ordenamiento
+            updateSortIndicators(columnIndex, direction) {
+                // Resetear todos los indicadores
+                const allHeaders = document.querySelectorAll('.sortable-header');
+                allHeaders.forEach(header => {
+                    const upArrow = header.querySelector('.sort-arrow-up');
+                    const downArrow = header.querySelector('.sort-arrow-down');
+                    
+                    if (upArrow && downArrow) {
+                        upArrow.classList.remove('active');
+                        downArrow.classList.remove('active');
+                    }
+                });
+                
+                // Activar el indicador correcto para la columna actual
+                const currentHeader = document.querySelectorAll('.sortable-header')[columnIndex];
+                if (currentHeader) {
+                    const upArrow = currentHeader.querySelector('.sort-arrow-up');
+                    const downArrow = currentHeader.querySelector('.sort-arrow-down');
+                    
+                    if (direction === 'asc' && upArrow) {
+                        upArrow.classList.add('active');
+                    } else if (direction === 'desc' && downArrow) {
+                        downArrow.classList.add('active');
+                    }
+                }
+            }
+
+            // Mostrar confirmación de ordenamiento
+            showSortConfirmation(columnName, direction) {
+                const message = `📊 Tabla ordenada por ${columnName} en orden ${direction}`;
+                
+                // Crear o actualizar el mensaje de confirmación
+                let confirmationDiv = document.querySelector('.sort-confirmation');
+                if (!confirmationDiv) {
+                    confirmationDiv = document.createElement('div');
+                    confirmationDiv.className = 'sort-confirmation';
+                    document.querySelector('.table-wrapper').parentNode.insertBefore(confirmationDiv, document.querySelector('.table-wrapper').nextSibling);
+                }
+                
+                confirmationDiv.textContent = message;
+                confirmationDiv.style.display = 'block';
+                
+                // Ocultar el mensaje después de 3 segundos
+                setTimeout(() => {
+                    confirmationDiv.style.display = 'none';
+                }, 3000);
             }
         }
 
