@@ -26,7 +26,7 @@
             
             <!-- ENLACE A ESTADÍSTICAS MENSUALES -->
             <div class="monthly-stats-link">
-                <a href="#monthly-stats-section">📊 Ver Estadísticas Mensuales 2025</a>
+                <a href="#" onclick="scrollToMonthlyStats(); return false;">📊 Ver Estadísticas Mensuales 2025</a>
             </div>
             
             <div class="stats-button-container">
@@ -1238,6 +1238,16 @@
                 top: 0,
                 behavior: 'smooth'
             });
+        }
+        
+        // Función para scroll a estadísticas mensuales sin cambiar URL
+        function scrollToMonthlyStats() {
+            const monthlyStatsSection = document.getElementById('monthly-stats-section');
+            if (monthlyStatsSection) {
+                monthlyStatsSection.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
         }
     </script>
 
