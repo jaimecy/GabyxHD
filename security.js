@@ -63,4 +63,27 @@
         console.log('🔧 Modo desarrollo activado - Herramientas de desarrollo permitidas');
     }
 
+// Función para generar hash de contraseña (versión navegador)
+function hashPassword(password) {
+    const salt = 'gaby_montages_2025'; // Salt único para tu aplicación
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password + salt);
+    
+    return crypto.subtle.digest('SHA-256', data).then(hashBuffer => {
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    });
+}
+
+// Función para verificar contraseña (versión navegador)
+async function verifyPassword(inputPassword, hashedPassword) {
+    try {
+        const inputHash = await hashPassword(inputPassword);
+        return inputHash === hashedPassword;
+    } catch (error) {
+        console.error('Error al verificar contraseña:', error);
+        return false;
+    }
+}
+
 })();

@@ -22,20 +22,35 @@
 /* TABLA PRINCIPAL CON PROPIEDADES DE COMBINATIONS-TABLE - PARA FIREFOX */
 .main-table-firefox {
     width: 100% !important; /* ADAPTARSE AL ANCHO DEL CONTENEDOR */
-    min-width: 800px !important; /* ANCHO MÍNIMO PARA RESPETAR COLUMNAS */
-    border-collapse: collapse;
+    min-width: 900px !important; /* Aumentar el ancho mínimo */
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
     color: black;
     font-size: 16px !important;
     table-layout: fixed !important;
     flex-shrink: 0;
     display: table;
     margin: 0; /* SIN MARGEN - SE ADAPTA AL CONTENEDOR */
+    border: 1px solid #000000 !important; /* Borde exterior de la tabla */
 }
 
 /* BORDES PARA LA NUEVA TABLA - IGUAL QUE COMBINATIONS-TABLE */
 .main-table-firefox th,
 .main-table-firefox td {
     border: 1px solid #000000 !important;
+}
+
+/* COMPATIBILIDAD ESPECÍFICA PARA FIREFOX */
+@-moz-document url-prefix() {
+    .main-table-firefox {
+        border-collapse: collapse !important;
+    }
+    
+    .main-table-firefox th,
+    .main-table-firefox td {
+        border: 1px solid #000000 !important;
+        outline: 1px solid #000000 !important;
+    }
 }
 
 /* ANCHOS DE COLUMNAS - EXACTAMENTE IGUAL QUE LA TABLA PRINCIPAL */
@@ -913,6 +928,40 @@ body {
 /* BOTÓN DE ANÁLISIS */
 .go-to-analysis-btn {
     background: #27ae60 !important;
+}
+
+/* BOTÓN DE AUTOMATIZACIÓN */
+.automation-toggle-btn {
+    background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%) !important;
+    color: white !important;
+    border: 2px solid #5a32a3 !important;
+    margin-left: 15px !important;
+    transition: all 0.3s ease;
+}
+
+.automation-toggle-btn:hover {
+    background: linear-gradient(135deg, #5a32a3 0%, #4a2b8a 100%) !important;
+    color: white !important;
+    border-color: #4a2b8a !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(111, 66, 193, 0.4);
+}
+
+/* BOTÓN DE CREAR ARCHIVO WEB */
+#create-web-file-btn {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+    color: white !important;
+    border: 2px solid #138496 !important;
+    margin-left: 15px !important;
+    transition: all 0.3s ease;
+}
+
+#create-web-file-btn:hover {
+    background: linear-gradient(135deg, #138496 0%, #117a8b 100%) !important;
+    color: white !important;
+    border-color: #117a8b !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
 }
 
 .monthly-stats-btn:hover {
@@ -2568,4 +2617,572 @@ th, .data-table th, .analysis-table th, .combinations-table th {
     .sort-arrow {
         font-size: 14px;
     }
+}
+
+/* ===== ESTILOS ADICIONALES PARA AUTOMATIZACIÓN ===== */
+
+/* ===== ESTILOS PARA EL FORMULARIO DE AUTOMATIZACIÓN ===== */
+
+.automation-form {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 20px 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    color: white;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.automation-title {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+}
+
+
+
+.automation-description {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 16px;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    resize: vertical;
+    min-height: 80px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: #00E676;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 20px rgba(0, 230, 118, 0.3);
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.extract-btn, .clear-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.extract-btn {
+    background: linear-gradient(45deg, #00E676, #00C853);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3);
+}
+
+.extract-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4);
+}
+
+.clear-btn {
+    background: linear-gradient(45deg, #FF6B6B, #FF5252);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.clear-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.extraction-results {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.extraction-results h4 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.result-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.result-item label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+}
+
+.result-value {
+    display: block;
+    font-size: 16px;
+    color: #00E676;
+    font-weight: 600;
+    word-break: break-word;
+    min-height: 20px;
+}
+
+.copy-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+
+
+/* Estilos responsivos para el formulario */
+@media (max-width: 768px) {
+    .automation-form {
+        margin: 15px;
+        padding: 20px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .extract-btn, .clear-btn {
+        width: 100%;
+        max-width: 250px;
+    }
+    
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .copy-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+
+}
+
+
+
+
+
+.add-to-table-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Estilo especial para el botón de añadir a la tabla */
+.add-to-table-btn {
+    background: linear-gradient(45deg, #FF6B35, #F7931E) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3) !important;
+}
+
+.add-to-table-btn:hover {
+    background: linear-gradient(45deg, #FF5722, #FF9800) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4) !important;
+}
+
+
+
+
+
+/* ===== ESTILOS PARA INDICADOR DE FUENTE DE DATOS ===== */
+
+.data-source-indicator {
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.indicator-text {
+    margin: 0;
+    padding: 0;
+}
+
+.data-source-indicator.success {
+    background: rgba(0, 230, 118, 0.1);
+    border: 1px solid rgba(0, 230, 118, 0.3);
+    color: #00E676;
+}
+
+.data-source-indicator.warning {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    color: #FFC107;
+}
+
+/* ===== ESTILOS PARA COLUMNA DE ELIMINACIÓN ===== */
+
+.delete-header {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    text-align: center !important;
+    background-color: #dc3545 !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+.delete-cell {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding: 8px 4px !important;
+}
+
+.delete-row-btn {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.delete-row-btn:hover {
+    background: linear-gradient(45deg, #c82333, #bd2130);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+.delete-row-btn:active {
+    transform: scale(0.95);
+}
+
+.extract-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4);
+}
+
+
+
+
+
+
+
+.result-value.editable {
+    background: white;
+    color: #333;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.result-value.editable:focus {
+    outline: none;
+    border-color: #00e676;
+    box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1);
+    background: #f8fff9;
+}
+
+.result-value.editable:hover {
+    border-color: #00b368;
+}
+
+
+
+/* ===== ESTILOS PARA BOTONES DE ELIMINACIÓN FLOTANTES ===== */
+
+.data-row {
+    position: relative;
+}
+
+        /* ===== HOVER FUNCIONANDO AHORA ===== */
+        /* Mostrar botón solo en hover */
+        .main-table-firefox tbody tr:hover .delete-row-btn-floating {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Regla alternativa para compatibilidad */
+        .data-row:hover .delete-row-btn-floating {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Regla específica para la nueva clase */
+        .main-table-row:hover .delete-row-btn-floating {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Hacer que el botón aparezca al hacer hover en la celda de Torre */
+        td:last-child:hover .delete-row-btn-floating {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* ===== HOVER GENERAL PARA TODAS LAS FILAS ===== */
+        /* Hover en filas de tabla para todos los navegadores */
+        .main-table-firefox tbody tr:hover {
+            background-color: #e3f2fd !important;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .data-row:hover {
+            background-color: #e3f2fd !important;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .delete-row-btn-floating {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+.delete-row-btn-floating:hover {
+    background: linear-gradient(45deg, #c82333, #bd2130);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+
+
+        /* ===== HOVER FUNCIONANDO AHORA ===== */
+        /* Regla universal para Firefox */
+        @-moz-document url-prefix() {
+            /* Hover en filas de tabla */
+            .main-table-firefox tbody tr:hover {
+                background-color: #e3f2fd !important;
+                cursor: pointer;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+            }
+            
+            /* Hover en botones de eliminar */
+            .main-table-firefox tbody tr:hover .delete-row-btn-floating {
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+        }
+
+/* ===== ESTILOS PARA SISTEMA DE AUTENTICACIÓN ===== */
+
+.auth-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: transparent;
+    color: #6c5ce7;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    z-index: 1000;
+    box-shadow: none;
+    transition: all 0.3s ease;
+}
+
+.auth-button:hover {
+    transform: scale(1.1);
+    color: #a29bfe;
+    box-shadow: none;
+}
+
+.auth-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+}
+
+.auth-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    min-width: 350px;
+}
+
+.auth-content h3 {
+    margin: 0 0 20px 0;
+    color: #2d3436;
+    font-size: 24px;
+}
+
+.auth-content p {
+    margin: 0 0 25px 0;
+    color: #636e72;
+    font-size: 16px;
+}
+
+.password-input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 25px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.password-input:focus {
+    outline: none;
+    border-color: #6c5ce7;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.login-btn, .cancel-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.login-btn {
+    background: linear-gradient(45deg, #00b894, #00cec9);
+    color: white;
+}
+
+.login-btn:hover {
+    background: linear-gradient(45deg, #00a085, #00b894);
+    transform: translateY(-2px);
+}
+
+.cancel-btn {
+    background: linear-gradient(45deg, #e17055, #d63031);
+    color: white;
+}
+
+.cancel-btn:hover {
+    background: linear-gradient(45deg, #d63031, #c44569);
+    transform: translateY(-2px);
+}
+
+.auth-message {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 500;
+    min-height: 20px;
+}
+
+.auth-message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.auth-message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Ocultar elementos por defecto */
+.hidden {
+    display: none !important;
 }

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Montajes GabyxHD 2025</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="security.js"></script>
+    <!-- TEMPORALMENTE DESHABILITADO PARA DEBUG -->
+    <!-- <script src="security.js"></script> -->
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-HDYP4SXL7E"></script>
@@ -20,16 +21,37 @@
     <div class="container">
         <div class="header">
             <h1>Montajes de GabyxHD en 2025</h1>
+            
+            <!-- BOTÓN DE PRUEBA PARA HOVER -->
         </div>
 
-        <div id="loading" class="loading">
-            <span class="spinner">⏳</span> Conectando a Google Sheets...
+        <!-- Botón de autenticación (candado) -->
+        <div class="auth-button" id="auth-button" title="🔐 Autenticación">
+            🔒
+        </div>
+
+        <!-- Modal de autenticación -->
+        <div class="auth-modal" id="auth-modal">
+            <div class="auth-content">
+                <h3>🔐 Autenticación Requerida</h3>
+                <p>Introduce la contraseña para acceder a las funciones avanzadas:</p>
+                <input type="password" id="password-input" placeholder="Contraseña" class="password-input">
+                <div class="auth-buttons">
+                    <button id="login-btn" class="login-btn">Acceder</button>
+                    <button id="cancel-auth-btn" class="cancel-btn">Cancelar</button>
+                </div>
+                <div id="auth-message" class="auth-message"></div>
+            </div>
+        </div>
+
+        <div id="loading" class="loading hidden">
+            <span class="spinner">⏳</span> Cargando datos...
         </div>
 
         <div id="error" class="error hidden"></div>
 
         <!-- Información de Estadísticas -->
-        <div id="stats-info" class="hidden">
+        <div id="stats-info">
             <h3 class="stats-title">ℹ️ Información de los Montajes</h3>
             <div id="stats-grid" class="stats-grid"></div>
             
@@ -43,12 +65,66 @@
                     <button id="go-to-analysis-btn" class="go-to-analysis-btn btn-common">
                         📊 Análisis de Componentes
                     </button>
+                    <button id="toggle-automation-btn" class="automation-toggle-btn btn-common hidden">
+                        🤖 Automatización de Títulos
+                    </button>
+
                 </div>
             </div>
         </div>
 
+        <!-- Formulario de Automatización de Títulos de Twitch -->
+        <div id="automation-form" class="automation-form hidden">
+            <h3 class="automation-title">🤖 Automatización de Títulos de Twitch</h3>
+
+            
+            <div class="form-group">
+                <label for="twitch-title-input">Título del Directo de Twitch:</label>
+                <textarea 
+                    id="twitch-title-input"
+                ></textarea>
+            </div>
+            
+                            <div class="form-actions">
+                    <button id="extract-info-btn" class="extract-btn btn-common">🔍 Extraer Información</button>
+                    <button id="clear-form-btn" class="clear-btn btn-common">🗑️ Limpiar</button>
+                </div>
+            
+            <div id="extraction-results" class="extraction-results hidden">
+                <h4>📋 Información Extraída:</h4>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <label>Fecha:</label>
+                        <input type="date" id="extracted-date" class="result-value editable">
+                    </div>
+                    <div class="result-item">
+                        <label>Precio:</label>
+                        <input type="text" id="extracted-price" class="result-value editable" placeholder="Solo números (ej: 3100)">
+                    </div>
+                    <div class="result-item">
+                        <label>Procesador:</label>
+                        <input type="text" id="extracted-processor" class="result-value editable" placeholder="Ej: AMD RYZEN 9 9800X3D">
+                    </div>
+                    <div class="result-item">
+                        <label>Tarjeta Gráfica:</label>
+                        <input type="text" id="extracted-graphics" class="result-value editable" placeholder="Ej: NVIDIA RTX 5070 TI">
+                    </div>
+                    <div class="result-item">
+                        <label>Torre:</label>
+                        <input type="text" id="extracted-case" class="result-value editable" placeholder="Ej: NZXT H9 FLOW">
+                    </div>
+                </div>
+                
+                <div class="copy-actions">
+                    <button id="add-to-table-btn" class="add-to-table-btn btn-common">➕ Añadir a la Tabla</button>
+                </div>
+                
+
+            </div>
+        </div>
+
         <!-- NUEVA TABLA CON PROPIEDADES DE COMBINATIONS-TABLE - PARA FIREFOX -->
-        <div id="main-table-firefox-container" class="hidden">
+        <div id="main-table-firefox-container">
             <div class="table-wrapper">
                 <div id="main-table-firefox-container-inner"></div>
             </div>
@@ -92,31 +168,116 @@
         class PCBuildsViewer {
             constructor() {
                 this.sheetsData = {};
-                this.apiUrl = 'https://gabyxhd.onrender.com/api/sheets-data'; // Backend en Render
+                this.apiUrl = 'http://localhost:3000/api/sheets-data'; // Backend local
                 this.spreadsheetId = '1OCMcUJ0VerXZLEgyjapb_lNvRZQL05lIcGf882AaTfU';
                 this.maxRetries = 3;
                 this.retryDelay = 2000; // 2 segundos inicial
+                this.isAuthenticated = false; // Estado de autenticación
                 this.init();
             }
 
             async init() {
                 try {
-                    // Verificar conectividad primero con reintentos
-                    await this.checkConnectivityWithRetry();
-                    
-                    await this.loadSheetData('Datos');
                     this.setupEventListeners();
+                    this.initAuth(); // Inicializar sistema de autenticación
+                    
+                    // Cargar datos desde el backend real
+                    await this.loadDataFromBackend();
+                    
                     this.hideLoading();
+                    
+                    // Ocultar elementos que requieren autenticación
+                    this.hideAdvancedFeatures();
+                    
                 } catch (error) {
-                    console.error('Error en inicialización:', error);
                     this.showError('Error al inicializar: ' + error.message);
                     this.hideLoading();
-                    
-                    // Mostrar botón de reintento
-                    this.showRetryButton();
                 }
             }
 
+            // NUEVA FUNCIÓN: Ordenar tabla por fecha decreciente
+            sortTableByDateDescending() {
+                if (!this.sheetsData['Datos'] || this.sheetsData['Datos'].length < 2) return;
+                
+                const headers = this.sheetsData['Datos'][0];
+                const rows = this.sheetsData['Datos'].slice(1);
+                
+                // Ordenar filas por fecha (columna 0) en orden decreciente
+                const sortedRows = rows.sort((a, b) => {
+                    const dateA = new Date(a[0]);
+                    const dateB = new Date(b[0]);
+                    return dateB - dateA; // Orden decreciente (más reciente primero)
+                });
+                
+                // Actualizar los datos con el orden correcto
+                this.sheetsData['Datos'] = [headers, ...sortedRows];
+                
+                // Actualizar indicadores visuales para mostrar que está ordenado por fecha decreciente
+                this.updateSortIndicators(0, 'desc');
+  
+            }
+
+            // NUEVA FUNCIÓN: Cargar datos desde el backend
+            async loadDataFromBackend() {
+                try {
+                    console.log('🔄 Cargando datos desde el backend...');
+                    
+                    const response = await fetch('http://localhost:3000/api/sheets-data');
+                    
+                    if (!response.ok) {
+                        throw new Error(`Error del servidor: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (!result.success) {
+                        throw new Error(result.error || 'Error al cargar datos');
+                    }
+                    
+                    // Estructurar datos como antes
+                    this.sheetsData = {
+                        'Datos': [result.headers, ...result.data]
+                    };
+                    
+                    console.log(`✅ Datos cargados: ${result.totalRows} montajes`);
+                    
+                    // Ordenar por fecha decreciente por defecto
+                    this.sortTableByDateDescending();
+                    
+                    // Mostrar la tabla principal (ya ordenada)
+                    this.displaySheetData('Datos');
+                    
+                    // Actualizar indicadores visuales DESPUÉS de renderizar la tabla
+                    this.updateSortIndicators(0, 'desc');
+                    
+                    // Generar estadísticas básicas
+                    this.displayStats();
+                    
+                } catch (error) {
+                    console.error('❌ Error al cargar datos del backend:', error);
+                    
+                    // Fallback: usar datos estáticos si falla el backend
+                    console.log('⚠️ Usando datos estáticos como fallback...');
+                    this.sheetsData = {
+                        'Datos': [
+                            ['Fecha', 'Título del directo de Twitch', 'Precio €', 'Procesador', 'Tarjeta gráfica', 'Torre'],
+                            ['2025-08-28', 'Montaje PC 2950€ Invertido - 9800X3D & RTX 5080 & BeQuiet 600 LX', '2950', 'AMD RYZEN 9 9800X3D', 'NVIDIA RTX 5080', 'BEQUIET 600 LX']
+                        ]
+                    };
+                    
+                    this.displaySheetData('Datos');
+                    
+                    // Actualizar indicadores visuales también en el fallback
+                    this.updateSortIndicators(0, 'desc');
+                    
+                    this.displayStats();
+                    
+                    this.showError('Error al conectar con el backend. Usando datos locales.');
+                }
+            }
+
+            // DESHABILITADO - No se necesita conectividad en modo offline
+            /*
             async checkConnectivityWithRetry() {
                 let lastError;
                 
@@ -170,7 +331,10 @@
                     throw new Error('No se puede conectar al servidor después de múltiples intentos: ' + lastError.message);
                 }
             }
+            */
 
+            // DESHABILITADO - No se necesita conectividad en modo offline
+            /*
             async checkConnectivity() {
                 try {
                     // Intentar hacer ping al servidor
@@ -196,7 +360,10 @@
                     throw new Error('No se puede conectar al servidor: ' + error.message);
                 }
             }
+            */
 
+            // DESHABILITADO - No se necesita en modo offline
+            /*
             showRetryButton() {
                 const errorDiv = document.getElementById('error');
                 if (errorDiv) {
@@ -226,7 +393,10 @@
                     `;
                 }
             }
+            */
 
+            // DESHABILITADO - No se necesita en modo offline
+            /*
             async checkConnectivityManually() {
                 try {
                     this.showLoading('Verificando conectividad manualmente...');
@@ -256,7 +426,10 @@
                     this.hideLoading();
                 }
             }
+            */
 
+            // DESHABILITADO - No se necesita en modo offline
+            /*
             async checkServerStatus() {
                 try {
                     this.showLoading('Verificando estado del servidor...');
@@ -319,7 +492,10 @@
                     this.hideLoading();
                 }
             }
+            */
 
+            // DESHABILITADO - Google Sheets no disponible en modo offline
+            /*
             async loadSheetData(sheetName) {
                 let lastError;
                 
@@ -431,6 +607,12 @@
                         this.displayStats();
                         this.generateAnalysis(finalData);
                         
+                        // Cargar entradas locales después de cargar los datos de Google Sheets
+                        this.loadLocalEntries();
+                        
+                        // Actualizar el contador de entradas locales
+                        this.updateLocalEntriesCount();
+                        
                         return; // Salir del bucle si todo va bien
                         
                     } catch (error) {
@@ -459,6 +641,7 @@
                 // Si llegamos aquí, todos los intentos fallaron
                 throw new Error('Error al cargar datos de la hoja después de múltiples intentos: ' + lastError.message);
             }
+            */
 
             generateAnalysis(data) {
                 if (!data || data.length < 2) return;
@@ -475,7 +658,10 @@
                 const graphicsIndex = 4; // Tarjeta gráfica
                 const caseIndex = 5; // Torre
 
-                rows.forEach(row => {
+                console.log('🔍 Procesando filas:', rows.length);
+                rows.forEach((row, index) => {
+                    if (index < 5) console.log(`Fila ${index}:`, row);
+                    
                     // Análisis de procesadores
                     const processorItem = row[processorIndex];
                     if (processorItem && processorItem.trim() !== '') {
@@ -516,13 +702,26 @@
                 const minPrice = Math.min(...prices);
                 const maxPrice = Math.max(...prices);
 
+                console.log('📊 Resultados del análisis:', {
+                    procesadores: Object.keys(processors).length,
+                    graficas: Object.keys(graphics).length,
+                    torres: Object.keys(cases).length,
+                    combinaciones: Object.keys(combinations).length
+                });
+
                 this.displayAnalysis(processors, graphics, cases, { avg: avgPrice, min: minPrice, max: maxPrice, total: rows.length });
                 this.displayCombinationsTable(combinations);
+                
+                // Generar estadísticas mensuales
+                this.displayMonthlyStats(data);
             }
 
             displayAnalysis(processors, graphics, cases, prices) {
                 // Crear contenido del análisis
                 const analysisContent = document.getElementById('analysis-content');
+                
+                // NO mostrar automáticamente - solo cuando se pulse el botón
+                // document.getElementById('analysis-container').classList.remove('hidden');
                 
                 analysisContent.innerHTML = `
                     <div class="analysis-grid">
@@ -572,6 +771,9 @@
 
             displayCombinationsTable(combinations) {
                 const combinationsContainer = document.getElementById('combinations-table-container');
+                
+                // NO mostrar automáticamente - solo cuando se pulse el botón
+                // document.getElementById('combinations-table-container').classList.remove('hidden');
                 
                 if (!combinations || Object.keys(combinations).length === 0) {
                     combinationsContainer.innerHTML = '<p class="no-combinations">No hay combinaciones disponibles para mostrar.</p>';
@@ -683,6 +885,27 @@
                 document.getElementById('back-to-data-btn').onclick = () => this.showData();
                 document.getElementById('back-to-data-btn-bottom').onclick = () => this.showData(); // Add listener for the new button
                 
+                // Event listeners para la automatización
+                document.getElementById('toggle-automation-btn').onclick = () => this.toggleAutomation();
+                document.getElementById('extract-info-btn').onclick = () => this.extractTwitchInfo();
+                document.getElementById('clear-form-btn').onclick = () => this.clearAutomationForm();
+                document.getElementById('add-to-table-btn').onclick = () => this.addToMainTable();
+
+
+                
+                // Event listeners para campos editables (convertir a mayúsculas)
+                document.getElementById('extracted-processor').addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                });
+                document.getElementById('extracted-graphics').addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                });
+                document.getElementById('extracted-case').addEventListener('input', (e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                });
+                
+
+                
                 // Event listener para mostrar/ocultar estadísticas mensuales
                 // (Eliminado ya que no es necesario)
             }
@@ -693,8 +916,9 @@
                     this.generateAnalysis(this.sheetsData['Datos']);
                 }
                 
-                // OCULTAR COMPLETAMENTE la sección de datos y estadísticas
+                // OCULTAR solo la sección de datos (la tabla principal)
                 document.getElementById('main-table-firefox-container').classList.add('hidden');
+                // OCULTAR las estadísticas básicas cuando se muestra el análisis
                 document.getElementById('stats-info').classList.add('hidden');
                 
                 // OCULTAR las estadísticas mensuales
@@ -853,19 +1077,28 @@
                         tableHTMLFirefox += `<th>${header}</th>`;
                     }
                 });
+                
                 tableHTMLFirefox += '</tr></thead><tbody>';
 
                 rows.forEach((row, index) => {
-                    tableHTMLFirefox += '<tr>';
+                    tableHTMLFirefox += '<tr class="data-row main-table-row">';
                     headers.forEach((header, cellIndex) => {
                         const cellValue = row[cellIndex] || '';
-                        tableHTMLFirefox += `<td>${cellValue}</td>`;
+                        tableHTMLFirefox += `<td class="data-cell">${cellValue}</td>`;
                     });
+                    
                     tableHTMLFirefox += '</tr>';
                 });
 
                 tableHTMLFirefox += '</tbody></table>';
                 document.getElementById('main-table-firefox-container-inner').innerHTML = tableHTMLFirefox;
+                
+                // MOSTRAR el contenedor de la tabla principal
+                document.getElementById('main-table-firefox-container').classList.remove('hidden');
+                document.getElementById('stats-info').classList.remove('hidden');
+                
+                // Añadir botones de eliminar flotantes en cada fila
+                this.addFloatingDeleteButtons();
                 
                 // Añadir el mensaje explicativo FUERA del contenedor de la tabla (solo una vez)
                 if (!this.priceMessageCreated) {
@@ -890,6 +1123,9 @@
                         updateScrollButtons();
                     }
                 }, 100);
+            
+            // Añadir botones de eliminar flotantes
+            this.addFloatingDeleteButtons();
                 
                 // Establecer estado inicial de ordenamiento solo si no hay estado previo
                 if (!this.sortStates || Object.keys(this.sortStates).length === 0) {
@@ -907,6 +1143,59 @@
                 }
                 
 
+            }
+            
+                        // Añadir botones de eliminar flotantes en cada fila
+            addFloatingDeleteButtons() {
+                // Solo mostrar botones si el usuario está autenticado
+                if (!this.isAuthenticated) return;
+                
+                const rows = document.querySelectorAll('.data-row');
+                rows.forEach((row, index) => {
+                    // Obtener la primera celda (columna Fecha)
+                    const cells = row.querySelectorAll('td');
+                    const firstCell = cells[0]; // Primera celda (Fecha)
+                    
+                    if (firstCell) {
+                        // Hacer que la celda de Fecha sea relativa para posicionar el botón
+                        firstCell.style.position = 'relative';
+                        
+                        // Crear botón de eliminar
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'delete-row-btn-floating';
+                        deleteBtn.innerHTML = '🗑️';
+                        deleteBtn.title = 'Eliminar fila';
+                        deleteBtn.onclick = () => this.deleteRow(index + 1);
+                        
+                        // Posicionar el botón en la esquina izquierda de la celda
+                        deleteBtn.style.left = '5px';
+                        deleteBtn.style.right = 'auto';
+                        
+                        // Añadir el botón a la celda de Fecha
+                        firstCell.appendChild(deleteBtn);
+                        
+                        // AÑADIR HOVER CON JAVASCRIPT PARA FIREFOX
+                        row.addEventListener('mouseenter', () => {
+                            // Hover en la fila
+                            row.style.backgroundColor = '#f8f9fa';
+                            row.style.cursor = 'pointer';
+                            
+                            // Mostrar botón de eliminar
+                            deleteBtn.style.opacity = '1';
+                            deleteBtn.style.visibility = 'visible';
+                        });
+                        
+                        row.addEventListener('mouseleave', () => {
+                            // Quitar hover de la fila
+                            row.style.backgroundColor = '';
+                            row.style.cursor = '';
+                            
+                            // Ocultar botón de eliminar
+                            deleteBtn.style.opacity = '0';
+                            deleteBtn.style.visibility = 'hidden';
+                        });
+                    }
+                });
             }
 
             // Método para ordenar la tabla por columna
@@ -1036,11 +1325,8 @@
 
             // Actualizar indicadores visuales de ordenamiento
             updateSortIndicators(columnIndex, direction) {
-                console.log(`Actualizando indicadores: columna ${columnIndex}, dirección ${direction}`);
-                
                 // Resetear todos los indicadores
                 const allHeaders = document.querySelectorAll('.sortable-header');
-                console.log(`Encontrados ${allHeaders.length} headers sortables`);
                 
                 allHeaders.forEach((header, index) => {
                     const upArrow = header.querySelector('.sort-arrow-up');
@@ -1049,7 +1335,6 @@
                     if (upArrow && downArrow) {
                         upArrow.classList.remove('active');
                         downArrow.classList.remove('active');
-                        console.log(`Reseteadas flechas del header ${index}`);
                     }
                 });
                 
@@ -1058,7 +1343,6 @@
                 if (columnIndex === 2) headerIndex = 1; // La columna 2 (precio) es el segundo header sortable
                 
                 const currentHeader = document.querySelectorAll('.sortable-header')[headerIndex];
-                console.log(`Header actual para columna ${columnIndex} (índice ${headerIndex}):`, currentHeader);
                 
                 if (currentHeader && direction !== null) {
                     const upArrow = currentHeader.querySelector('.sort-arrow-up');
@@ -1188,7 +1472,928 @@
                 return months[monthIndex];
             }
 
+            // ===== FUNCIONES DE AUTOMATIZACIÓN =====
 
+            // Mostrar/ocultar el formulario de automatización
+            toggleAutomation() {
+                const automationForm = document.getElementById('automation-form');
+                if (automationForm.classList.contains('hidden')) {
+                    automationForm.classList.remove('hidden');
+                    // Scroll suave hacia el formulario
+                    automationForm.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    automationForm.classList.add('hidden');
+                }
+            }
+
+            // Extraer información del título de Twitch
+            extractTwitchInfo() {
+                const titleInput = document.getElementById('twitch-title-input');
+                const title = titleInput.value.trim();
+                
+                if (!title) {
+                    alert('Por favor, introduce un título de Twitch');
+                    return;
+                }
+
+                const extractedInfo = this.parseTwitchTitle(title);
+                this.displayExtractedInfo(extractedInfo);
+            }
+
+            // Analizar el título de Twitch y extraer información
+            parseTwitchTitle(title) {
+                const result = {
+                    price: '',
+                    processor: '',
+                    graphics: '',
+                    case: ''
+                };
+
+                // Extraer precio (formato: número + €)
+                const priceMatch = title.match(/(\d+(?:\.\d+)?)\s*€/);
+                if (priceMatch) {
+                    result.price = priceMatch[1]; // Solo el número, sin el €
+                }
+
+                // Extraer procesador usando datos reales de la tabla de análisis
+                result.processor = this.findBestMatch(title, 'processor');
+
+                // Extraer tarjeta gráfica usando datos reales de la tabla de análisis
+                result.graphics = this.findBestMatch(title, 'graphics');
+
+                // Extraer torre usando datos reales de la tabla de análisis
+                result.case = this.findBestMatch(title, 'case');
+
+                return result;
+            }
+
+            // Encontrar la mejor coincidencia basada en datos reales
+            findBestMatch(title, componentType) {
+                if (!this.sheetsData['Datos'] || this.sheetsData['Datos'].length < 2) {
+                    return this.fallbackPatternMatching(title, componentType);
+                }
+
+                // Para gráficas, SIEMPRE usar fallback si hay sufijos TI/SUPER/XT en el título
+                if (componentType === 'graphics') {
+                    const hasSuffix = /(rtx|gtx|rx)\s*\d{3,4}\s*(ti|super|xt)/i.test(title);
+                    if (hasSuffix) {
+                        return this.fallbackPatternMatching(title, componentType);
+                    }
+                }
+
+                // Obtener componentes únicos de la tabla de análisis
+                const components = this.getUniqueComponents(componentType);
+                if (components.length === 0) {
+                    return this.fallbackPatternMatching(title, componentType);
+                }
+
+                // Buscar la mejor coincidencia
+                let bestMatch = '';
+                let bestScore = 0;
+
+                for (const component of components) {
+                    const score = this.calculateMatchScore(title, component);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMatch = component;
+                    }
+                }
+
+                // Solo devolver si la coincidencia es suficientemente buena
+                return bestScore >= 0.6 ? bestMatch : this.fallbackPatternMatching(title, componentType);
+            }
+
+            // Obtener componentes únicos de la tabla de análisis
+            getUniqueComponents(componentType) {
+                const columnIndex = {
+                    'processor': 3,
+                    'graphics': 4,
+                    'case': 5
+                }[componentType];
+
+                if (columnIndex === undefined) return [];
+
+                const components = new Set();
+                for (let i = 1; i < this.sheetsData['Datos'].length; i++) {
+                    const component = this.sheetsData['Datos'][i][columnIndex];
+                    if (component && component.trim()) {
+                        components.add(component.trim());
+                    }
+                }
+
+                return Array.from(components);
+            }
+
+            // Calcular puntuación de coincidencia
+            calculateMatchScore(title, component) {
+                const titleLower = title.toLowerCase();
+                const componentLower = component.toLowerCase();
+                
+                // Buscar coincidencias exactas primero
+                if (titleLower.includes(componentLower)) {
+                    return 1.0;
+                }
+
+                // Buscar coincidencias parciales
+                const componentWords = componentLower.split(/\s+/);
+                let score = 0;
+                let foundWords = 0;
+
+                for (const word of componentWords) {
+                    if (word.length > 2 && titleLower.includes(word)) {
+                        score += 0.3;
+                        foundWords++;
+                    }
+                }
+
+                // Bonus por encontrar múltiples palabras
+                if (foundWords > 1) {
+                    score += 0.2;
+                }
+
+                return score;
+            }
+
+            // Fallback a patrones predefinidos si no hay datos de análisis
+            fallbackPatternMatching(title, componentType) {
+                if (componentType === 'processor') {
+                    return this.fallbackProcessorMatching(title);
+                } else if (componentType === 'graphics') {
+                    return this.fallbackGraphicsMatching(title);
+                } else if (componentType === 'case') {
+                    return this.fallbackCaseMatching(title);
+                }
+                return '';
+            }
+
+            // Fallback para procesadores
+            fallbackProcessorMatching(title) {
+                const processorPatterns = [
+                    /(\d{3,4}[Xx]3[Dd])/i,           // 9800X3D, 9950X3D
+                    /(\d{3,4}[Xx])/i,                 // 9600X, 9700X
+                    /(ryzen\s+\d{3,4}[Xx]3[Dd])/i,   // Ryzen 9800X3D
+                    /(ryzen\s+\d{3,4}[Xx])/i,        // Ryzen 9600X
+                    /(intel\s+\d{3,4}[Kk])/i,        // Intel 14900K
+                    /(\d{3,4}[Kk])/i,                 // 14900K, 14700K
+                    /(i\d{1,2}-\d{3,4}[Kk])/i        // i9-14900K, i7-14700K
+                ];
+
+                for (const pattern of processorPatterns) {
+                    const match = title.match(pattern);
+                    if (match) {
+                        let processor = match[1];
+                        if (/^\d{3,4}[Xx]3[Dd]$/i.test(processor)) {
+                            processor = 'AMD RYZEN 9 ' + processor.toUpperCase();
+                        } else if (/^\d{3,4}[Xx]$/i.test(processor)) {
+                            processor = 'AMD RYZEN 7 ' + processor.toUpperCase();
+                        } else if (/^\d{3,4}[Kk]$/i.test(processor)) {
+                            processor = 'INTEL ' + processor.toUpperCase();
+                        } else if (/^i\d{1,2}-\d{3,4}[Kk]$/i.test(processor)) {
+                            processor = 'INTEL ' + processor.toUpperCase();
+                        }
+                        return processor;
+                    }
+                }
+                return '';
+            }
+
+            // Fallback para gráficas
+            fallbackGraphicsMatching(title) {
+                console.log('=== DEBUG GRÁFICAS ===');
+                console.log('Título a analizar:', title);
+                
+                // Método 1: Buscar RTX con sufijo TI/SUPER
+                const rtxWithSuffix = title.match(/(rtx\s*\d{3,4})\s*(ti|super)/i);
+                if (rtxWithSuffix) {
+                    console.log('RTX con sufijo encontrado:', rtxWithSuffix);
+                    const model = rtxWithSuffix[1];  // RTX 5070
+                    const suffix = rtxWithSuffix[2].toUpperCase();  // TI
+                    const number = model.match(/\d{3,4}/)[0];
+                    const graphics = 'NVIDIA RTX ' + number + ' ' + suffix;
+                    console.log('Gráfica construida:', graphics);
+                    return graphics;
+                }
+                
+                // Método 2: Buscar GTX con sufijo TI/SUPER
+                const gtxWithSuffix = title.match(/(gtx\s*\d{3,4})\s*(ti|super)/i);
+                if (gtxWithSuffix) {
+                    console.log('GTX con sufijo encontrado:', gtxWithSuffix);
+                    const model = gtxWithSuffix[1];
+                    const suffix = gtxWithSuffix[2].toUpperCase();
+                    const number = model.match(/\d{3,4}/)[0];
+                    const graphics = 'NVIDIA GTX ' + number + ' ' + suffix;
+                    console.log('Gráfica construida:', graphics);
+                    return graphics;
+                }
+                
+                // Método 3: Buscar RX con sufijo XT
+                const rxWithSuffix = title.match(/(rx\s*\d{3,4})\s*(xt)/i);
+                if (rxWithSuffix) {
+                    console.log('RX con sufijo encontrado:', rxWithSuffix);
+                    const model = rxWithSuffix[1];
+                    const suffix = rxWithSuffix[2].toUpperCase();
+                    const number = model.match(/\d{3,4}/)[0];
+                    const graphics = 'AMD RX ' + number + ' ' + suffix;
+                    console.log('Gráfica construida:', graphics);
+                    return graphics;
+                }
+                
+                // Método 4: Buscar RTX básico
+                const rtxBasic = title.match(/(rtx\s*\d{3,4})/i);
+                if (rtxBasic) {
+                    console.log('RTX básico encontrado:', rtxBasic);
+                    const model = rtxBasic[1];
+                    const number = model.match(/\d{3,4}/)[0];
+                    const graphics = 'NVIDIA RTX ' + number;
+                    console.log('Gráfica básica construida:', graphics);
+                    return graphics;
+                }
+                
+                // Método 5: Buscar GTX básico
+                const gtxBasic = title.match(/(gtx\s*\d{3,4})/i);
+                if (gtxBasic) {
+                    console.log('GTX básico encontrado:', gtxBasic);
+                    const model = gtxBasic[1];
+                    const number = model.match(/\d{3,4}/)[0];
+                    const graphics = 'NVIDIA GTX ' + number;
+                    console.log('Gráfica básica construida:', graphics);
+                    return graphics;
+                }
+                
+                // Método 6: Buscar RX básico
+                const rxBasic = title.match(/(rx\s*\d{3,4})/i);
+                if (rxBasic) {
+                    console.log('RX básico encontrado:', rxBasic);
+                    const model = rxBasic[1];
+                    const number = model.match(/\d{3,4}/)[0];
+                    const graphics = 'AMD RX ' + number;
+                    console.log('Gráfica básica construida:', graphics);
+                    return graphics;
+                }
+                
+                console.log('No se encontró coincidencia para gráfica');
+                return '';
+            }
+
+            // Función de debug para probar la extracción
+            debugTest() {
+                const testTitle = "Montaje PC 3100€ - 9800X3D & RTX 5070 Ti & NZXT H9 Flow";
+                console.log('=== DEBUG TEST ===');
+                
+                // Probar extracción de precio
+                const priceMatch = testTitle.match(/(\d+(?:\.\d+)?)\s*€/);
+                
+                // Probar extracción de gráfica
+                const result = this.parseTwitchTitle(testTitle);
+                
+                // Probar función de fallback específicamente
+                const graphicsFallback = this.fallbackGraphicsMatching(testTitle);
+                
+                // Mostrar en la interfaz
+                alert(`Debug completado. Revisa la consola del navegador (F12) para ver los detalles.\n\nResultado:\nPrecio: ${result.price}\nGráfica: ${result.graphics}`);
+            }
+
+            // Migrar todos los datos de Google Sheets a localStorage
+            migrateAllDataToLocal() {
+                if (!this.sheetsData['Datos'] || this.sheetsData['Datos'].length < 2) {
+                    alert('❌ No hay datos de Google Sheets para migrar');
+                    return;
+                }
+
+                try {
+                    // Obtener entradas existentes del localStorage
+                    const existingEntries = JSON.parse(localStorage.getItem('gabyLocalEntries') || '[]');
+                    
+                    // Obtener TODOS los datos de Google Sheets (excluyendo headers)
+                    const googleSheetsData = this.sheetsData['Datos'].slice(1);
+                    
+                    // MIGRAR TODAS LAS ENTRADAS (sin filtrar por fecha)
+                    const allDataToMigrate = googleSheetsData;
+                    
+                    if (allDataToMigrate.length === 0) {
+                        alert('✅ No hay datos para migrar');
+                        return;
+                    }
+                    
+                    // Combinar entradas existentes con TODOS los datos de Google Sheets
+                    const allEntries = [...existingEntries, ...allDataToMigrate];
+                    
+                    // Guardar en localStorage
+                    localStorage.setItem('gabyLocalEntries', JSON.stringify(allEntries));
+                    
+                    // Actualizar contador de entradas locales
+                    this.updateLocalEntriesCount();
+                    
+                    // Mostrar mensaje de éxito
+                    const message = `✅ Migración completada:\n\n` +
+                                  `📊 Datos migrados: ${allDataToMigrate.length} entradas\n` +
+                                  `📅 Incluye: TODAS las entradas históricas\n` +
+                                  `💾 Total en local: ${allEntries.length} entradas\n\n` +
+                                  `🔄 Recarga la página para ver todos los datos`;
+                    
+                    alert(message);
+                    
+                } catch (error) {
+                    alert('❌ Error durante la migración: ' + error.message);
+                }
+            }
+
+            // Fallback para torres
+            fallbackCaseMatching(title) {
+                const casePatterns = [
+                    /(?:[&|]\s*)([A-Za-z]+\s+\d+\s*[A-Za-z]*)/i,
+                    /(?:-\s*)([A-Za-z]+\s+\d+\s*[A-Za-z]*)/i,
+                    /(?:[&|]\s*)([A-Za-z]+\s*[A-Za-z]*\s*\d+)/i,
+                    /(?:-\s*)([A-Za-z]+\s*[A-Za-z]*\s*\d+)/i
+                ];
+
+                for (const pattern of casePatterns) {
+                    const match = title.match(pattern);
+                    if (match) {
+                        const caseCandidate = match[1].trim();
+                        if (!caseCandidate.match(/^(?:ryzen|intel|amd|nvidia|rtx|gtx|rx|i\d{1,2}-\d{3,4}|x3d)/i)) {
+                            return caseCandidate.toUpperCase();
+                        }
+                    }
+                }
+
+                const parts = title.split(/[&|-]/);
+                if (parts.length > 0) {
+                    const lastPart = parts[parts.length - 1].trim();
+                                         if (lastPart && !lastPart.match(/^(?:ryzen|intel|amd|nvidia|rtx|gtx|rx|i\d{1,2}-\d{3,4}|x3d)/i)) {
+                         return lastPart.toUpperCase();
+                     }
+                }
+                return '';
+            }
+
+            // Mostrar la información extraída
+            displayExtractedInfo(info) {
+                // Establecer fecha actual por defecto
+                const today = new Date();
+                const currentDate = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+                document.getElementById('extracted-date').value = currentDate;
+                
+                document.getElementById('extracted-price').value = info.price || '';
+                document.getElementById('extracted-processor').value = (info.processor || '').toUpperCase();
+                document.getElementById('extracted-graphics').value = (info.graphics || '').toUpperCase();
+                document.getElementById('extracted-case').value = (info.case || '').toUpperCase();
+                
+                document.getElementById('extraction-results').classList.remove('hidden');
+                
+                // Scroll suave a los resultados
+                document.getElementById('extraction-results').scrollIntoView({ behavior: 'smooth' });
+            }
+
+
+
+            // Limpiar el formulario
+            clearAutomationForm() {
+                document.getElementById('twitch-title-input').value = '';
+                document.getElementById('extraction-results').classList.add('hidden');
+                
+                // Limpiar los valores mostrados
+                document.getElementById('extracted-price').value = '';
+                document.getElementById('extracted-processor').value = '';
+                document.getElementById('extracted-graphics').value = '';
+                document.getElementById('extracted-case').value = '';
+                document.getElementById('extracted-date').value = '';
+            }
+
+            // Copiar todos los resultados al portapapeles
+            async copyAllResults() {
+                const price = document.getElementById('extracted-price').textContent;
+                const processor = document.getElementById('extracted-processor').textContent;
+                const graphics = document.getElementById('extracted-graphics').textContent;
+                const case_ = document.getElementById('extracted-case').textContent;
+                
+                const textToCopy = `Precio: ${price}\nProcesador: ${processor}\nTarjeta Gráfica: ${graphics}\nTorre: ${case_}`;
+                
+                try {
+                    await navigator.clipboard.writeText(textToCopy);
+                    this.showCopySuccess('¡Información copiada al portapapeles!');
+                } catch (err) {
+                    // Fallback para navegadores que no soportan clipboard API
+                    const textArea = document.createElement('textarea');
+                    textArea.value = textToCopy;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    this.showCopySuccess('¡Información copiada al portapapeles!');
+                }
+            }
+
+            // Mostrar opciones de copia individual
+            showIndividualCopyOptions() {
+                const options = [
+                    { id: 'extracted-price', label: 'Precio' },
+                    { id: 'extracted-processor', label: 'Procesador' },
+                    { id: 'extracted-graphics', label: 'Tarjeta Gráfica' },
+                    { id: 'extracted-case', label: 'Torre' }
+                ];
+
+                let optionsHTML = '<div class="individual-copy-options">';
+                options.forEach(option => {
+                    const value = document.getElementById(option.id).textContent;
+                    if (value && value !== 'No encontrado') {
+                        optionsHTML += `
+                            <button onclick="window.pcBuildsViewer.copyIndividualValue('${option.id}')" class="copy-individual-option">
+                                📋 Copiar ${option.label}: ${value}
+                            </button>
+                        `;
+                    }
+                });
+                optionsHTML += '</div>';
+
+                // Reemplazar el botón con las opciones
+                const copyIndividualBtn = document.getElementById('copy-individual-btn');
+                copyIndividualBtn.innerHTML = optionsHTML;
+                
+                // Restaurar el botón después de 10 segundos
+                setTimeout(() => {
+                    copyIndividualBtn.innerHTML = '📝 Copiar Individual';
+                }, 10000);
+            }
+
+            // Copiar un valor individual
+            async copyIndividualValue(elementId) {
+                const element = document.getElementById(elementId);
+                const value = element.textContent;
+                
+                try {
+                    await navigator.clipboard.writeText(value);
+                    this.showCopySuccess(`¡${value} copiado al portapapeles!`);
+                } catch (err) {
+                    // Fallback para navegadores que no soportan clipboard API
+                    const textArea = document.createElement('textarea');
+                    textArea.value = value;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    this.showCopySuccess(`¡${value} copiado al portapapeles!`);
+                }
+            }
+
+            // Mostrar mensaje de éxito al copiar
+            showCopySuccess(message, duration = 3000) {
+                // Crear mensaje temporal
+                const successMsg = document.createElement('div');
+                successMsg.className = 'copy-success-message';
+                successMsg.textContent = message;
+                successMsg.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #00E676;
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3);
+                    z-index: 1000;
+                    font-weight: 600;
+                    animation: slideInRight 0.3s ease-out;
+                    white-space: pre-line;
+                `;
+                
+                document.body.appendChild(successMsg);
+                
+                // Eliminar después del tiempo especificado (por defecto 3 segundos)
+                setTimeout(() => {
+                    if (successMsg.parentNode) {
+                        successMsg.parentNode.removeChild(successMsg);
+                    }
+                }, duration);
+            }
+
+            // Añadir información extraída a la tabla principal
+            async addToMainTable() {
+                // Obtener la fecha del campo editable PRIMERO
+                const currentDate = document.getElementById('extracted-date').value;
+                
+                // Obtener los valores de los campos editables
+                const price = document.getElementById('extracted-price').value;
+                const processor = document.getElementById('extracted-processor').value;
+                const graphics = document.getElementById('extracted-graphics').value;
+                const case_ = document.getElementById('extracted-case').value;
+                
+                // Verificar que todos los campos tengan información
+                if (!currentDate || !price || !processor || !graphics || !case_) {
+                    alert('❌ Error: No se puede añadir a la tabla. Asegúrate de que todos los campos tengan información válida.');
+                    return;
+                }
+                
+                // Obtener el título original del input
+                const titleInput = document.getElementById('twitch-title-input');
+                const originalTitle = titleInput.value.trim();
+                
+                try {
+                    console.log('➕ Enviando montaje al backend...');
+                    
+                    // Enviar al backend
+                    const response = await fetch('http://localhost:3000/api/add-montage', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            fecha: currentDate,
+                            titulo: originalTitle,
+                            precio: price,
+                            procesador: processor,
+                            grafica: graphics,
+                            torre: case_
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Error del servidor: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (!result.success) {
+                        throw new Error(result.error || 'Error al añadir montaje');
+                    }
+
+                    console.log('✅ Montaje añadido al backend:', result);
+                    
+                    // Recargar datos desde el backend
+                    await this.loadDataFromBackend();
+                    
+                    // Limpiar el formulario
+                    this.clearAutomationForm();
+                    
+                    // Ocultar el formulario de automatización
+                    document.getElementById('automation-form').classList.add('hidden');
+                    
+                    // Mostrar mensaje de éxito con fecha
+                    this.showCopySuccess(`✅ ¡Nueva entrada añadida al backend!\\n📅 Fecha: ${currentDate}`, 8000);
+                    
+                    // Hacer scroll a la tabla para mostrar la nueva entrada
+                    setTimeout(() => {
+                        const tableContainer = document.getElementById('main-table-firefox-container');
+                        if (tableContainer) {
+                            tableContainer.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }, 500);
+                    
+                } catch (error) {
+                    console.error('❌ Error al añadir montaje:', error);
+                    alert('❌ Error al añadir montaje: ' + error.message);
+                }
+            }
+
+            // Guardar entrada en localStorage
+            saveLocalEntry(newRow) {
+                try {
+                    // Obtener entradas existentes del localStorage
+                    const existingEntries = JSON.parse(localStorage.getItem('gabyLocalEntries') || '[]');
+                    
+                    // Añadir la nueva entrada al inicio
+                    existingEntries.unshift(newRow);
+                    
+                    // Guardar en localStorage
+                    localStorage.setItem('gabyLocalEntries', JSON.stringify(existingEntries));
+                    
+                    console.log('Entrada guardada localmente:', newRow);
+                } catch (error) {
+                    console.error('Error al guardar en localStorage:', error);
+                }
+            }
+
+            // Cargar entradas locales y combinarlas con los datos de Google Sheets
+            loadLocalEntries() {
+                try {
+                    const localEntries = JSON.parse(localStorage.getItem('gabyLocalEntries') || '[]');
+                    
+                    if (localEntries.length > 0 && this.sheetsData['Datos'] && this.sheetsData['Datos'].length > 0) {
+                        // Obtener headers
+                        const headers = this.sheetsData['Datos'][0];
+                        
+                        // Combinar entradas locales con datos existentes
+                        const combinedData = [headers, ...localEntries, ...this.sheetsData['Datos'].slice(1)];
+                        
+                        // Actualizar los datos
+                        this.sheetsData['Datos'] = combinedData;
+                        
+                        // Actualizar la tabla
+                        this.displaySheetData('Datos');
+                        this.displayStats();
+                        this.generateAnalysis(combinedData);
+                        
+                        // Actualizar el contador de entradas locales
+                        this.updateLocalEntriesCount();
+                    } else {
+                        console.log('⚠️ No hay entradas locales o estructura de datos no disponible');
+                        console.log('Entradas locales:', localEntries.length);
+                        console.log('Estructura sheetsData:', this.sheetsData ? 'disponible' : 'no disponible');
+                        
+                        // Si no hay entradas locales, mostrar solo headers
+                        if (this.sheetsData['Datos'] && this.sheetsData['Datos'].length > 0) {
+                            this.displaySheetData('Datos');
+                            this.displayStats();
+                            this.generateAnalysis(this.sheetsData['Datos']);
+                        }
+                    }
+                } catch (error) {
+                    console.error('❌ Error al cargar entradas locales:', error);
+                }
+            }
+
+            // Limpiar todas las entradas locales
+            clearLocalEntries() {
+                if (confirm('¿Estás seguro de que quieres eliminar TODAS las entradas locales? Esta acción no se puede deshacer.')) {
+                    localStorage.removeItem('gabyLocalEntries');
+                    this.showCopySuccess('🗑️ Entradas locales eliminadas');
+                    
+                    // Actualizar el contador
+                    this.updateLocalEntriesCount();
+                    
+                    // En modo offline, solo mostrar headers
+                    if (this.sheetsData['Datos'] && this.sheetsData['Datos'].length > 0) {
+                        this.sheetsData['Datos'] = [this.sheetsData['Datos'][0]]; // Solo headers
+                        this.displaySheetData('Datos');
+                        this.displayStats();
+                        this.generateAnalysis(this.sheetsData['Datos']);
+                    }
+                }
+            }
+
+            // Eliminar todas las entradas locales de la tabla
+            deleteAllLocalEntries() {
+                if (!this.sheetsData['Datos'] || this.sheetsData['Datos'].length < 2) {
+                    alert('❌ No hay datos para eliminar');
+                    return;
+                }
+
+                const localEntries = JSON.parse(localStorage.getItem('gabyLocalEntries') || '[]');
+                if (localEntries.length === 0) {
+                    alert('ℹ️ No hay entradas locales para eliminar');
+                    return;
+                }
+
+                if (!confirm(`¿Estás seguro de que quieres eliminar TODAS las ${localEntries.length} entradas locales de la tabla?\n\nEsta acción no se puede deshacer.`)) {
+                    return;
+                }
+
+                // Eliminar entradas locales de la tabla
+                const originalData = this.sheetsData['Datos'].slice(1); // Sin headers
+                const filteredData = originalData.filter(row => {
+                    return !localEntries.some(localEntry => 
+                        localEntry[0] === row[0] && 
+                        localEntry[1] === row[1] && 
+                        localEntry[2] === row[2]
+                    );
+                });
+
+                // Reconstruir la tabla sin entradas locales
+                this.sheetsData['Datos'] = [this.sheetsData['Datos'][0], ...filteredData];
+
+                // Limpiar localStorage
+                localStorage.removeItem('gabyLocalEntries');
+
+                // Actualizar la tabla
+                this.displaySheetData('Datos');
+                this.displayStats();
+                this.generateAnalysis(this.sheetsData['Datos']);
+                this.updateLocalEntriesCount();
+
+                // Mostrar mensaje de confirmación
+                this.showCopySuccess(`🗑️ Se eliminaron ${localEntries.length} entradas locales de la tabla`);
+            }
+
+            // Actualizar el contador de entradas locales
+            updateLocalEntriesCount() {
+                try {
+                    const localEntries = JSON.parse(localStorage.getItem('gabyLocalEntries') || '[]');
+                    const countElement = document.getElementById('local-entries-count');
+                    if (countElement) {
+                        countElement.textContent = localEntries.length;
+                    }
+                } catch (error) {
+                    console.error('Error al actualizar contador:', error);
+                }
+            }
+
+            // Eliminar una fila de la tabla
+            async deleteRow(rowIndex) {
+                if (!this.sheetsData['Datos'] || this.sheetsData['Datos'].length < 2) {
+                    alert('❌ No hay datos para eliminar');
+                    return;
+                }
+
+                // Confirmar eliminación
+                const rowData = this.sheetsData['Datos'][rowIndex];
+                if (!rowData) {
+                    alert('❌ Fila no encontrada');
+                    return;
+                }
+
+                const confirmMessage = `¿Estás seguro de que quieres eliminar esta entrada?\n\n` +
+                    `Fecha: ${rowData[0]}\n` +
+                    `Título: ${rowData[1]}\n` +
+                    `Precio: ${rowData[2]}€\n` +
+                    `Procesador: ${rowData[3]}\n` +
+                    `Gráfica: ${rowData[4]}\n` +
+                    `Torre: ${rowData[5]}`;
+
+                if (!confirm(confirmMessage)) {
+                    return;
+                }
+
+                try {
+                    // El rowIndex ya incluye el offset de los headers, así que restamos 1 para obtener el índice real
+                    const realIndex = rowIndex - 1;
+                    console.log(`🗑️ Eliminando montaje en índice: ${realIndex}`);
+                    
+                    // Enviar solicitud de eliminación al backend
+                    const response = await fetch(`http://localhost:3000/api/delete-montage/${realIndex}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Error del servidor: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (!result.success) {
+                        throw new Error(result.error || 'Error al eliminar montaje');
+                    }
+
+                    console.log('✅ Montaje eliminado del backend:', result);
+                    
+                    // Recargar datos desde el backend
+                    await this.loadDataFromBackend();
+                    
+                    // Mostrar mensaje de confirmación con fecha
+                    const fechaEliminada = rowData[0];
+                    this.showCopySuccess(`🗑️ Fila eliminada correctamente del backend\n📅 Fecha: ${fechaEliminada}`, 5000);
+                    
+                } catch (error) {
+                    console.error('❌ Error al eliminar montaje:', error);
+                    alert('❌ Error al eliminar montaje: ' + error.message);
+                }
+            }
+
+            // Sistema de autenticación
+            initAuth() {
+                this.isAuthenticated = false;
+                this.setupAuthEventListeners();
+            }
+            
+            setupAuthEventListeners() {
+                const authButton = document.getElementById('auth-button');
+                const authModal = document.getElementById('auth-modal');
+                const passwordInput = document.getElementById('password-input');
+                const loginBtn = document.getElementById('login-btn');
+                const cancelBtn = document.getElementById('cancel-auth-btn');
+                const authMessage = document.getElementById('auth-message');
+                
+                // Mostrar modal al hacer clic en el botón de autenticación
+                authButton.addEventListener('click', () => {
+                    authModal.style.display = 'block';
+                    passwordInput.focus();
+                    authMessage.textContent = '';
+                    authMessage.className = 'auth-message';
+                });
+                
+                // Cerrar modal al hacer clic en cancelar
+                cancelBtn.addEventListener('click', () => {
+                    authModal.style.display = 'none';
+                    passwordInput.value = '';
+                });
+                
+                // Cerrar modal al hacer clic fuera
+                authModal.addEventListener('click', (e) => {
+                    if (e.target === authModal) {
+                        authModal.style.display = 'none';
+                        passwordInput.value = '';
+                    }
+                });
+                
+                // Procesar login
+                loginBtn.addEventListener('click', () => {
+                    this.handleLogin();
+                });
+                
+                // Procesar login con Enter
+                passwordInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.handleLogin();
+                    }
+                });
+            }
+            
+            handleLogin() {
+                const passwordInput = document.getElementById('password-input');
+                const authModal = document.getElementById('auth-modal');
+                const authMessage = document.getElementById('auth-message');
+                const password = passwordInput.value;
+                
+                if (password === '*didjujir23*') {
+                    this.isAuthenticated = true;
+                    authMessage.textContent = '✅ Acceso concedido';
+                    authMessage.className = 'auth-message success';
+                    
+                    // Mostrar funcionalidades avanzadas
+                    this.showAdvancedFeatures();
+                    
+                    // Cerrar modal después de 1 segundo
+                    setTimeout(() => {
+                        authModal.style.display = 'none';
+                        passwordInput.value = '';
+                        authMessage.textContent = '';
+                    }, 1000);
+                    
+                } else {
+                    authMessage.textContent = '❌ Contraseña incorrecta';
+                    authMessage.className = 'auth-message error';
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            }
+            
+            hideAdvancedFeatures() {
+                // Ocultar botón de automatización
+                const automationBtn = document.getElementById('toggle-automation-btn');
+                if (automationBtn) {
+                    automationBtn.classList.add('hidden');
+                }
+                
+                // Ocultar formulario de automatización
+                const automationForm = document.getElementById('automation-form');
+                if (automationForm) {
+                    automationForm.classList.add('hidden');
+                }
+            }
+            
+            showAdvancedFeatures() {
+                // Mostrar botón de automatización
+                const automationBtn = document.getElementById('toggle-automation-btn');
+                if (automationBtn) {
+                    automationBtn.classList.remove('hidden');
+                }
+                
+                // Mostrar formulario de automatización
+                const automationForm = document.getElementById('automation-form');
+                if (automationForm) {
+                    automationForm.classList.remove('hidden');
+                }
+                
+                // Añadir botones de eliminar a la tabla actual
+                this.addFloatingDeleteButtons();
+            }
+
+            // Recuperar montaje eliminado por accidente
+            recoverDeletedBuild() {
+                const deletedBuild = [
+                    '2025-08-28',           // Fecha
+                    'Montaje PC 2950€ Invertido - 9800X3D & RTX 5080 & BeQuiet 600 LX', // Título
+                    '2950',                 // Precio
+                    'AMD RYZEN 9 9800X3D', // Procesador
+                    'NVIDIA RTX 5080',      // Tarjeta gráfica
+                    'BEQUIET 600 LX'        // Torre
+                ];
+                
+                try {
+                    // Obtener entradas existentes del localStorage
+                    const existingEntries = JSON.parse(localStorage.getItem('gabyLocalEntries') || '[]');
+                    
+                    // Añadir la entrada recuperada al inicio
+                    existingEntries.unshift(deletedBuild);
+                    
+                    // Guardar en localStorage
+                    localStorage.setItem('gabyLocalEntries', JSON.stringify(existingEntries));
+                    
+                    // Añadir la nueva fila al inicio de los datos (después de los headers)
+                    if (this.sheetsData['Datos'] && this.sheetsData['Datos'].length > 0) {
+                        // Insertar después de los headers (índice 1)
+                        this.sheetsData['Datos'].splice(1, 0, deletedBuild);
+                        
+                        // Actualizar la tabla en pantalla
+                        this.displaySheetData('Datos');
+                        
+                        // Actualizar estadísticas y análisis
+                        this.displayStats();
+                        this.generateAnalysis(this.sheetsData['Datos']);
+                        
+                        // Mostrar mensaje de éxito
+                        this.showCopySuccess(`✅ ¡Montaje recuperado correctamente!\n📅 Fecha: 2025-08-28\n💰 Precio: 2950€`, 8000);
+                        
+                        // Actualizar el contador de entradas locales
+                        this.updateLocalEntriesCount();
+                        
+                    } else {
+                        alert('❌ Error: No se pueden cargar los datos de la tabla. Recarga la página e inténtalo de nuevo.');
+                    }
+                    
+                } catch (error) {
+                    alert('❌ Error al recuperar el montaje: ' + error.message);
+                }
+            }
 
         }
 
@@ -1311,6 +2516,8 @@
                 if (tableContainer) {
                     tableContainer.addEventListener('scroll', updateScrollButtons);
                 }
+                
+
                 
 
             }, 1000);
