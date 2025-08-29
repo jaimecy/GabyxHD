@@ -33,15 +33,17 @@
             <h3 class="stats-title">ℹ️ Información de los Montajes</h3>
             <div id="stats-grid" class="stats-grid"></div>
             
-            <!-- ENLACE A ESTADÍSTICAS MENSUALES -->
-            <div class="monthly-stats-link">
-                <a href="#" onclick="scrollToMonthlyStats(); return false;">📊 Ver Estadísticas Mensuales 2025</a>
-            </div>
-            
-            <div class="stats-button-container">
-                <button id="go-to-analysis-btn" class="go-to-analysis-btn">
-                    📊 Análisis de Componentes
-                </button>
+            <!-- CONTENEDOR DE BOTONES EN LÍNEA -->
+            <div class="buttons-container">
+                <div class="monthly-stats-link">
+                    <button onclick="scrollToMonthlyStats(); return false;" class="monthly-stats-btn btn-common">📅 Estadísticas Mensuales 2025</button>
+                </div>
+                
+                <div class="stats-button-container">
+                    <button id="go-to-analysis-btn" class="go-to-analysis-btn btn-common">
+                        📊 Análisis de Componentes
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -550,7 +552,6 @@
                         <h3 class="prices-title">
                             Resumen de Precios de PCs
                         </h3>
-                        <div class="cost-explanation">(El precio es de todos los componentes)</div>
                         <div class="prices-grid">
                             <div class="price-card">
                                 <div class="price-value price-avg">${Math.round(prices.avg)}€</div>
@@ -683,10 +684,7 @@
                 document.getElementById('back-to-data-btn-bottom').onclick = () => this.showData(); // Add listener for the new button
                 
                 // Event listener para mostrar/ocultar estadísticas mensuales
-                const monthlyStatsTitle = document.getElementById('monthly-stats-title');
-                if (monthlyStatsTitle) {
-                    monthlyStatsTitle.onclick = () => this.toggleMonthlyStats();
-                }
+                // (Eliminado ya que no es necesario)
             }
 
             showAnalysis() {
@@ -696,18 +694,18 @@
                 }
                 
                 // OCULTAR COMPLETAMENTE la sección de datos y estadísticas
-                document.getElementById('main-table-firefox-container').style.display = 'none';
-                document.getElementById('stats-info').style.display = 'none';
+                document.getElementById('main-table-firefox-container').classList.add('hidden');
+                document.getElementById('stats-info').classList.add('hidden');
                 
                 // OCULTAR las estadísticas mensuales
-                const monthlyStatsWrapper = document.querySelector('.monthly-stats-wrapper');
+                const monthlyStatsWrapper = document.getElementById('monthly-stats-wrapper');
                 if (monthlyStatsWrapper) {
-                    monthlyStatsWrapper.style.display = 'none';
+                    monthlyStatsWrapper.classList.add('hidden');
                 }
                 
                 // MOSTRAR SOLO la sección de análisis
                 document.getElementById('analysis-container').style.display = 'block';
-                document.getElementById('analysis-container').classList.add('hidden');
+                document.getElementById('analysis-container').classList.remove('hidden');
                 
                 // Desplazarse al inicio de la página
                 setTimeout(() => {
@@ -728,13 +726,13 @@
                 document.getElementById('analysis-container').classList.add('hidden');
                 
                 // MOSTRAR la sección de datos y estadísticas
-                document.getElementById('main-table-firefox-container').style.display = 'block';
-                document.getElementById('stats-info').style.display = 'block';
+                document.getElementById('main-table-firefox-container').classList.remove('hidden');
+                document.getElementById('stats-info').classList.remove('hidden');
                 
                 // MOSTRAR las estadísticas mensuales
-                const monthlyStatsWrapper = document.querySelector('.monthly-stats-wrapper');
+                const monthlyStatsWrapper = document.getElementById('monthly-stats-wrapper');
                 if (monthlyStatsWrapper) {
-                    monthlyStatsWrapper.style.display = 'block';
+                    monthlyStatsWrapper.classList.remove('hidden');
                 }
                 
                 // Desplazarse arriba del todo - FORZAR el scroll
@@ -807,11 +805,19 @@
                 this.displayMonthlyStats(data);
 
                 document.getElementById('stats-info').classList.remove('hidden');
-                document.getElementById('main-table-firefox-container').style.display = 'block';
+                document.getElementById('main-table-firefox-container').classList.remove('hidden');
+                
+                // Mostrar las estadísticas mensuales
+                const monthlyStatsWrapper = document.getElementById('monthly-stats-wrapper');
+                if (monthlyStatsWrapper) {
+                    monthlyStatsWrapper.classList.remove('hidden');
+    
+                }
             }
 
             displaySheetData(sheetName) {
                 const data = this.sheetsData[sheetName];
+
                 if (!data || data.length === 0) {
                     document.getElementById('main-table-firefox-container-inner').innerHTML = '<p>No hay datos en esta hoja.</p>';
                     return;
@@ -861,15 +867,20 @@
                 tableHTMLFirefox += '</tbody></table>';
                 document.getElementById('main-table-firefox-container-inner').innerHTML = tableHTMLFirefox;
                 
-                // Añadir el mensaje explicativo FUERA del contenedor de la tabla
-                const tableWrapper = document.querySelector('.table-wrapper');
-                if (tableWrapper) {
-                    const existingMessage = tableWrapper.nextElementSibling;
-                    if (!existingMessage || !existingMessage.classList.contains('price-explanation')) {
-                        const messageElement = document.createElement('p');
-                        messageElement.className = 'price-explanation';
-                        messageElement.textContent = '* El precio es de todos los componentes.';
-                        tableWrapper.parentNode.insertBefore(messageElement, tableWrapper.nextSibling);
+                // Añadir el mensaje explicativo FUERA del contenedor de la tabla (solo una vez)
+                if (!this.priceMessageCreated) {
+                    const tableWrapper = document.querySelector('.table-wrapper');
+                    if (tableWrapper) {
+                        // Verificar si ya existe un mensaje
+                        const existingMessage = document.getElementById('price-explanation-message');
+                        if (!existingMessage) {
+                            const messageElement = document.createElement('p');
+                            messageElement.className = 'price-explanation';
+                            messageElement.textContent = '* El precio es de todos los componentes.';
+                            messageElement.id = 'price-explanation-message';
+                            tableWrapper.parentNode.insertBefore(messageElement, tableWrapper.nextSibling);
+                            this.priceMessageCreated = true;
+                        }
                     }
                 }
                 
@@ -879,6 +890,23 @@
                         updateScrollButtons();
                     }
                 }, 100);
+                
+                // Establecer estado inicial de ordenamiento solo si no hay estado previo
+                if (!this.sortStates || Object.keys(this.sortStates).length === 0) {
+                    this.setSortState(0, 'desc'); // Fecha decreciente por defecto
+                    this.setSortState(2, null); // Precio sin ordenamiento inicial
+                    this.updateSortIndicators(0, 'desc');
+                    this.updateSortIndicators(2, null);
+                    
+
+                } else {
+                    // Restaurar el estado de ordenamiento existente
+                    Object.entries(this.sortStates).forEach(([columnIndex, direction]) => {
+                        this.updateSortIndicators(parseInt(columnIndex), direction);
+                    });
+                }
+                
+
             }
 
             // Método para ordenar la tabla por columna
@@ -888,6 +916,13 @@
 
                 const headers = data[0];
                 const rows = data.slice(1);
+                
+                // Resetear el estado de ordenamiento de otras columnas
+                Object.keys(this.sortStates || {}).forEach(colIndex => {
+                    if (parseInt(colIndex) !== columnIndex) {
+                        this.resetSortState(parseInt(colIndex));
+                    }
+                });
                 
                 // Obtener el estado actual de ordenamiento para esta columna
                 const currentSortState = this.getSortState(columnIndex);
@@ -907,6 +942,9 @@
                 this.sheetsData['Datos'] = newData;
                 this.displaySheetData('Datos');
                 
+                // Restaurar el estado de ordenamiento después de recrear la tabla
+                this.updateSortIndicators(columnIndex, newSortDirection);
+                
                 // Mostrar mensaje de confirmación
                 const columnName = columnIndex === 0 ? 'Fecha' : 'Precio';
                 const direction = newSortDirection === 'asc' ? 'ascendente' : 'descendente';
@@ -924,6 +962,15 @@
                 if (!this.sortStates) this.sortStates = {};
                 this.sortStates[columnIndex] = direction;
             }
+
+            // Resetear el estado de ordenamiento de una columna específica
+            resetSortState(columnIndex) {
+                if (!this.sortStates) this.sortStates = {};
+                this.sortStates[columnIndex] = null;
+                this.updateSortIndicators(columnIndex, null);
+            }
+
+
 
             // Ordenar las filas según la columna y dirección
             sortRows(rows, columnIndex, direction) {
@@ -989,21 +1036,31 @@
 
             // Actualizar indicadores visuales de ordenamiento
             updateSortIndicators(columnIndex, direction) {
+                console.log(`Actualizando indicadores: columna ${columnIndex}, dirección ${direction}`);
+                
                 // Resetear todos los indicadores
                 const allHeaders = document.querySelectorAll('.sortable-header');
-                allHeaders.forEach(header => {
+                console.log(`Encontrados ${allHeaders.length} headers sortables`);
+                
+                allHeaders.forEach((header, index) => {
                     const upArrow = header.querySelector('.sort-arrow-up');
                     const downArrow = header.querySelector('.sort-arrow-down');
                     
                     if (upArrow && downArrow) {
                         upArrow.classList.remove('active');
                         downArrow.classList.remove('active');
+                        console.log(`Reseteadas flechas del header ${index}`);
                     }
                 });
                 
                 // Activar el indicador correcto para la columna actual
-                const currentHeader = document.querySelectorAll('.sortable-header')[columnIndex];
-                if (currentHeader) {
+                let headerIndex = columnIndex;
+                if (columnIndex === 2) headerIndex = 1; // La columna 2 (precio) es el segundo header sortable
+                
+                const currentHeader = document.querySelectorAll('.sortable-header')[headerIndex];
+                console.log(`Header actual para columna ${columnIndex} (índice ${headerIndex}):`, currentHeader);
+                
+                if (currentHeader && direction !== null) {
                     const upArrow = currentHeader.querySelector('.sort-arrow-up');
                     const downArrow = currentHeader.querySelector('.sort-arrow-down');
                     
@@ -1239,6 +1296,12 @@
         
         // Inicializar la aplicación cuando se carga la página
         document.addEventListener('DOMContentLoaded', () => {
+            // Verificar que las estadísticas mensuales estén ocultas al inicio
+            const monthlyStatsWrapper = document.getElementById('monthly-stats-wrapper');
+            if (monthlyStatsWrapper) {
+
+            }
+            
             window.pcBuildsViewer = new PCBuildsViewer();
             
             // Inicializar estado de los botones de scroll y agregar listener
@@ -1273,7 +1336,7 @@
     </script>
 
     <!-- ESTADÍSTICAS MENSUALES AL FINAL -->
-    <div class="monthly-stats-wrapper">
+    <div id="monthly-stats-wrapper" class="monthly-stats-wrapper hidden">
         <h2 id="monthly-stats-section" class="monthly-stats-section-title">📅 Estadísticas Mensuales 2025</h2>
         <div id="monthly-stats-table-final" class="monthly-stats-table-container"></div>
     </div>
