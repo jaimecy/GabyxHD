@@ -181,7 +181,6 @@
             this.apiUrl = `${this.baseUrl}/api/sheets-data`;
             
             console.log(`🌍 Entorno detectado: ${this.isLocalEnvironment ? 'LOCAL' : 'PRODUCCIÓN'}`);
-            console.log(`🔗 URL base: ${this.baseUrl}`);
                 this.spreadsheetId = '1OCMcUJ0VerXZLEgyjapb_lNvRZQL05lIcGf882AaTfU';
                 this.maxRetries = 3;
                 this.retryDelay = 2000; // 2 segundos inicial
@@ -426,14 +425,12 @@
             }
             */
 
-            // DESHABILITADO - No se necesita en modo offline
-            /*
             async checkConnectivityManually() {
                 try {
                     this.showLoading('Verificando conectividad manualmente...');
                     
                     const startTime = Date.now();
-                    const response = await fetch('https://gabyxhd.onrender.com/health', {
+                    const response = await fetch(this.getApiUrl('/health'), {
                         method: 'GET',
                         signal: AbortSignal.timeout(20000) // 20 segundos para verificación manual
                     });
@@ -457,16 +454,14 @@
                     this.hideLoading();
                 }
             }
-            */
 
             // DESHABILITADO - No se necesita en modo offline
-            /*
             async checkServerStatus() {
                 try {
                     this.showLoading('Verificando estado del servidor...');
                     
                     const startTime = Date.now();
-                    const response = await fetch('https://gabyxhd.onrender.com/health', {
+                    const response = await fetch(this.getApiUrl('/health'), {
                         method: 'GET',
                         signal: AbortSignal.timeout(15000) // 15 segundos
                     });
@@ -492,14 +487,14 @@
 • Tiempo de respuesta: ${responseTime}ms
 • Tiempo activo: ${uptimeText}
 • Estado HTTP: ${response.status}
-• URL: gabyxhd.onrender.com`);
+• URL: ${this.baseUrl}`);
                     } else {
                         this.showError(`⚠️ Servidor respondió con estado: ${response.status}
 
 📊 Detalles:
 • Tiempo de respuesta: ${responseTime}ms
 • Estado HTTP: ${response.status}
-• URL: gabyxhd.onrender.com
+• URL: ${this.baseUrl}
 • El servidor está respondiendo pero con un error`);
                     }
                 } catch (error) {
@@ -509,21 +504,20 @@
 📊 Diagnóstico:
 • El servidor está muy lento o no responde
 • Tiempo máximo de espera: 15 segundos
-• URL: gabyxhd.onrender.com
+• URL: ${this.baseUrl}
 • Posible problema de conectividad o servidor sobrecargado`);
                     } else {
                         this.showError(`❌ Error de conexión: ${error.message}
 
 📊 Diagnóstico:
 • Tipo de error: ${error.name || 'Desconocido'}
-• URL: gabyxhd.onrender.com
+• URL: ${this.baseUrl}
 • Posible problema de red o servidor inaccesible`);
                     }
                 } finally {
                     this.hideLoading();
                 }
             }
-            */
 
             // DESHABILITADO - Google Sheets no disponible en modo offline
             /*
