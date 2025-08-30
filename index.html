@@ -233,7 +233,7 @@
             // NUEVA FUNCIÓN: Cargar datos desde el backend
             async loadDataFromBackend() {
                 try {
-                    console.log('🔄 Cargando datos desde el backend...');
+    
                     this.showLoading('🔄 Conectando con el servidor...');
                     
                     const response = await fetch(this.getApiUrl('/api/sheets-data'));
@@ -257,7 +257,7 @@
                         'Datos': [result.headers, ...result.data]
                     };
                     
-                    console.log(`✅ Datos cargados: ${result.totalRows} montajes`);
+    
                     
                     // Ordenar por fecha decreciente por defecto
                     this.sortTableByDateDescending();
@@ -282,7 +282,7 @@
                     this.showLoading('⚠️ Error de conexión, usando datos locales...');
                     
                     // Fallback: usar datos estáticos si falla el backend
-                    console.log('⚠️ Usando datos estáticos como fallback...');
+    
                     this.sheetsData = {
                         'Datos': [
                             ['Fecha', 'Título del directo de Twitch', 'Precio €', 'Procesador', 'Tarjeta gráfica', 'Torre'],
@@ -686,10 +686,7 @@
                 const graphicsIndex = 4; // Tarjeta gráfica
                 const caseIndex = 5; // Torre
 
-                console.log('🔍 Procesando filas:', rows.length);
                 rows.forEach((row, index) => {
-                    if (index < 5) console.log(`Fila ${index}:`, row);
-                    
                     // Análisis de procesadores
                     const processorItem = row[processorIndex];
                     if (processorItem && processorItem.trim() !== '') {
@@ -730,12 +727,7 @@
                 const minPrice = Math.min(...prices);
                 const maxPrice = Math.max(...prices);
 
-                console.log('📊 Resultados del análisis:', {
-                    procesadores: Object.keys(processors).length,
-                    graficas: Object.keys(graphics).length,
-                    torres: Object.keys(cases).length,
-                    combinaciones: Object.keys(combinations).length
-                });
+
 
                 this.displayAnalysis(processors, graphics, cases, { avg: avgPrice, min: minPrice, max: maxPrice, total: rows.length });
                 this.displayCombinationsTable(combinations);
@@ -2070,7 +2062,7 @@
                 const originalTitle = titleInput.value.trim();
                 
                 try {
-                    console.log('➕ Enviando montaje al backend...');
+    
                     
                     // Enviar al backend
                                             const response = await fetch(this.getApiUrl('/api/add-montage'), {
@@ -2098,7 +2090,7 @@
                         throw new Error(result.error || 'Error al añadir montaje');
                     }
 
-                    console.log('✅ Montaje añadido al backend:', result);
+    
                     
                     // Recargar datos desde el backend con timeout de seguridad
                     try {
@@ -2155,7 +2147,7 @@
                     // Guardar en localStorage
                     localStorage.setItem('gabyLocalEntries', JSON.stringify(existingEntries));
                     
-                    console.log('Entrada guardada localmente:', newRow);
+    
                 } catch (error) {
                     console.error('Error al guardar en localStorage:', error);
                 }
@@ -2184,9 +2176,8 @@
                         // Actualizar el contador de entradas locales
                         this.updateLocalEntriesCount();
                     } else {
-                        console.log('⚠️ No hay entradas locales o estructura de datos no disponible');
-                        console.log('Entradas locales:', localEntries.length);
-                        console.log('Estructura sheetsData:', this.sheetsData ? 'disponible' : 'no disponible');
+        
+
                         
                         // Si no hay entradas locales, mostrar solo headers
                         if (this.sheetsData['Datos'] && this.sheetsData['Datos'].length > 0) {
@@ -2372,14 +2363,8 @@
 
                 try {
                     // El rowIndex ya incluye el offset de los headers, así que es el índice correcto
-                    console.log(`🗑️ Eliminando montaje - rowIndex recibido: ${rowIndex}`);
-                    console.log(`📊 Total datos en tabla: ${this.sheetsData['Datos'].length}`);
-                    console.log(`🎯 Datos de la fila a eliminar:`, rowData);
-                    console.log(`🔍 Verificando que el índice sea correcto...`);
-                    
-                    // Usar la nueva función que siempre encuentra el índice correcto
+                                        // Usar la nueva función que siempre encuentra el índice correcto
                     const indiceFinal = this.findRealDataIndex(rowData);
-                    console.log(`🔍 Índice final para eliminación: ${indiceFinal}`);
                     
                     if (indiceFinal === -1) {
                         throw new Error(`No se pudo encontrar el índice para la fecha: ${rowData[0]}`);
@@ -2399,25 +2384,9 @@
                     if (!result.success) {
                         throw new Error(result.error || 'Error al eliminar montaje');
                     }
-
-                    console.log('✅ Montaje eliminado del backend:', result);
-                    console.log(`📊 Montajes restantes según backend: ${result.totalMontages}`);
-                    
-                    // Verificar que solo se eliminó un elemento
-                    const datosAntes = this.sheetsData['Datos'].length;
-                    console.log(`📊 Datos antes de recargar: ${datosAntes}`);
                     
                     // Recargar datos desde el backend
                     await this.loadDataFromBackend();
-                    
-                    const datosDespues = this.sheetsData['Datos'].length;
-                    console.log(`📊 Datos después de recargar: ${datosDespues}`);
-                    console.log(`📊 Diferencia: ${datosAntes - datosDespues} elementos`);
-                    
-                    if (datosAntes - datosDespues !== 1) {
-                        console.error(`❌ ERROR: Se eliminaron ${datosAntes - datosDespues} elementos en lugar de 1`);
-                        alert(`⚠️ Advertencia: Se eliminaron ${datosAntes - datosDespues} elementos en lugar de 1. Verifica la consola para más detalles.`);
-                    }
                     
                     // Mostrar mensaje de confirmación con fecha
                     const fechaEliminada = rowData[0];
@@ -2615,13 +2584,13 @@
                     return -1;
                 }
                 
-                console.log(`🔍 Buscando fecha: ${fecha}`);
-                console.log(`📊 Datos disponibles:`, this.sheetsData['Datos'].slice(1).map(row => row[0]));
+
+
                 
                 // Buscar en los datos (sin incluir headers)
                 for (let i = 1; i < this.sheetsData['Datos'].length; i++) {
                     if (this.sheetsData['Datos'][i][0] === fecha) {
-                        console.log(`✅ Fecha ${fecha} encontrada en índice: ${i}`);
+        
                         return i; // Retornar el índice real en los datos
                     }
                 }
@@ -2669,12 +2638,12 @@
             // Función para enviar datos importados al backend
             async sendImportedDataToBackend(data) {
                 try {
-                    console.log('🔄 Enviando datos importados al backend...');
+    
                     
                     // Preparar datos para enviar (sin headers)
                     const montajesToSend = data.slice(1); // Excluir la primera fila (headers)
                     
-                    console.log(`📤 Enviando ${montajesToSend.length} montajes al backend...`);
+    
                     
                     // Enviar todos los montajes de una vez usando el endpoint de importación masiva
                     const response = await fetch(this.getApiUrl('/api/import-montages'), {
@@ -2697,8 +2666,8 @@
                         throw new Error(result.error || 'Error al importar montajes');
                     }
                     
-                    console.log('✅ Todos los montajes enviados al backend correctamente');
-                    console.log(`📊 Total montajes en servidor: ${result.totalMontages}`);
+    
+    
                     
                     // Recargar datos desde el backend para confirmar
                     await this.loadDataFromBackend();
@@ -2746,8 +2715,8 @@
                         );
                         
                         if (confirmImport) {
-                            console.log('📥 Iniciando importación de datos...');
-                            console.log(`📊 Datos a importar: ${importedData.data.length} filas (incluyendo headers)`);
+            
+            
                             
                             // Importar datos en memoria
                             this.sheetsData['Datos'] = importedData.data;
