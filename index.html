@@ -25,11 +25,6 @@
             <!-- BOTÓN DE PRUEBA PARA HOVER -->
         </div>
 
-        <!-- Botón de autenticación (candado) -->
-        <div class="auth-button" id="auth-button" title="🔐 Autenticación">
-            🔒
-        </div>
-
         <!-- Modal de autenticación -->
         <div class="auth-modal" id="auth-modal">
             <div class="auth-content">
@@ -37,10 +32,18 @@
                 <p>Introduce la contraseña para acceder a las funciones avanzadas:</p>
                 <input type="password" id="password-input" placeholder="Contraseña" class="password-input">
                 <div class="auth-buttons">
-                    <button id="login-btn" class="login-btn">Acceder</button>
                     <button id="cancel-auth-btn" class="cancel-btn">Cancelar</button>
+                    <button id="login-btn" class="login-btn">Acceder</button>
                 </div>
                 <div id="auth-message" class="auth-message"></div>
+            </div>
+        </div>
+
+        <!-- Spinner de carga centrado en la ventana -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="loading-spinner-container">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Cargando datos...</div>
             </div>
         </div>
 
@@ -66,7 +69,7 @@
                         📊 Análisis de Componentes
                     </button>
                     <button id="toggle-automation-btn" class="automation-toggle-btn btn-common hidden">
-                        🤖 Añade Título de Twitch
+                        🤖 Añade un montaje
                     </button>
 
                 </div>
@@ -75,7 +78,7 @@
 
         <!-- Formulario de Automatización de Títulos de Twitch -->
         <div id="automation-form" class="automation-form hidden">
-            <h3 class="automation-title">🤖 Copia el Título de Twitch</h3>
+            <h3 class="automation-title">🤖 <strong>AÑADIR DATOS DE MONTAJE</strong></h3>
 
             
             <div class="form-group">
@@ -86,12 +89,13 @@
             </div>
             
                             <div class="form-actions">
-                    <button id="extract-info-btn" class="extract-btn btn-common">🔍 Extraer Información</button>
+                    <button id="extract-info-btn" class="extract-btn btn-common">🔍 Analizar datos</button>
                     <button id="clear-form-btn" class="clear-btn btn-common">🗑️ Limpiar</button>
+                    
                 </div>
             
             <div id="extraction-results" class="extraction-results hidden">
-                <h4>📋 Información Extraída:</h4>
+                <h4>📋 Información Extraída<br><i>(Se pueden editar los datos)</i></h4>
                 <div class="results-grid">
                     <div class="result-item">
                         <label>Fecha:</label>
@@ -178,6 +182,9 @@
 
             async init() {
                 try {
+                    // Mostrar spinner de carga inmediatamente
+                    this.showLoading('Inicializando aplicación...');
+                    
                     this.setupEventListeners();
                     this.initAuth(); // Inicializar sistema de autenticación
                     
@@ -221,6 +228,7 @@
             async loadDataFromBackend() {
                 try {
                     console.log('🔄 Cargando datos desde el backend...');
+                    this.showLoading('🔄 Conectando con el servidor...');
                     
                     const response = await fetch('https://gabyxhd.onrender.com/api/sheets-data');
                     
@@ -228,11 +236,15 @@
                         throw new Error(`Error del servidor: ${response.status}`);
                     }
                     
+                    this.showLoading('📊 Procesando datos del servidor...');
+                    
                     const result = await response.json();
                     
                     if (!result.success) {
                         throw new Error(result.error || 'Error al cargar datos');
                     }
+                    
+                    this.showLoading('🔄 Organizando y ordenando datos...');
                     
                     // Estructurar datos como antes
                     this.sheetsData = {
@@ -244,6 +256,8 @@
                     // Ordenar por fecha decreciente por defecto
                     this.sortTableByDateDescending();
                     
+                    this.showLoading('📋 Generando tabla y estadísticas...');
+                    
                     // Mostrar la tabla principal (ya ordenada)
                     this.displaySheetData('Datos');
                     
@@ -253,8 +267,13 @@
                     // Generar estadísticas básicas
                     this.displayStats();
                     
+                    // Ocultar spinner cuando todo esté listo
+                    this.hideLoading();
+                    
                 } catch (error) {
                     console.error('❌ Error al cargar datos del backend:', error);
+                    
+                    this.showLoading('⚠️ Error de conexión, usando datos locales...');
                     
                     // Fallback: usar datos estáticos si falla el backend
                     console.log('⚠️ Usando datos estáticos como fallback...');
@@ -271,6 +290,9 @@
                     this.updateSortIndicators(0, 'desc');
                     
                     this.displayStats();
+                    
+                    // Ocultar spinner en caso de fallback
+                    this.hideLoading();
                     
                     this.showError('Error al conectar con el backend. Usando datos locales.');
                 }
@@ -975,11 +997,29 @@
 
 
             showLoading(message) {
+                // Mostrar el overlay de carga centrado
+                const loadingOverlay = document.getElementById('loading-overlay');
+                if (loadingOverlay) {
+                    const loadingText = loadingOverlay.querySelector('.loading-text');
+                    if (loadingText && message) {
+                        loadingText.textContent = message;
+                    }
+                    loadingOverlay.classList.remove('hidden');
+                }
+                
+                // También mostrar el loading original como respaldo
                 document.getElementById('loading').innerHTML = `⏳ ${message}`;
                 document.getElementById('loading').style.display = 'block';
             }
 
             hideLoading() {
+                // Ocultar el overlay de carga centrado
+                const loadingOverlay = document.getElementById('loading-overlay');
+                if (loadingOverlay) {
+                    loadingOverlay.classList.add('hidden');
+                }
+                
+                // Ocultar el loading original
                 document.getElementById('loading').style.display = 'none';
             }
 
@@ -1455,11 +1495,11 @@
                     monthData.avgPrice = monthData.totalPrice / monthData.count;
                 });
                 
-                // Ordenar por fecha (de menor a mayor mes del año)
+                // Ordenar por fecha (de más actual a menos actual)
                 return Object.values(monthlyData)
                     .sort((a, b) => {
-                        if (a.year !== b.year) return a.year - b.year;
-                        return a.month - b.month;
+                        if (a.year !== b.year) return b.year - a.year; // Año más reciente primero
+                        return b.month - a.month; // Mes más reciente primero
                     });
             }
 
@@ -1937,20 +1977,34 @@
             }
 
             // Mostrar mensaje de éxito al copiar
-            showCopySuccess(message, duration = 3000) {
+            showCopySuccess(message, duration = 3000, type = 'success') {
                 // Crear mensaje temporal
                 const successMsg = document.createElement('div');
                 successMsg.className = 'copy-success-message';
                 successMsg.textContent = message;
+                
+                // Estilos base
+                let background, color, shadowColor;
+                
+                if (type === 'error' || type === 'delete') {
+                    background = '#FF6B6B';
+                    color = 'white';
+                    shadowColor = 'rgba(255, 107, 107, 0.3)';
+                } else {
+                    background = '#00E676';
+                    color = 'black';
+                    shadowColor = 'rgba(0, 230, 118, 0.3)';
+                }
+                
                 successMsg.style.cssText = `
                     position: fixed;
                     top: 20px;
                     right: 20px;
-                    background: #00E676;
-                    color: white;
+                    background: ${background};
+                    color: ${color};
                     padding: 15px 20px;
                     border-radius: 8px;
-                    box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3);
+                    box-shadow: 0 4px 15px ${shadowColor};
                     z-index: 1000;
                     font-weight: 600;
                     animation: slideInRight 0.3s ease-out;
@@ -2019,8 +2073,20 @@
 
                     console.log('✅ Montaje añadido al backend:', result);
                     
-                    // Recargar datos desde el backend
-                    await this.loadDataFromBackend();
+                    // Recargar datos desde el backend con timeout de seguridad
+                    try {
+                        const loadPromise = this.loadDataFromBackend();
+                        const timeoutPromise = new Promise((_, reject) => 
+                            setTimeout(() => reject(new Error('Timeout al recargar datos')), 10000)
+                        );
+                        
+                        await Promise.race([loadPromise, timeoutPromise]);
+                    } catch (loadError) {
+                        console.error('❌ Error al recargar datos:', loadError);
+                        // Ocultar spinner si falla la recarga
+                        this.hideLoading();
+                        // Continuar con el proceso aunque falle la recarga
+                    }
                     
                     // Limpiar el formulario
                     this.clearAutomationForm();
@@ -2028,8 +2094,11 @@
                     // Ocultar el formulario de automatización
                     document.getElementById('automation-form').classList.add('hidden');
                     
+                    // Asegurar que el spinner esté oculto
+                    this.hideLoading();
+                    
                     // Mostrar mensaje de éxito con fecha
-                    this.showCopySuccess(`✅ ¡Nueva entrada añadida al backend!\\n📅 Fecha: ${currentDate}`, 8000);
+                    this.showCopySuccess(`✅ ¡Nuevo montaje añadido! 📅 Fecha: ${currentDate}`, 8000);
                     
                     // Hacer scroll a la tabla para mostrar la nueva entrada
                     setTimeout(() => {
@@ -2041,6 +2110,8 @@
                     
                 } catch (error) {
                     console.error('❌ Error al añadir montaje:', error);
+                    // Asegurar que el spinner esté oculto en caso de error
+                    this.hideLoading();
                     alert('❌ Error al añadir montaje: ' + error.message);
                 }
             }
@@ -2230,7 +2301,7 @@
                     
                     // Mostrar mensaje de confirmación con fecha
                     const fechaEliminada = rowData[0];
-                    this.showCopySuccess(`🗑️ Fila eliminada correctamente del backend\n📅 Fecha: ${fechaEliminada}`, 5000);
+                    this.showCopySuccess(`Montaje eliminado correctamente\n📅 Fecha: ${fechaEliminada}`, 5000, 'delete');
                     
                 } catch (error) {
                     console.error('❌ Error al eliminar montaje:', error);
@@ -2554,6 +2625,9 @@
             <span class="scroll-arrow">▲</span>
         </button>
     </div>
+
+    <!-- Área invisible de autenticación en la esquina superior derecha -->
+    <div class="auth-corner" id="auth-button" title="🔐 Autenticación"></div>
 </body>
 </html>
 
