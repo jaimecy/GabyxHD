@@ -879,9 +879,19 @@
                 const uniqueComponents = Object.keys(data).length;
                 const totalUsage = total;
                 
+                // Determinar la etiqueta específica según el tipo de componente
+                let componentLabel = 'componentes distintos';
+                if (type === 'processor') {
+                    componentLabel = 'procesadores distintos';
+                } else if (type === 'graphics') {
+                    componentLabel = 'tarjetas gráficas distintas';
+                } else if (type === 'case') {
+                    componentLabel = 'torres distintas';
+                }
+                
                 tableHTML += `
                     <div class="analysis-summary">
-                        <span class="analysis-summary-text">${uniqueComponents} componentes distintos</span> | 
+                        <span class="analysis-summary-text">${uniqueComponents} ${componentLabel}</span> | 
                         <span class="analysis-summary-text">Cantidad total: ${totalUsage}</span>
                     </div>
                 `;
