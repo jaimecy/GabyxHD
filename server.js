@@ -195,6 +195,51 @@ app.get('/api/sheets-data', async (req, res) => {
     }
 });
 
+// NUEVO: Endpoint para importar datos masivos
+app.post('/api/import-montages', async (req, res) => {
+    try {
+        const { montages } = req.body;
+        
+        if (!montages || !Array.isArray(montages)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Datos de montajes inválidos'
+            });
+        }
+        
+        console.log(`📥 Importando ${montages.length} montajes...`);
+        
+        // Cargar montajes existentes
+        const montagesData = await loadMontages();
+        
+        // Reemplazar todos los montajes (mantener headers)
+        montagesData.montages = [montagesData.montages[0], ...montages];
+        
+        // Guardar en archivo
+        const saved = await saveMontages(montagesData);
+        
+        if (saved) {
+            console.log(`✅ ${montages.length} montajes importados correctamente`);
+            res.json({
+                success: true,
+                message: `${montages.length} montajes importados correctamente`,
+                totalMontages: montagesData.montages.length - 1,
+                timestamp: new Date().toISOString()
+            });
+        } else {
+            throw new Error('Error al guardar los montajes');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error al importar montajes:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al importar montajes',
+            message: process.env.NODE_ENV === 'development' ? error.message : 'Error interno'
+        });
+    }
+});
+
 // NUEVO: Endpoint para añadir un nuevo montaje
 app.post('/api/add-montage', async (req, res) => {
     try {
@@ -260,16 +305,22 @@ app.delete('/api/delete-montage/:index', async (req, res) => {
         // Cargar montajes existentes
         const montagesData = await loadMontages();
         
+        console.log(`📊 Total montajes en archivo: ${montagesData.montages.length}`);
+        console.log(`🎯 Índice a eliminar: ${index}`);
+        console.log(`📋 Montaje en índice ${index}:`, montagesData.montages[index]);
+        
         // Verificar que el índice sea válido
         if (index >= montagesData.montages.length) {
+            console.log(`❌ Índice ${index} inválido - fuera de rango`);
             return res.status(404).json({
                 success: false,
                 error: 'Montaje no encontrado'
             });
         }
         
-        // Eliminar montaje (índice + 1 porque el índice 0 son los headers)
-        const deletedMontage = montagesData.montages.splice(index + 1, 1)[0];
+        // Eliminar montaje (el índice ya incluye el offset de los headers)
+        const deletedMontage = montagesData.montages.splice(index, 1)[0];
+        console.log(`✂️ Montaje eliminado:`, deletedMontage);
         
         // Guardar en archivo
         const saved = await saveMontages(montagesData);
@@ -292,6 +343,78 @@ app.delete('/api/delete-montage/:index', async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Error al eliminar montaje',
+            message: process.env.NODE_ENV === 'development' ? error.message : 'Error interno'
+        });
+    }
+});
+
+// NUEVO: Endpoint para eliminar un montaje por fecha
+app.delete('/api/delete-montage-by-date', async (req, res) => {
+    try {
+        const { fecha, titulo } = req.body;
+        
+        if (!fecha) {
+            return res.status(400).json({
+                success: false,
+                error: 'Fecha es requerida'
+            });
+        }
+        
+        console.log(`🗑️ Eliminando montaje por fecha: ${fecha}, título: ${titulo || 'N/A'}`);
+        
+        // Cargar montajes existentes
+        const montagesData = await loadMontages();
+        
+        // Buscar el montaje por fecha (y título si está disponible)
+        let montageIndex = -1;
+        for (let i = 1; i < montagesData.montages.length; i++) {
+            const montage = montagesData.montages[i];
+            if (montage[0] === fecha) {
+                // Si tenemos título, verificar que coincida también
+                if (titulo && montage[1] === titulo) {
+                    montageIndex = i;
+                    break;
+                } else if (!titulo) {
+                    // Si no tenemos título, usar la primera fecha que coincida
+                    montageIndex = i;
+                    break;
+                }
+            }
+        }
+        
+        if (montageIndex === -1) {
+            return res.status(404).json({
+                success: false,
+                error: `No se encontró montaje con fecha: ${fecha}`
+            });
+        }
+        
+        // Eliminar el montaje encontrado
+        const deletedMontage = montagesData.montages.splice(montageIndex, 1);
+        
+        console.log(`🗑️ Montaje eliminado:`, deletedMontage[0]);
+        
+        // Guardar en archivo
+        const saved = await saveMontages(montagesData);
+        
+        if (saved) {
+            console.log('✅ Montaje eliminado correctamente por fecha');
+            res.json({
+                success: true,
+                message: 'Montaje eliminado correctamente por fecha',
+                deletedMontage: deletedMontage[0],
+                totalMontages: montagesData.montages.length - 1,
+                timestamp: new Date().toISOString()
+        });
+        } else {
+            throw new Error('Error al guardar los cambios');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error al eliminar montaje por fecha:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Error al eliminar montaje por fecha',
             message: process.env.NODE_ENV === 'development' ? error.message : 'Error interno'
         });
     }

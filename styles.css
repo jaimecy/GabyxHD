@@ -149,8 +149,10 @@
 .main-table-firefox thead th {
     position: sticky !important;
     top: 0 !important;
-    z-index: 10 !important; /* MISMO Z-INDEX QUE LA TABLA PRINCIPAL */
+    z-index: 100 !important; /* Z-INDEX ALTO PARA QUE ESTÉ POR ENCIMA DE LOS BOTONES */
     background-color: #667eea !important; /* MANTENER COLOR DE FONDO */
+    background: #667eea !important; /* FONDO COMPLETAMENTE OPACO */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important; /* SOMBRA PARA MEJOR SEPARACIÓN */
 }
 
 /* RESPONSIVE PARA MÓVIL - EXACTAMENTE IGUAL QUE LA TABLA PRINCIPAL */
@@ -2997,13 +2999,11 @@ th, .data-table th, .analysis-table th, .combinations-table th {
         /* Hover en filas de tabla para todos los navegadores */
         .main-table-firefox tbody tr:hover {
             background-color: #e3f2fd !important;
-            cursor: pointer;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .data-row:hover {
             background-color: #e3f2fd !important;
-            cursor: pointer;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -3020,10 +3020,10 @@ th, .data-table th, .analysis-table th, .combinations-table th {
             height: 28px;
             cursor: pointer;
             font-size: 12px;
-            transition: opacity 0.2s ease, visibility 0.2s ease;
-            opacity: 0;
-            visibility: hidden;
-            z-index: 10;
+            transition: all 0.3s ease;
+            opacity: 0.2;
+            visibility: visible;
+            z-index: 5; /* Z-INDEX BAJO PARA QUE ESTÉ POR DEBAJO DEL HEADER */
             box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
         }
 
@@ -3031,6 +3031,7 @@ th, .data-table th, .analysis-table th, .combinations-table th {
     background: linear-gradient(45deg, #c82333, #bd2130);
     transform: translateY(-50%) scale(1.1);
     box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    opacity: 1 !important;
 }
 
 
@@ -3041,7 +3042,6 @@ th, .data-table th, .analysis-table th, .combinations-table th {
             /* Hover en filas de tabla */
             .main-table-firefox tbody tr:hover {
                 background-color: #e3f2fd !important;
-                cursor: pointer;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
             }
             
@@ -3050,6 +3050,94 @@ th, .data-table th, .analysis-table th, .combinations-table th {
                 opacity: 1 !important;
                 visibility: visible !important;
             }
+        }
+        
+        /* ===== COMPATIBILIDAD CON EDGE Y OTROS NAVEGADORES ===== */
+        /* Hover en filas de tabla para todos los navegadores */
+        .data-row:hover,
+        .main-table-row:hover {
+            background-color: #e3f2fd !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Hover en botones de eliminar para todos los navegadores */
+        .data-row:hover .delete-row-btn-floating,
+        .main-table-row:hover .delete-row-btn-floating {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        /* Asegurar que los botones sean visibles en Edge */
+        .delete-row-btn-floating {
+            opacity: 0.2 !important;
+            visibility: visible !important;
+            border: 2px solid rgba(255, 255, 255, 0.8) !important;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.5) !important;
+            z-index: 5 !important; /* Z-INDEX BAJO PARA EDGE TAMBIÉN */
+        }
+        
+        /* ===== ESTILOS PARA INDICADOR DE ENTORNO ===== */
+        .environment-indicator {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .env-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .env-label {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .env-value {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        
+        .env-value.local {
+            background: #00b894;
+            color: white;
+        }
+        
+        .env-value.production {
+            background: #e17055;
+            color: white;
+        }
+        
+        .env-toggle-btn {
+            background: linear-gradient(45deg, #fdcb6e, #e17055);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .env-toggle-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(253, 203, 110, 0.4);
+        }
+        
+        .env-url {
+            font-family: monospace;
+            font-size: 14px;
+            opacity: 0.9;
+            text-align: center;
         }
 
 /* ===== ESTILOS PARA SISTEMA DE AUTENTICACIÓN ===== */
@@ -3236,3 +3324,56 @@ th, .data-table th, .analysis-table th, .combinations-table th {
 }
 
 /* Spinner de carga centrado en la ventana */
+
+/* ===== ESTILOS PARA ACCIONES DE DATOS (EXPORTAR/IMPORTAR) ===== */
+
+.data-actions-corner {
+    position: absolute;
+    top: 0;
+    right: 80px; /* Posicionado a la izquierda del botón de autenticación */
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.data-action-btn {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #6c5ce7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.data-action-btn:hover {
+    transform: scale(1.1);
+    background: rgba(108, 92, 231, 0.1);
+    border-color: #a29bfe;
+    box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+}
+
+.data-action-btn:active {
+    transform: scale(0.95);
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+    .data-actions-corner {
+        right: 70px;
+        gap: 8px;
+    }
+    
+    .data-action-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+}
